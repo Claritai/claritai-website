@@ -939,7 +939,7 @@ footer {
   max-width: 1140px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
   gap: 48px;
 }
 .footer-brand .nav-logo { display: inline-block; margin-bottom: 14px; }
@@ -1607,6 +1607,19 @@ footer {
     <li><a href="index.html#platform">Platform</a></li>
     <li><a href="index.html#pricing">Pricing</a></li>
     <li>
+      <div class="nav-dropdown" id="productsDropdown">
+        <button class="nav-dropdown-toggle" onclick="document.getElementById('productsDropdown').classList.toggle('open')">
+          Products <span class="chev"></span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="cargo-command.html">
+            <span class="ico">🚚</span>
+            <span class="label-block">Cargo Command<span class="sub">Logistics Operations Hub</span></span>
+          </a>
+        </div>
+      </div>
+    </li>
+    <li>
       <div class="nav-dropdown" id="servicesDropdown">
         <button class="nav-dropdown-toggle" onclick="document.getElementById('servicesDropdown').classList.toggle('open')">
           Services <span class="chev"></span>
@@ -1638,6 +1651,7 @@ footer {
     <div></div><div></div><div></div>
   </button>
   <div class="mob-overlay" id="mobOverlay">
+    <a href="cargo-command.html" onclick="closeMob()"><span class="ico">🚚</span> Cargo Command</a>
     <a href="ai-consultancy.html" onclick="closeMob()"><span class="ico">🧠</span> AI Consultancy</a>
     <a href="website-development.html" onclick="closeMob()"><span class="ico">🌐</span> Website Development</a>
     <a href="seo-optimisation.html" onclick="closeMob()"><span class="ico">📈</span> SEO Optimisation</a>
@@ -1647,8 +1661,9 @@ footer {
 </nav>
 <script>
   document.addEventListener('click', function(e) {
-    var dd = document.getElementById('servicesDropdown');
-    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd){
+      if (!dd.contains(e.target)) dd.classList.remove('open');
+    });
   });
 </script>
  
@@ -1768,6 +1783,10 @@ footer {
     <div class="footer-brand">
       <a href="index.html" class="nav-logo">clarit<span class="ai">ai</span></a>
       <p>AI consultancy and digital solutions for Irish SMEs. Clarity through artificial intelligence.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <a href="cargo-command.html">Cargo Command</a>
     </div>
     <div class="footer-col">
       <h4>Services</h4>
