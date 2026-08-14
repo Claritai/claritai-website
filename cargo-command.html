@@ -1642,6 +1642,9 @@ footer {
  .cc-agent{flex-direction:column;}
  .cc-feat-block{grid-template-columns:1fr;}
 }
+.cc-row4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:1024px){.cc-row4{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:600px){.cc-row4{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -1853,7 +1856,7 @@ footer {
 <section class="cap-section">
   <div class="cap-container">
     <div class="cap-header fade-up"><h2>Built on your Microsoft 365 — not around it.</h2><p>Cargo Command does not ask your team to trust a new place for their email. It works through the Microsoft 365 you already run.</p></div>
-    <div class="cap-grid">
+    <div class="cap-grid cc-row4">
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🔐</span><h3>Sign in with Microsoft</h3><p>Staff use the account they already have. No separate passwords to store or remember.</p></div></div>
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🔒</span><h3>Delegated access only</h3><p>The app acts as the signed-in user, only on shared mailboxes they can already see.</p></div></div>
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🧑‍💼</span><h3>Admin-gated controls</h3><p>Editing inboxes, fleet and branding is limited to the admins you nominate.</p></div></div>
@@ -1873,7 +1876,7 @@ footer {
 <section class="split-section">
   <div class="cap-container">
     <div class="cap-header fade-up"><h2>A partner, not just a platform.</h2><p>Cargo Command is designed and supported by Claritai. We build the product, provision each customer's secure instance, and stay with you for updates and new features — so you get software that keeps improving, backed by people who know it inside out.</p></div>
-    <div class="cap-grid">
+    <div class="cap-grid cc-row4">
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🚛</span><h3>Purpose-built for logistics</h3><p>Every module comes from a real transport operation's day, not a generic template.</p></div></div>
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🤝</span><h3>Done-with-you setup</h3><p>We handle the Microsoft 365 connection, hosting and go-live with your team.</p></div></div>
       <div class="cap-card"><div class="cap-card-body"><span class="ico">🎛️</span><h3>Yours to run</h3><p>Inboxes, fleet, branding, news and more are all self-service — no change requests to edit.</p></div></div>
