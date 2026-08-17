@@ -1275,6 +1275,43 @@ footer {
   font-weight: 500;
   cursor: pointer;
 }
+
+/* ─── Grow Digital Voucher (home) ─── */
+.gd-card{background:#fff;border:1px solid var(--border-subtle);border-radius:20px;padding:34px 32px;box-shadow:0 10px 40px rgba(91,163,230,.10);}
+.gd-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.gd-sub{font-size:14px;color:var(--text-secondary);margin-bottom:22px;}
+.gd-q{padding:15px 0;border-bottom:1px solid var(--border-subtle);}
+.gd-q h4{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:12px;}
+.gd-toggle{display:flex;gap:10px;}
+.gd-opt{padding:9px 22px;border:1px solid var(--border-subtle);background:#f8fbff;border-radius:9px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.gd-opt:hover{border-color:var(--accent-blue);}
+.gd-opt.sel{background:var(--accent-gradient);color:#fff;border-color:transparent;}
+.gd-hr{border:none;border-top:1px solid var(--border-subtle);margin:22px 0;}
+.gd-fund{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.gd-fund-col{border-radius:14px;padding:18px;border:1px solid var(--border-subtle);}
+.gd-fund-col.good{background:#f2f9f4;border-color:#d6ecdc;}
+.gd-fund-col.bad{background:#fdf6f6;border-color:#f0dcdc;}
+.gd-fund-col h5{font-family:var(--font-display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.gd-fund-col.good h5{color:#2f8f5b;} .gd-fund-col.bad h5{color:#b0554d;}
+.gd-fund-col p{font-size:12.5px;color:var(--text-secondary);line-height:1.6;}
+.gd-check-btn{width:100%;margin-top:22px;padding:15px;background:var(--accent-gradient);color:#fff;border:none;border-radius:12px;font-family:var(--font-display);font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .3s;}
+.gd-check-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--glow-blue);}
+.gd-err{background:#fdf0ef;border:1px solid #f3d2ce;color:#b0554d;font-size:13.5px;padding:11px 14px;border-radius:9px;margin-bottom:16px;display:none;}
+.gd-verdict{border-radius:20px;padding:32px 30px;border:1px solid var(--border-subtle);box-shadow:0 10px 40px rgba(91,163,230,.10);background:#fff;text-align:left;}
+.gd-badge2{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:14px;}
+.gd-badge2.good{background:#e6f4ec;color:#2f8f5b;} .gd-badge2.bad{background:#fdece9;color:#b0554d;}
+.gd-verdict h3{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:12px;line-height:1.2;}
+.gd-verdict p{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;}
+.gd-verdict ul{margin:0 0 16px;padding-left:20px;}
+.gd-verdict li{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:6px;}
+.gd-lead{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.gd-lead input{padding:12px 14px;border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-body);font-size:15px;color:var(--text-primary);background:#f8fbff;outline:none;box-sizing:border-box;}
+.gd-lead input:focus{border-color:var(--accent-blue);background:#fff;}
+.gd-lead .full{grid-column:1 / -1;}
+.gd-lead button{grid-column:1 / -1;padding:14px;background:var(--accent-gradient);color:#fff;border:none;border-radius:11px;font-family:var(--font-display);font-size:15px;font-weight:600;cursor:pointer;}
+.gd-note{font-size:12px;color:var(--text-muted);margin-top:16px;}
+.gd-note a{color:var(--accent-blue);}
+@media (max-width:640px){ .gd-fund{grid-template-columns:1fr;} .gd-lead{grid-template-columns:1fr;} }
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Claritai","description":"AI consultancy and digital solutions for Irish SMEs \u2014 AI strategy, website development, SEO and social media.","url":"https://claritai.ie","logo":"https://claritai.ie/favicon.svg","image":"https://claritai.ie/favicon.svg","areaServed":"IE","email":"info@claritai.ie","address":{"@type":"PostalAddress","addressCountry":"IE"},"sameAs":["https://www.linkedin.com/company/claritai-ireland/"]}</script>
 </head>
@@ -1612,6 +1649,69 @@ footer {
     </div>
   </div>
 </section>
+
+
+<!-- ─── Grow Digital Voucher (home) ─── -->
+<section id="voucher" style="padding:90px 24px;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);">
+  <div class="section-container" style="max-width:820px;text-align:center;">
+    <div class="section-label fade-up" style="text-align:center;">🎁 Government Grant</div>
+    <h2 class="section-title fade-up-d1" style="margin:8px auto 14px;">Fund new business software with the<br>Grow Digital Voucher</h2>
+    <p class="section-desc fade-up-d2" style="margin:0 auto 28px;">Eligible Irish businesses can get <b>50% of costs</b> — from €500 up to €5,000 — toward new off-the-shelf software and setup. Check in 30 seconds if you qualify.</p>
+    <button class="btn-primary fade-up-d3" id="gdRevealBtn" onclick="gdReveal()">Check eligibility (30 seconds) →</button>
+
+    <div id="gdInline" style="display:none;text-align:left;margin-top:32px;">
+      <div class="gd-card">
+        <h3 class="gd-title">Grow Digital Voucher — quick check</h3>
+        <p class="gd-sub">Answer 5 quick questions to see if your business is likely to qualify.</p>
+        <div class="gd-err" id="gdErr"></div>
+        <div class="gd-q"><h4>1. Is your business trading for 6 months or more?</h4>
+          <div class="gd-toggle" data-key="trading"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>2. Does the business have between 1 and 50 paid employees?</h4>
+          <div class="gd-toggle" data-key="employees"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>3. Have you completed a Digital for Business project (with your LEO) in the last two years?</h4>
+          <div class="gd-toggle" data-key="dfb"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>4. Does the business have current Revenue tax clearance?</h4>
+          <div class="gd-toggle" data-key="tax"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>5. Is the business currently outside Enterprise Ireland and IDA Ireland support?</h4>
+          <div class="gd-toggle" data-key="support"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <hr class="gd-hr">
+        <div class="gd-fund">
+          <div class="gd-fund-col good"><h5>What it can fund</h5><p>New off-the-shelf business software (e-commerce, website, CRM, booking, accounting, cybersecurity, analytics), plus related IT configuration and training capped at 50% of the project.</p></div>
+          <div class="gd-fund-col bad"><h5>What it cannot fund</h5><p>Custom or bespoke software, compliance-only systems, routine upgrades, and any costs incurred before your application is approved.</p></div>
+        </div>
+        <button class="gd-check-btn" onclick="gdCheck()">Check my eligibility</button>
+      </div>
+      <div id="gdResult" style="display:none;margin-top:24px;"></div>
+    </div>
+  </div>
+</section>
+<script>
+var GD_OFFICIAL="https://www.localenterprise.ie/growdigital/what-is-the-grow-digital-voucher-/";
+var gdAns={};
+function gdReveal(){ var el=document.getElementById('gdInline'); el.style.display='block'; var b=document.getElementById('gdRevealBtn'); if(b) b.style.display='none'; el.scrollIntoView({behavior:'smooth',block:'start'}); }
+function gdPick(btn){ var grp=btn.parentNode; grp.querySelectorAll('.gd-opt').forEach(function(b){b.classList.remove('sel');}); btn.classList.add('sel'); gdAns[grp.getAttribute('data-key')]=btn.getAttribute('data-v'); }
+function gdEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var GD_FAIL={trading:"Your business needs to be trading for at least 6 months.",employees:"The voucher is for businesses with 1–50 paid employees.",dfb:"You usually need to complete a Digital for Business project first — we can help you get there.",tax:"You'll need current Revenue tax clearance.",support:"The voucher is for businesses outside Enterprise Ireland / IDA support."};
+function gdCheck(){
+  var keys=['trading','employees','dfb','tax','support'], err=document.getElementById('gdErr');
+  for(var i=0;i<keys.length;i++){ if(!gdAns[keys[i]]){ err.textContent='Please answer all 5 questions.'; err.style.display='block'; err.scrollIntoView({behavior:'smooth',block:'center'}); return; } }
+  err.style.display='none';
+  var fails=keys.filter(function(k){return gdAns[k]!=='yes';}), eligible=fails.length===0, html='';
+  if(eligible){
+    html+='<div class="gd-verdict good"><div class="gd-badge2 good">Looks eligible ✓</div><h3>Good news — your business appears to qualify</h3><p>Based on your answers you meet the core Grow Digital Voucher criteria. The next steps are applying through your Local Enterprise Office <b>before you spend anything</b>, and choosing eligible software. Claritai can help you scope a qualifying project and prepare a strong application.</p>';
+  } else {
+    html+='<div class="gd-verdict bad"><div class="gd-badge2 bad">Might not qualify yet</div><h3>You may not be eligible just yet</h3><p>Based on your answers, one or more criteria aren\'t met:</p><ul>'+fails.map(function(k){return '<li>'+gdEsc(GD_FAIL[k])+'</li>';}).join('')+'</ul><p>Rules change and your Local Enterprise Office makes the final call — talk to us and we\'ll advise on your options.</p>';
+  }
+  html+='<div class="gd-lead" id="gdLead"><input id="gd-name" type="text" placeholder="Your name"><input id="gd-email" type="email" placeholder="Work email"><input id="gd-company" class="full" type="text" placeholder="Company name"><button onclick="gdLead('+eligible+')">'+(eligible?'Get help applying →':'Talk to us about your options →')+'</button></div><p class="gd-note">Indicative guide only — eligibility and approval are determined solely by your Local Enterprise Office. See the <a href="'+GD_OFFICIAL+'" target="_blank" rel="noopener">official Grow Digital Voucher details ↗</a>.</p></div>';
+  var box=document.getElementById('gdResult'); box.innerHTML=html; box.style.display='block'; box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function gdLead(eligible){
+  var name=(document.getElementById('gd-name').value||'').trim(), email=(document.getElementById('gd-email').value||'').trim(), company=(document.getElementById('gd-company').value||'').trim();
+  if(!name||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Please enter your name and a valid email.'); return; }
+  fetch('https://formspree.io/f/mqeowkly',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name:name,email:email,company:company,source:'Grow Digital Voucher (home)',eligible:eligible?'Likely eligible':'Not yet',answers:gdAns})}).catch(function(){});
+  document.getElementById('gdLead').outerHTML='<p style="margin-top:20px;font-weight:600;color:var(--accent-blue);">Thanks '+gdEsc(name)+' — we\'ll be in touch shortly to help with your Grow Digital Voucher.</p>';
+}
+</script>
 
 <!-- ─── Pricing ─── -->
 <section id="pricing">
