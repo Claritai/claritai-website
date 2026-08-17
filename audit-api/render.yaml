@@ -14,7 +14,7 @@ services:
       - key: ALLOWED_ORIGIN
         value: https://claritai.ie,https://www.claritai.ie
       - key: AZURE_OPENAI_API_VERSION
-        value: 2024-06-01
+        value: 2025-04-01-preview
       - key: AZURE_OPENAI_DEPLOYMENT
         value: gpt-4o-mini
       - key: RATE_LIMIT
