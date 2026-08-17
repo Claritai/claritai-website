@@ -1,5 +1,23 @@
 'use strict';
 
+// Optional: load a local .env file for development (no external dependency).
+// On Render you set env vars in the dashboard instead, so this is a no-op there.
+try {
+  const fs = require('fs');
+  const path = require('path');
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+      const m = line.match(/^\s*([\w.-]+)\s*=\s*(.*)\s*$/);
+      if (m && process.env[m[1]] === undefined) {
+        let v = m[2].trim();
+        if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+        process.env[m[1]] = v;
+      }
+    }
+  }
+} catch (_) { /* ignore */ }
+
 const express = require('express');
 const cors = require('cors');
 
