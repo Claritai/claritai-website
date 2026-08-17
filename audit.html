@@ -2103,6 +2103,19 @@ document.getElementById('consultOverlay').addEventListener('click',function(e){
   </div>
 </div>
 <script>if(!localStorage.getItem('cookies')){document.getElementById('cookieBanner').classList.add('show');}</script>
+
+<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    var set=function(id,v){ var e=document.getElementById(id); if(e&&v) e.value=v; };
+    set('au-url', p.get('url')); set('au-name', p.get('name'));
+    set('au-email', p.get('email')); set('au-company', p.get('company'));
+    if(p.get('url')||p.get('email')){ var c=document.getElementById('au-consent'); if(c) c.checked=true; }
+  }catch(e){}
+})();
+</script>
+
 </body>
 </html>
 

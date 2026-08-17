@@ -1914,5 +1914,91 @@ document.getElementById('consultOverlay').addEventListener('click',function(e){
   </div>
 </div>
 <script>if(!localStorage.getItem('cookies')){document.getElementById('cookieBanner').classList.add('show');}</script>
+
+<!-- ─── Lead-capture popup (free audit) ─── -->
+<style>
+.lp-overlay{position:fixed;inset:0;background:rgba(18,42,66,.55);backdrop-filter:blur(6px);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px;}
+.lp-overlay.on{display:flex;}
+.lp-box{position:relative;background:#fff;border-radius:20px;max-width:460px;width:100%;padding:34px 32px;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:lpIn .3s ease-out;}
+@keyframes lpIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.lp-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:24px;line-height:1;color:#9bb7d1;cursor:pointer;}
+.lp-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-gradient-subtle,#eef6ff);color:var(--accent-blue,#3d8ed1);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:14px;}
+.lp-box h2{font-family:var(--font-display,'Sora',sans-serif);font-size:22px;font-weight:700;color:var(--text-primary,#2e7cba);line-height:1.2;margin-bottom:10px;}
+.lp-sub{font-size:14px;color:var(--text-secondary,#4f9ed4);line-height:1.55;margin-bottom:18px;}
+.lp-list{list-style:none;margin:0 0 20px;padding:0;}
+.lp-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--text-primary,#2e7cba);font-weight:500;padding:5px 0;}
+.lp-list li::before{content:'\2713';flex:0 0 auto;width:18px;height:18px;border-radius:50%;background:var(--accent-gradient,#3d8ed1);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-top:1px;}
+.lp-field{margin-bottom:12px;}
+.lp-field input{width:100%;padding:13px 15px;border:1px solid var(--border-subtle,#dce9f6);border-radius:10px;font-family:var(--font-body,'DM Sans',sans-serif);font-size:15px;color:var(--text-primary,#2e7cba);background:#f8fbff;outline:none;box-sizing:border-box;transition:border-color .2s;}
+.lp-field input:focus{border-color:var(--accent-blue,#3d8ed1);background:#fff;}
+.lp-btn{width:100%;padding:15px;background:var(--accent-gradient,linear-gradient(135deg,#3d8ed1,#5ba3e6));color:#fff;border:none;border-radius:12px;font-family:var(--font-display,'Sora',sans-serif);font-size:16px;font-weight:600;cursor:pointer;margin-top:4px;transition:transform .2s,box-shadow .3s;}
+.lp-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(91,163,230,.35);}
+.lp-fine{text-align:center;font-size:11.5px;color:var(--text-muted,#7bb4de);margin-top:12px;}
+.lp-err{background:#fdf0ef;border:1px solid #f3d2ce;color:#b0554d;font-size:13px;padding:10px 12px;border-radius:8px;margin-bottom:12px;display:none;}
+.lp-thanks{display:none;text-align:center;padding:10px 0;}
+.lp-thanks.on{display:block;}
+.lp-tick{font-size:44px;margin-bottom:10px;}
+.lp-thanks p{font-size:14px;color:var(--text-secondary,#4f9ed4);margin-bottom:20px;line-height:1.5;}
+.lp-go{display:inline-block;background:var(--accent-gradient,#3d8ed1);color:#fff;text-decoration:none;padding:13px 26px;border-radius:10px;font-weight:600;font-size:15px;}
+</style>
+<div class="lp-overlay" id="lpOverlay">
+  <div class="lp-box">
+    <button class="lp-close" onclick="lpClose()">&times;</button>
+    <div id="lpForm">
+      <span class="lp-badge">Free &middot; No commitment</span>
+      <h2>Wait &mdash; grab your free AI Business Audit</h2>
+      <p class="lp-sub">See exactly where your business is leaking customers online &mdash; and how to fix it before your competitors do.</p>
+      <ul class="lp-list">
+        <li>Website health &amp; performance check</li>
+        <li>SEO &amp; search visibility diagnostic</li>
+        <li>Conversion &amp; content leak analysis</li>
+        <li>AI-readiness scorecard for 2026</li>
+      </ul>
+      <div class="lp-err" id="lpErr"></div>
+      <div class="lp-field"><input id="lp-name" type="text" placeholder="Your name"></div>
+      <div class="lp-field"><input id="lp-email" type="email" placeholder="you@business.ie"></div>
+      <div class="lp-field"><input id="lp-url" type="text" placeholder="yourbusiness.ie"></div>
+      <button class="lp-btn" onclick="lpSubmit()">Send me the free audit &rarr;</button>
+      <p class="lp-fine">We'll be in touch within minutes. No spam, unsubscribe anytime.</p>
+    </div>
+    <div class="lp-thanks" id="lpThanks">
+      <div class="lp-tick">&#10003;</div>
+      <h2>You're all set!</h2>
+      <p>Run your instant audit now and we'll walk you through the results.</p>
+      <a class="lp-go" id="lpGo" href="audit.html">Run my instant audit &rarr;</a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='claritai_audit_popup_v1', DAYS=7, shown=false;
+  function seen(){ try{ var t=localStorage.getItem(KEY); return t && (Date.now()-(+t)) < DAYS*864e5; }catch(e){ return false; } }
+  function mark(){ try{ localStorage.setItem(KEY, Date.now()); }catch(e){} }
+  function open(){ if(shown||seen())return; shown=true; document.getElementById('lpOverlay').classList.add('on'); document.body.style.overflow='hidden'; mark(); }
+  window.lpClose=function(){ document.getElementById('lpOverlay').classList.remove('on'); document.body.style.overflow=''; };
+  window.lpSubmit=function(){
+    var name=(document.getElementById('lp-name').value||'').trim();
+    var email=(document.getElementById('lp-email').value||'').trim();
+    var url=(document.getElementById('lp-url').value||'').trim();
+    var err=document.getElementById('lpErr');
+    function fail(m){ err.textContent=m; err.style.display='block'; }
+    if(!name) return fail('Please enter your name.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email.');
+    if(!url) return fail('Please enter your website.');
+    err.style.display='none';
+    fetch('https://formspree.io/f/mqeowkly',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+      body:JSON.stringify({name:name,email:email,website:url,source:'Site popup - Free Audit'})}).catch(function(){});
+    document.getElementById('lpGo').href='audit.html?url='+encodeURIComponent(url)+'&name='+encodeURIComponent(name)+'&email='+encodeURIComponent(email);
+    document.getElementById('lpForm').style.display='none';
+    document.getElementById('lpThanks').classList.add('on');
+  };
+  document.addEventListener('mouseout', function(e){ if(e.clientY<=0) open(); });
+  setTimeout(open, 25000);
+  var ov=document.getElementById('lpOverlay');
+  if(ov) ov.addEventListener('click', function(e){ if(e.target===this) lpClose(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') lpClose(); });
+})();
+</script>
+
 </body>
 </html>
