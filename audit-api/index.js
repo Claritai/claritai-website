@@ -27,6 +27,7 @@ const { runPageSpeed } = require('./lib/pagespeed');
 const { scoreCategories, overallFrom, CATEGORY_META, ruleNarrative } = require('./lib/scoring');
 const { generateNarrative } = require('./lib/ai');
 const { pushLead } = require('./lib/hubspot');
+const { sendFormspree } = require('./lib/formspree');
 const { sampleReport } = require('./lib/sample');
 
 const app = express();
@@ -117,8 +118,8 @@ app.post('/api/audit', async (req, res) => {
       meta: { aiGenerated: aiUsed, pageSpeed: !!psi },
     };
 
-    // 4) Push the lead to HubSpot (best-effort, non-blocking of the response payload).
-    pushLead({
+    // 4) Capture the lead — HubSpot + Formspree email fallback (both best-effort).
+    const lead = {
       name,
       email,
       company,
@@ -129,7 +130,9 @@ app.post('/api/audit', async (req, res) => {
       score: overall.score,
       grade: overall.grade,
       summary: report.summary,
-    }).catch(() => {});
+    };
+    pushLead(lead).catch(() => {});
+    sendFormspree(lead).catch(() => {});
 
     return res.json(report);
   } catch (err) {
