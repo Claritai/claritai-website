@@ -1288,6 +1288,7 @@ footer {
     <li><a href="#platform">Platform</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#testimonials">Results</a></li>
+    <li><a href="audit.html">Free Audit</a></li>
     <li>
       <div class="nav-dropdown" id="productsDropdown">
         <button class="nav-dropdown-toggle" onclick="document.getElementById('productsDropdown').classList.toggle('open')">
@@ -1333,6 +1334,7 @@ footer {
     <div></div><div></div><div></div>
   </button>
   <div class="mob-overlay" id="mobOverlay">
+    <a href="audit.html" onclick="closeMob()"><span class="ico">✦</span> Free AI Audit</a>
     <a href="cargo-command.html" onclick="closeMob()"><span class="ico">🚚</span> Cargo Command</a>
     <a href="ai-consultancy.html" onclick="closeMob()"><span class="ico">🧠</span> AI Consultancy</a>
     <a href="website-development.html" onclick="closeMob()"><span class="ico">🌐</span> Website Development</a>
@@ -1362,7 +1364,7 @@ footer {
   <p class="hero-sub fade-up-d2">We help Irish businesses cut through the noise with AI strategy, smart SaaS tools, and digital marketing that actually delivers.</p>
   <div class="hero-actions fade-up-d3">
     <a href="#" class="btn-primary" onclick="event.preventDefault();openConsult()">Get a Free Consultation</a>
-    <a href="#services" class="btn-secondary">Explore Services</a>
+    <a href="audit.html" class="btn-secondary">Get your free AI audit →</a>
   </div>
 </section>
 
@@ -1450,6 +1452,23 @@ footer {
           <span class="service-tag">Community</span>
         </div>
         <a href="social-media-management.html" class="service-link">Learn more →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Free Audit CTA band ─── -->
+<section style="padding:70px 24px;">
+  <div class="section-container" style="max-width:1000px;">
+    <div style="background:var(--accent-gradient);border-radius:24px;padding:clamp(32px,4vw,48px);color:#fff;display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);border-radius:50%;"></div>
+      <div style="position:relative;flex:1 1 460px;min-width:280px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:.9;margin-bottom:12px;">✦ Free AI Business Audit</div>
+        <h2 style="font-family:var(--font-display);font-size:clamp(24px,3vw,34px);font-weight:700;line-height:1.15;letter-spacing:-.6px;color:#fff;margin-bottom:12px;">See how your business scores online — in about a minute.</h2>
+        <p style="font-size:16px;line-height:1.6;color:rgba(255,255,255,.92);max-width:560px;">Our AI audit rates your website, SEO, social media and online presence, then shows you exactly how to improve — free, and no obligation.</p>
+      </div>
+      <div style="position:relative;flex:0 0 auto;">
+        <a href="audit.html" style="display:inline-block;background:#fff;color:var(--accent-blue);padding:16px 34px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;">Run my free audit →</a>
       </div>
     </div>
   </div>
@@ -1713,7 +1732,7 @@ footer {
     </div>
     <div class="footer-col">
       <h4>Resources</h4>
-      <a href="#">AI Readiness Quiz</a>
+      <a href="audit.html">Free AI Audit</a>
       <a href="#">Case Studies</a>
       <a href="#">Newsletter</a>
       <a href="#">LEO Grant Guide</a>

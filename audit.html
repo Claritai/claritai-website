@@ -8,21 +8,21 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 gtag('js',new Date());gtag('config','G-G9CLS2YH11');
 </script>
 <meta charset="UTF-8">
-<meta name="description" content="Expert AI consultancy for Irish SMEs. From strategy to deployment, we help you implement AI solutions that deliver real ROI.">
+<meta name="description" content="Get a free, instant AI-powered audit of your website, SEO, social media and online presence — with a clear score, SWOT and a prioritised plan to improve. By Claritai.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
-<meta property="og:title" content="AI Consultancy | Claritai — Clarity with AI">
-<meta property="og:description" content="Expert AI consultancy for Irish SMEs. From strategy to deployment, we help you implement AI solutions that deliver real ROI.">
+<meta property="og:title" content="Free AI Business Audit | Claritai">
+<meta property="og:description" content="Get a free, instant AI-powered audit of your website, SEO, social media and online presence — with a clear score, SWOT and a prioritised plan to improve. By Claritai.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://claritai.ie">
+<meta property="og:url" content="https://claritai.ie/audit.html">
 <meta property="og:image" content="https://claritai.ie/favicon.svg">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AI Consultancy | Claritai — Clarity with AI">
-<meta name="twitter:description" content="Expert AI consultancy for Irish SMEs. From strategy to deployment, we help you implement AI solutions that deliver real ROI.">
+<meta name="twitter:title" content="Free AI Business Audit | Claritai">
+<meta name="twitter:description" content="Get a free, instant AI-powered audit of your website, SEO, social media and online presence — with a clear score, SWOT and a prioritised plan to improve. By Claritai.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="canonical" href="https://claritai.ie">
+<link rel="canonical" href="https://claritai.ie/audit.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Consultancy — Claritai</title>
+<title>Free AI Business Audit | Claritai</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
@@ -1593,6 +1593,78 @@ footer {
   font-weight: 500;
   cursor: pointer;
 }
+
+/* ─── Audit page ─── */
+.au-card{background:#fff;border:1px solid var(--border-subtle);border-radius:20px;padding:40px;box-shadow:0 10px 40px rgba(91,163,230,0.10);}
+.au-card-title{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.au-card-sub{font-size:15px;color:var(--text-secondary);margin-bottom:26px;}
+.au-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.au-field{display:flex;flex-direction:column;}
+.au-col2{grid-column:1 / -1;}
+.au-field label{font-family:var(--font-display);font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:6px;}
+.au-field input[type=text],.au-field input[type=email],.au-field input[type=tel]{padding:13px 15px;border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-body);font-size:15px;color:var(--text-primary);background:#f8fbff;outline:none;transition:border-color .2s,background .2s;box-sizing:border-box;}
+.au-field input:focus{border-color:var(--accent-blue);background:#fff;}
+.au-consent label{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--text-secondary);cursor:pointer;}
+.au-consent input{margin-top:2px;flex:0 0 auto;}
+.au-consent a{color:var(--accent-blue);}
+.au-run{margin-top:24px;width:100%;padding:16px;background:var(--accent-gradient);color:#fff;border:none;border-radius:12px;font-family:var(--font-display);font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .3s;}
+.au-run:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--glow-blue);}
+.au-error{background:#fdf0ef;border:1px solid #f3d2ce;color:#b0554d;padding:14px 18px;border-radius:12px;font-size:14px;margin-bottom:20px;}
+.au-check-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+.au-check{background:#fff;border:1px solid var(--border-subtle);border-radius:14px;padding:22px 18px;text-align:center;}
+.au-check .ico{font-size:26px;}
+.au-check h4{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--text-primary);margin:10px 0 6px;}
+.au-check p{font-size:12.5px;color:var(--text-secondary);line-height:1.5;}
+.au-loading{text-align:center;}
+.au-spinner{width:54px;height:54px;border-radius:50%;border:4px solid var(--border-subtle);border-top-color:var(--accent-blue);margin:0 auto 24px;animation:auspin .9s linear infinite;}
+@keyframes auspin{to{transform:rotate(360deg);}}
+.au-loading h2{font-family:var(--font-display);font-size:22px;color:var(--text-primary);margin-bottom:8px;}
+.au-loading p{font-size:14px;color:var(--text-secondary);}
+.au-progress{height:8px;background:var(--bg-secondary);border-radius:100px;overflow:hidden;margin:24px auto 0;max-width:420px;}
+.au-bar{height:100%;width:0;background:var(--accent-gradient);border-radius:100px;transition:width .4s ease;}
+.au-overall{display:flex;gap:36px;align-items:center;flex-wrap:wrap;}
+.au-overall-text{flex:1 1 320px;}
+.au-overall-text .k{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent-blue);font-weight:600;margin-bottom:8px;}
+.au-overall-text h2{font-family:var(--font-display);font-size:26px;color:var(--text-primary);margin-bottom:10px;}
+.au-overall-text p{font-size:15px;color:var(--text-secondary);line-height:1.7;}
+.au-cats{margin-top:40px;display:flex;flex-direction:column;gap:20px;}
+.au-cat{display:grid;grid-template-columns:210px 1fr;gap:22px;align-items:start;}
+.au-cat-head{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--text-primary);}
+.au-cat-score{font-size:13px;color:var(--text-muted);margin-top:2px;}
+.au-track{height:10px;background:var(--bg-secondary);border-radius:100px;overflow:hidden;margin-bottom:8px;}
+.au-fill{height:100%;border-radius:100px;transition:width .6s ease;}
+.au-cat p{font-size:13.5px;color:var(--text-secondary);line-height:1.55;}
+.au-swot{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px;}
+.au-swot-card{border-radius:16px;padding:24px;border:1px solid var(--border-subtle);}
+.au-swot-card h3{font-family:var(--font-display);font-size:14px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+.au-swot-card ul{list-style:none;}
+.au-swot-card li{position:relative;padding:6px 0 6px 20px;font-size:13.5px;color:var(--text-secondary);line-height:1.5;}
+.au-swot-card li::before{content:'';position:absolute;left:0;top:12px;width:7px;height:7px;border-radius:50%;}
+.au-s{background:#f2f9f4;border-color:#d6ecdc;} .au-s h3{color:#2f8f5b;} .au-s li::before{background:#3fa06a;}
+.au-w{background:#fdf6f6;border-color:#f0dcdc;} .au-w h3{color:#b0554d;} .au-w li::before{background:#cf7a72;}
+.au-o{background:#eef6ff;border-color:#d7e8fb;} .au-o h3{color:#2e7cba;} .au-o li::before{background:#3d8ed1;}
+.au-t{background:#fff8ec;border-color:#f3e4c6;} .au-t h3{color:#b7861f;} .au-t li::before{background:#e0a83a;}
+.au-recs{margin-top:44px;display:flex;flex-direction:column;gap:14px;}
+.au-rec{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--border-subtle);border-radius:14px;padding:20px 22px;}
+.au-rec .n{font-family:var(--font-display);font-weight:700;color:var(--accent-blue);font-size:18px;flex:0 0 auto;width:24px;}
+.au-rec h4{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:4px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.au-rec p{font-size:13.5px;color:var(--text-secondary);line-height:1.55;}
+.au-badge{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.au-badge.High{background:#fdeceb;color:#c0493f;} .au-badge.Medium{background:#fff4e2;color:#b7861f;} .au-badge.Low{background:#eef6ff;color:#2e7cba;}
+.au-cat-tag{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);}
+.au-cta{margin-top:48px;background:var(--accent-gradient);border-radius:20px;padding:44px;text-align:center;color:#fff;}
+.au-cta h2{font-family:var(--font-display);font-size:26px;font-weight:700;margin-bottom:12px;color:#fff;}
+.au-cta p{color:rgba(255,255,255,.92);font-size:15px;margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto;}
+.au-cta a{display:inline-block;background:#fff;color:var(--accent-blue);padding:14px 32px;border-radius:10px;font-weight:600;text-decoration:none;font-size:15px;}
+.au-again{display:block;margin:22px auto 0;background:none;border:none;color:var(--accent-blue);font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;text-decoration:underline;}
+.au-note{text-align:center;font-size:12px;color:var(--text-muted);margin-top:20px;}
+@media (max-width:760px){
+ .au-form{grid-template-columns:1fr;}
+ .au-check-grid{grid-template-columns:1fr 1fr;}
+ .au-swot{grid-template-columns:1fr;}
+ .au-cat{grid-template-columns:1fr;gap:6px;}
+ .au-card{padding:26px;}
+}
 </style>
 </head>
 <body>
@@ -1670,113 +1742,234 @@ footer {
 
 
 <!-- ─── Hero ─── -->
-<section class="svc-hero">
-  <div class="svc-hero-bg" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%0A%20%20%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f8fbff%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23eaf3fc%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22blueGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%235ba3e6%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22deepGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233a7cb8%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22glowGrad%22%20cx%3D%220.5%22%20cy%3D%220.5%22%20r%3D%220.5%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220.4%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22softShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20in%3D%22SourceAlpha%22%20stdDeviation%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeOffset%20dx%3D%220%22%20dy%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%22linear%22%20slope%3D%220.18%22/%3E%3C/feComponentTransfer%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23bgGrad%29%22/%3E%0A%20%20%3C%21--%20Background%20glow%20orbs%20--%3E%0A%20%20%3Ccircle%20cx%3D%22900%22%20cy%3D%22200%22%20r%3D%22280%22%20fill%3D%22url%28%23glowGrad%29%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22550%22%20r%3D%22240%22%20fill%3D%22url%28%23glowGrad%29%22%20opacity%3D%220.4%22/%3E%0A%20%20%3C%21--%20Connection%20network%20--%3E%0A%20%20%3Cg%20stroke%3D%22%236db4e6%22%20stroke-width%3D%221.2%22%20opacity%3D%220.5%22%20fill%3D%22none%22%3E%0A%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22380%22%20y2%3D%22120%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22380%22%20y1%3D%22120%22%20x2%3D%22600%22%20y2%3D%22220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22600%22%20y1%3D%22220%22%20x2%3D%22820%22%20y2%3D%22140%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22140%22%20x2%3D%221000%22%20y2%3D%22280%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22240%22%20y2%3D%22380%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22240%22%20y1%3D%22380%22%20x2%3D%22450%22%20y2%3D%22450%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22450%22%20y1%3D%22450%22%20x2%3D%22600%22%20y2%3D%22220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22450%22%20y1%3D%22450%22%20x2%3D%22680%22%20y2%3D%22540%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22680%22%20y1%3D%22540%22%20x2%3D%22900%22%20y2%3D%22460%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22900%22%20y1%3D%22460%22%20x2%3D%221000%22%20y2%3D%22280%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22600%22%20y1%3D%22220%22%20x2%3D%22900%22%20y2%3D%22460%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22380%22%20y1%3D%22120%22%20x2%3D%22240%22%20y2%3D%22380%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3C%21--%20Nodes%20--%3E%0A%20%20%3Cg%20filter%3D%22url%28%23softShadow%29%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%2214%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22380%22%20cy%3D%22120%22%20r%3D%2210%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22600%22%20cy%3D%22220%22%20r%3D%2224%22%20fill%3D%22url%28%23deepGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22140%22%20r%3D%2212%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%221000%22%20cy%3D%22280%22%20r%3D%2216%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22240%22%20cy%3D%22380%22%20r%3D%2211%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22450%22%20cy%3D%22450%22%20r%3D%2220%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22680%22%20cy%3D%22540%22%20r%3D%2213%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22900%22%20cy%3D%22460%22%20r%3D%2218%22%20fill%3D%22url%28%23deepGrad%29%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3C%21--%20Central%20glow%20on%20main%20node%20--%3E%0A%20%20%3Ccircle%20cx%3D%22600%22%20cy%3D%22220%22%20r%3D%2240%22%20fill%3D%22none%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%221%22%20opacity%3D%220.4%22/%3E%0A%20%20%3Ccircle%20cx%3D%22600%22%20cy%3D%22220%22%20r%3D%2260%22%20fill%3D%22none%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%221%22%20opacity%3D%220.2%22/%3E%0A%20%20%3C%21--%20Subtle%20dots%20field%20--%3E%0A%20%20%3Cg%20fill%3D%22%236db4e6%22%20opacity%3D%220.4%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22220%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22340%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22380%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22500%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22580%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22620%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22700%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22740%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22780%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22820%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22860%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22900%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22940%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%22980%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%221020%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%221060%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%221100%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%3Ccircle%20cx%3D%221140%22%20cy%3D%22640%22%20r%3D%221.5%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E');"></div>
-  <div class="svc-hero-inner">
-    <span class="svc-eyebrow fade-up">AI Consultancy</span>
-    <h1 class="fade-up-d1">Real <span class="gradient-text">AI strategy</span><br>for real businesses.</h1>
-    <p class="lede fade-up-d2">We help Irish SMEs cut through the AI hype, identify where it actually creates value, and deploy solutions that deliver measurable ROI — not just slideware.</p>
-    <div class="svc-hero-actions fade-up-d3">
-      <a href="index.html#contact" class="btn-primary">Book an AI Discovery Call</a>
-      <a href="index.html" class="btn-secondary">← Back to Overview</a>
-    </div>
+<section class="svc-hero" style="min-height:auto;padding:150px 24px 30px;">
+  <div class="svc-hero-inner" style="text-align:center;margin:0 auto;">
+    <span class="svc-eyebrow fade-up">✦ Free AI Business Audit</span>
+    <h1 class="fade-up-d1" style="margin-left:auto;margin-right:auto;">How healthy is your <span class="gradient-text">online presence?</span></h1>
+    <p class="lede fade-up-d2" style="margin-left:auto;margin-right:auto;">Get an instant, AI-powered audit of your website, SEO, social media and overall online presence — a clear score, a SWOT, and a prioritised plan to improve it. Free, and it takes about a minute.</p>
   </div>
 </section>
 
-<!-- ─── Split 1 ─── -->
-<section class="split-section">
-  <div class="split-container">
-    <div class="split-content fade-up">
-      <span class="label">What we do</span>
-      <h2>From opportunity mapping to production deployment.</h2>
-      <p>Most businesses know AI is important. Far fewer know where to start. We begin with a structured opportunity audit of your operations — finding the workflows where AI generates the clearest financial return, then building a roadmap to get you there.</p>
-      <ul>
-        <li>AI Opportunity Audit across operations, sales, and support</li>
-        <li>Custom GPTs and agents trained on your business data</li>
-        <li>Process automation pipelines built on n8n, Make, and Zapier</li>
-        <li>Vendor-neutral guidance — we recommend what fits, not what we resell</li>
-      </ul>
-    </div>
-    <div class="split-image fade-up-d2" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%20600%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%0A%20%20%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f8fbff%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23eaf3fc%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22blueGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%235ba3e6%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22deepGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233a7cb8%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22glowGrad%22%20cx%3D%220.5%22%20cy%3D%220.5%22%20r%3D%220.5%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220.4%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22softShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20in%3D%22SourceAlpha%22%20stdDeviation%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeOffset%20dx%3D%220%22%20dy%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%22linear%22%20slope%3D%220.18%22/%3E%3C/feComponentTransfer%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22800%22%20height%3D%22600%22%20fill%3D%22url%28%23bgGrad%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%22400%22%20cy%3D%22300%22%20r%3D%22220%22%20fill%3D%22url%28%23glowGrad%29%22%20opacity%3D%220.5%22/%3E%0A%20%20%3C%21--%20Brain/AI%20hex%20shape%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28400%2C300%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%22-120%2C-70%200%2C-140%20120%2C-70%20120%2C70%200%2C140%20-120%2C70%22%20fill%3D%22%23ffffff%22%20stroke%3D%22url%28%23deepGrad%29%22%20stroke-width%3D%223%22%20filter%3D%22url%28%23softShadow%29%22/%3E%0A%20%20%20%20%3Cpolygon%20points%3D%22-80%2C-46%200%2C-93%2080%2C-46%2080%2C46%200%2C93%20-80%2C46%22%20fill%3D%22url%28%23blueGrad%29%22%20opacity%3D%220.15%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%220%22%20y%3D%2214%22%20text-anchor%3D%22middle%22%20font-family%3D%22Sora%2Csans-serif%22%20font-size%3D%2248%22%20font-weight%3D%22700%22%20fill%3D%22%231e5a8e%22%3EAI%3C/text%3E%0A%20%20%3C/g%3E%0A%20%20%3C%21--%20Surrounding%20connection%20points%20--%3E%0A%20%20%3Cg%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%221.5%22%20fill%3D%22%23ffffff%22%20opacity%3D%220.85%22%3E%0A%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22180%22%20x2%3D%22280%22%20y2%3D%22240%22%20stroke-dasharray%3D%223%2C3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22620%22%20y1%3D%22180%22%20x2%3D%22520%22%20y2%3D%22240%22%20stroke-dasharray%3D%223%2C3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22180%22%20y1%3D%22420%22%20x2%3D%22280%22%20y2%3D%22360%22%20stroke-dasharray%3D%223%2C3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22620%22%20y1%3D%22420%22%20x2%3D%22520%22%20y2%3D%22360%22%20stroke-dasharray%3D%223%2C3%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22180%22%20r%3D%228%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22620%22%20cy%3D%22180%22%20r%3D%228%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22420%22%20r%3D%228%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22620%22%20cy%3D%22420%22%20r%3D%228%22%20fill%3D%22url%28%23blueGrad%29%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3C%21--%20Labels%20--%3E%0A%20%20%3Cg%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%233a7cb8%22%20font-weight%3D%22500%22%3E%0A%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22180%22%3EData%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22640%22%20y%3D%22180%22%3EStrategy%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22100%22%20y%3D%22425%22%3EProcess%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22640%22%20y%3D%22425%22%3EOutcomes%3C/text%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E');"></div>
-  </div>
-</section>
+<section style="padding:20px 24px 100px;">
+  <div class="section-container" style="max-width:880px;">
+    <div id="auError" class="au-error" style="display:none;"></div>
 
-<!-- ─── Capabilities ─── -->
-<section class="cap-section">
-  <div class="cap-container">
-    <div class="cap-header fade-up">
-      <h2>What AI looks like in practice.</h2>
-      <p>Four ways we help Irish SMEs deploy AI that delivers measurable value.</p>
-    </div>
-    <div class="cap-grid">
-      <div class="cap-card">
-        <div class="cap-card-body">
-          <span class="ico">🎯</span>
-          <h3>AI Strategy & Roadmap</h3>
-          <p>Structured opportunity audits, ROI modelling, and a clear 12-month plan to deploy AI where it actually moves the needle.</p>
+    <!-- INTRO / FORM -->
+    <div id="auIntro">
+      <div class="au-card">
+        <h2 class="au-card-title">Run your free audit</h2>
+        <p class="au-card-sub">Enter your website and a few details — we'll scan it and email you the results too.</p>
+        <div class="au-form">
+          <div class="au-field au-col2"><label for="au-url">Website address *</label><input id="au-url" type="text" placeholder="yourcompany.ie"></div>
+          <div class="au-field"><label for="au-name">Your name *</label><input id="au-name" type="text" placeholder="Jane Doe"></div>
+          <div class="au-field"><label for="au-email">Work email *</label><input id="au-email" type="email" placeholder="you@company.ie"></div>
+          <div class="au-field"><label for="au-company">Company</label><input id="au-company" type="text" placeholder="Company name"></div>
+          <div class="au-field"><label for="au-phone">Phone (optional)</label><input id="au-phone" type="tel" placeholder="+353 ..."></div>
+          <div class="au-field au-col2 au-consent"><label><input id="au-consent" type="checkbox"> <span>I agree to be contacted by Claritai about my audit results. See our <a href="privacy-policy.html">Privacy Policy</a>.</span></label></div>
         </div>
+        <button class="au-run" onclick="runAudit()">Run my free audit →</button>
       </div>
-      <div class="cap-card">
-        <div class="cap-card-body">
-          <span class="ico">🤖</span>
-          <h3>Custom AI Agents</h3>
-          <p>Purpose-built agents that handle support tickets, qualify leads, summarise meetings, or automate research — trained on your data.</p>
-        </div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-card-body">
-          <span class="ico">⚙️</span>
-          <h3>Process Automation</h3>
-          <p>End-to-end automation of repetitive workflows using n8n, Make, and custom integrations across your existing tools.</p>
-        </div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-card-body">
-          <span class="ico">🧠</span>
-          <h3>Custom GPTs</h3>
-          <p>Internal knowledge assistants that answer staff questions, draft proposals, and onboard new hires using your company documents.</p>
+
+      <div style="margin-top:64px;">
+        <div class="section-label" style="text-align:center;">What we check</div>
+        <h2 class="section-title" style="text-align:center;margin-bottom:40px;">Five pillars of your online presence.</h2>
+        <div class="au-check-grid">
+          <div class="au-check"><div class="ico">🔍</div><h4>SEO &amp; Search</h4><p>Titles, meta, structured data, sitemap and search visibility.</p></div>
+          <div class="au-check"><div class="ico">⚡</div><h4>Performance</h4><p>Speed, mobile-friendliness and technical health.</p></div>
+          <div class="au-check"><div class="ico">✍️</div><h4>Content</h4><p>Messaging clarity, depth and calls to action.</p></div>
+          <div class="au-check"><div class="ico">🌐</div><h4>Online Presence</h4><p>Analytics, discoverability and how you're found.</p></div>
+          <div class="au-check"><div class="ico">💬</div><h4>Social Media</h4><p>Channels linked and how your links appear when shared.</p></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ─── Split 2 ─── -->
-<section class="split-section reverse">
-  <div class="split-container">
-    <div class="split-content fade-up">
-      <span class="label">Our approach</span>
-      <h2>Strategy first. Then build. Then scale.</h2>
-      <p>We don't start with the tools — we start with the problem. Every engagement begins with a 30-minute clarity call, followed by a structured audit. From there, we build proof-of-concepts in weeks, not quarters, so you see value before you commit budget.</p>
-      <ul>
-        <li>Weekly working sessions with your team</li>
-        <li>Transparent pricing — fixed scope, fixed fee</li>
-        <li>LEO Trading Online Voucher and Innovation Voucher guidance</li>
-        <li>Knowledge transfer so your team owns the outcome</li>
-      </ul>
+    <!-- LOADING -->
+    <div id="auLoading" style="display:none;">
+      <div class="au-card au-loading">
+        <div class="au-spinner"></div>
+        <h2 id="auLoadingTitle">Scanning your website…</h2>
+        <p id="auLoadingStep">Fetching your homepage…</p>
+        <div class="au-progress"><div id="auBar" class="au-bar"></div></div>
+      </div>
     </div>
-    <div class="split-image fade-up-d2" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%20600%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%0A%20%20%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f8fbff%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23eaf3fc%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22blueGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%235ba3e6%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22deepGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233a7cb8%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22glowGrad%22%20cx%3D%220.5%22%20cy%3D%220.5%22%20r%3D%220.5%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220.4%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233d8ed1%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22softShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20in%3D%22SourceAlpha%22%20stdDeviation%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeOffset%20dx%3D%220%22%20dy%3D%224%22/%3E%0A%20%20%20%20%20%20%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%22linear%22%20slope%3D%220.18%22/%3E%3C/feComponentTransfer%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%22800%22%20height%3D%22600%22%20fill%3D%22url%28%23bgGrad%29%22/%3E%0A%20%20%3C%21--%20Whiteboard%20--%3E%0A%20%20%3Crect%20x%3D%2280%22%20y%3D%2280%22%20width%3D%22640%22%20height%3D%22380%22%20rx%3D%2214%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%236db4e6%22%20stroke-width%3D%222%22%20filter%3D%22url%28%23softShadow%29%22/%3E%0A%20%20%3C%21--%20Roadmap%20arrow%20flow%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28140%2C180%29%22%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22120%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22url%28%23blueGrad%29%22%20opacity%3D%220.18%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2235%22%20text-anchor%3D%22middle%22%20font-family%3D%22Sora%2Csans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%20fill%3D%22%233a7cb8%22%3EDISCOVER%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2255%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2210%22%20fill%3D%22%233a7cb8%22%3EAudit%20ops%3C/text%3E%0A%20%20%20%20%3Cline%20x1%3D%22120%22%20y1%3D%2240%22%20x2%3D%22155%22%20y2%3D%2240%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Cpolygon%20points%3D%22155%2C35%20165%2C40%20155%2C45%22%20fill%3D%22%233d8ed1%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cg%20transform%3D%22translate%28305%2C180%29%22%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22120%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22url%28%23blueGrad%29%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2235%22%20text-anchor%3D%22middle%22%20font-family%3D%22Sora%2Csans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%20fill%3D%22%233a7cb8%22%3EDESIGN%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2255%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2210%22%20fill%3D%22%233a7cb8%22%3EPOC%20build%3C/text%3E%0A%20%20%20%20%3Cline%20x1%3D%22120%22%20y1%3D%2240%22%20x2%3D%22155%22%20y2%3D%2240%22%20stroke%3D%22%233d8ed1%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Cpolygon%20points%3D%22155%2C35%20165%2C40%20155%2C45%22%20fill%3D%22%233d8ed1%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cg%20transform%3D%22translate%28470%2C180%29%22%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22120%22%20height%3D%2280%22%20rx%3D%2210%22%20fill%3D%22url%28%23deepGrad%29%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2235%22%20text-anchor%3D%22middle%22%20font-family%3D%22Sora%2Csans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%20fill%3D%22%23ffffff%22%3EDEPLOY%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%2255%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2210%22%20fill%3D%22%23ffffff%22%3EScale%20ROI%3C/text%3E%0A%20%20%3C/g%3E%0A%20%20%3C%21--%20Sticky%20notes%20--%3E%0A%20%20%3Cg%3E%0A%20%20%20%20%3Crect%20x%3D%22120%22%20y%3D%22320%22%20width%3D%2290%22%20height%3D%2290%22%20rx%3D%224%22%20fill%3D%22%23fff7d6%22%20stroke%3D%22%23e8d790%22%20stroke-width%3D%221%22%20transform%3D%22rotate%28-3%20165%20365%29%22%20filter%3D%22url%28%23softShadow%29%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%22165%22%20y%3D%22360%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%28-3%20165%20365%29%22%3EGoal%3A%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22165%22%20y%3D%22378%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%28-3%20165%20365%29%22%3E%2B40%25%20throughput%3C/text%3E%0A%20%20%20%20%3Crect%20x%3D%22245%22%20y%3D%22335%22%20width%3D%2290%22%20height%3D%2290%22%20rx%3D%224%22%20fill%3D%22%23d6f0ff%22%20stroke%3D%22%236db4e6%22%20stroke-width%3D%221%22%20transform%3D%22rotate%284%20290%20380%29%22%20filter%3D%22url%28%23softShadow%29%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%22290%22%20y%3D%22375%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%284%20290%20380%29%22%3EAI%20Agent%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22290%22%20y%3D%22393%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%284%20290%20380%29%22%3Ehandles%20tier-1%3C/text%3E%0A%20%20%20%20%3Crect%20x%3D%22380%22%20y%3D%22325%22%20width%3D%2290%22%20height%3D%2290%22%20rx%3D%224%22%20fill%3D%22%23e3d5ff%22%20stroke%3D%22%23bba4e8%22%20stroke-width%3D%221%22%20transform%3D%22rotate%28-2%20425%20370%29%22%20filter%3D%22url%28%23softShadow%29%22/%3E%0A%20%20%20%20%3Ctext%20x%3D%22425%22%20y%3D%22365%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%28-2%20425%20370%29%22%3ECustom%20GPT%3C/text%3E%0A%20%20%20%20%3Ctext%20x%3D%22425%22%20y%3D%22383%22%20text-anchor%3D%22middle%22%20font-family%3D%22DM%20Sans%2Csans-serif%22%20font-size%3D%2211%22%20fill%3D%22%231e5a8e%22%20transform%3D%22rotate%28-2%20425%20370%29%22%3Eon%20company%20KB%3C/text%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E');"></div>
+
+    <!-- RESULTS -->
+    <div id="auResults" style="display:none;"></div>
   </div>
 </section>
 
-<!-- ─── Stats ─── -->
-<section class="svc-stats">
-  <div class="svc-stats-grid">
-      <div class="svc-stat"><span class="num">30+</span><span class="lbl">Irish SMEs advised</span></div>
-      <div class="svc-stat"><span class="num">12 weeks</span><span class="lbl">Average POC to production</span></div>
-      <div class="svc-stat"><span class="num">3.4×</span><span class="lbl">Average ROI on AI projects</span></div>
-      <div class="svc-stat"><span class="num">100%</span><span class="lbl">Vendor-neutral</span></div>
-  </div>
-</section>
+<script>
+// ── Config: paste your deployed audit API URL here to run live scans. ──
+// e.g. "https://claritai-audit-api.onrender.com/api/audit"
+var AUDIT_API_URL = "";
+var DEMO_MODE = !AUDIT_API_URL;
 
-<!-- ─── CTA ─── -->
-<section class="svc-cta">
-  <div class="svc-cta-inner">
-    <h2>Curious where AI could help your business?</h2>
-    <p>Book a free 30-minute clarity call. No pitch deck, no commitment — just an honest conversation about what's worth doing and what isn't.</p>
-    <a href="index.html#contact" class="btn-white">Book a Free Consultation</a>
-  </div>
-</section>
+function auVal(id){ var e=document.getElementById(id); return e ? e.value.trim() : ""; }
+function auShowErr(m){ var e=document.getElementById('auError'); e.textContent=m; e.style.display='block'; e.scrollIntoView({behavior:'smooth',block:'center'}); }
+function auHideErr(){ document.getElementById('auError').style.display='none'; }
+
+var auTimer=null;
+function auStartLoading(){
+  document.getElementById('auIntro').style.display='none';
+  document.getElementById('auResults').style.display='none';
+  document.getElementById('auLoading').style.display='block';
+  var steps=['Fetching your homepage…','Checking SEO signals…','Measuring performance…','Reviewing content & messaging…','Scanning social profiles…','Writing your report with AI…'];
+  var i=0, pct=6;
+  var stepEl=document.getElementById('auLoadingStep'), bar=document.getElementById('auBar');
+  bar.style.width='6%';
+  auTimer=setInterval(function(){
+    i=Math.min(i+1, steps.length-1);
+    stepEl.textContent=steps[i];
+    pct=Math.min(pct+15, 92);
+    bar.style.width=pct+'%';
+  }, 900);
+}
+function auFinishLoading(cb){
+  if(auTimer){clearInterval(auTimer);auTimer=null;}
+  var bar=document.getElementById('auBar'); bar.style.width='100%';
+  setTimeout(function(){ document.getElementById('auLoading').style.display='none'; cb(); }, 450);
+}
+function auHideLoading(){
+  if(auTimer){clearInterval(auTimer);auTimer=null;}
+  document.getElementById('auLoading').style.display='none';
+  document.getElementById('auIntro').style.display='block';
+}
+
+function auColor(s){ return s>=70 ? '#3fa06a' : (s>=55 ? '#f5a623' : '#e0574d'); }
+
+function auGauge(score, color){
+  var r=64, c=2*Math.PI*r, off=c*(1-score/100);
+  return '<svg width="170" height="170" viewBox="0 0 160 160" style="flex:0 0 auto;">'
+    +'<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="#eef2f7" stroke-width="14"/>'
+    +'<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="14" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+off+'" transform="rotate(-90 80 80)"/>'
+    +'<text x="80" y="72" text-anchor="middle" font-family="Sora,sans-serif" font-size="42" font-weight="700" fill="'+color+'">'+score+'</text>'
+    +'<text x="80" y="98" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#7bb4de">out of 100</text>'
+    +'</svg>';
+}
+
+function auEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderResults(rep){
+  var oc=auColor(rep.overall.score);
+  var html='';
+  html+='<div class="au-card">';
+  html+='<div class="au-overall">'+auGauge(rep.overall.score, oc)
+      +'<div class="au-overall-text"><div class="k">Your audit · '+auEsc(rep.url)+'</div>'
+      +'<h2>Grade '+auEsc(rep.overall.grade)+' — '+auEsc(rep.overall.label)+'</h2>'
+      +'<p>'+auEsc(rep.summary)+'</p></div></div>';
+
+  html+='<div class="au-cats">';
+  (rep.categories||[]).forEach(function(cat){
+    var col=auColor(cat.score);
+    html+='<div class="au-cat"><div><div class="au-cat-head">'+auEsc(cat.label)+'</div><div class="au-cat-score">'+cat.score+'/100</div></div>'
+        +'<div><div class="au-track"><div class="au-fill" style="width:'+cat.score+'%;background:'+col+';"></div></div><p>'+auEsc(cat.note)+'</p></div></div>';
+  });
+  html+='</div>';
+
+  var s=rep.swot||{};
+  function lis(a){ return (a||[]).map(function(x){return '<li>'+auEsc(x)+'</li>';}).join(''); }
+  html+='<div class="au-swot">'
+     +'<div class="au-swot-card au-s"><h3>Strengths</h3><ul>'+lis(s.strengths)+'</ul></div>'
+     +'<div class="au-swot-card au-w"><h3>Weaknesses</h3><ul>'+lis(s.weaknesses)+'</ul></div>'
+     +'<div class="au-swot-card au-o"><h3>Opportunities</h3><ul>'+lis(s.opportunities)+'</ul></div>'
+     +'<div class="au-swot-card au-t"><h3>Threats</h3><ul>'+lis(s.threats)+'</ul></div>'
+     +'</div>';
+
+  if(rep.recommendations && rep.recommendations.length){
+    html+='<h2 class="section-title" style="font-size:24px;margin:52px 0 6px;">Your priority action plan</h2>';
+    html+='<div class="au-recs">';
+    rep.recommendations.forEach(function(r,idx){
+      var imp=(r.impact==='High'||r.impact==='Medium'||r.impact==='Low')?r.impact:'Medium';
+      html+='<div class="au-rec"><div class="n">'+(idx+1)+'</div><div><h4>'+auEsc(r.title)
+          +' <span class="au-badge '+imp+'">'+imp+' impact</span>'
+          +(r.category?' <span class="au-cat-tag">'+auEsc(r.category)+'</span>':'')
+          +'</h4><p>'+auEsc(r.detail)+'</p></div></div>';
+    });
+    html+='</div>';
+  }
+
+  html+='<div class="au-cta"><h2>Want Claritai to fix this for you?</h2>'
+      +'<p>Book a free 30-minute call and we\'ll walk through your results and the fastest wins for your business.</p>'
+      +'<a href="#" onclick="event.preventDefault();openConsult()">Book a free call</a></div>';
+
+  html+='<button class="au-again" onclick="resetAudit()">← Run another audit</button>';
+  if(rep.meta && (rep.meta.mock || DEMO_MODE)){
+    html+='<p class="au-note">Demo preview. Connect the audit API (set AUDIT_API_URL in audit.html) to run live scans.</p>';
+  } else {
+    html+='<p class="au-note">A copy of these results has been sent to your inbox.</p>';
+  }
+  html+='</div>';
+
+  var box=document.getElementById('auResults');
+  box.innerHTML=html;
+  box.style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function resetAudit(){
+  document.getElementById('auResults').style.display='none';
+  document.getElementById('auIntro').style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function auDemoReport(url, company){
+  return new Promise(function(resolve){
+    setTimeout(function(){
+      resolve({
+        ok:true, url:url||'https://example.ie', company:company||null,
+        overall:{score:62, grade:'C', label:'Fair'},
+        categories:[
+          {key:'seo',label:'SEO & Search Visibility',score:58,note:'Titles and headings are in place, but structured data and a sitemap are missing.'},
+          {key:'performance',label:'Performance & Technical',score:71,note:'Loads reasonably on mobile; a few render-blocking assets slow first paint.'},
+          {key:'content',label:'Content & Messaging',score:55,note:'Homepage messaging is thin and the value proposition is not immediately clear.'},
+          {key:'presence',label:'Online Presence',score:66,note:'Analytics is installed, but structured data and a sitemap would aid discovery.'},
+          {key:'social',label:'Social Media',score:48,note:'Only one social channel is linked and Open Graph tags are incomplete.'}
+        ],
+        swot:{
+          strengths:['Served securely over HTTPS with a mobile-friendly layout.','Web analytics is installed to measure traffic.','Clear, single H1 on the homepage.'],
+          weaknesses:['No structured data or XML sitemap for search engines.','Thin homepage content and an unclear value proposition.','Limited social media presence linked from the site.'],
+          opportunities:['Rank for the local, high-intent terms your customers search for.','Convert more visitors with sharper messaging and calls to action.','Automate content and lead follow-up with AI.'],
+          threats:['Competitors with stronger SEO are capturing your search traffic.','Weak measurement makes marketing ROI hard to prove.']
+        },
+        recommendations:[
+          {title:'Add structured data and an XML sitemap',detail:'Implement schema markup and submit a sitemap so search engines index and enrich your listings.',impact:'High',category:'SEO'},
+          {title:'Sharpen the homepage value proposition',detail:'Lead with a clear statement of what you do and for whom, plus a single strong call to action.',impact:'High',category:'Content'},
+          {title:'Strengthen social profiles and Open Graph tags',detail:'Link all active channels and add OG/Twitter tags so shared links look professional.',impact:'Medium',category:'Social'},
+          {title:'Optimise mobile performance',detail:'Defer render-blocking scripts and compress images to improve first paint on mobile.',impact:'Medium',category:'Performance'},
+          {title:'Deploy an AI enquiry assistant',detail:'A chat assistant trained on your business can qualify leads and answer FAQs 24/7.',impact:'Medium',category:'AI & Automation'}
+        ],
+        summary:'Your online presence has a solid, secure foundation with clear, fixable gaps in SEO, messaging and social. Closing these would meaningfully lift both visibility and enquiries — the kind of work Claritai delivers for Irish SMEs.',
+        meta:{mock:true}
+      });
+    }, 3600);
+  });
+}
+
+function runAudit(){
+  var url=auVal('au-url'), name=auVal('au-name'), email=auVal('au-email'),
+      company=auVal('au-company'), phone=auVal('au-phone'),
+      consent=document.getElementById('au-consent').checked;
+  auHideErr();
+  if(!url){return auShowErr('Please enter your website address.');}
+  if(!name){return auShowErr('Please enter your name.');}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){return auShowErr('Please enter a valid work email.');}
+  if(!consent){return auShowErr('Please tick the consent box so we can send you the results.');}
+  auStartLoading();
+  var done=function(rep){ auFinishLoading(function(){ renderResults(rep); }); };
+  if(DEMO_MODE){
+    auDemoReport(url, company).then(done);
+    return;
+  }
+  fetch(AUDIT_API_URL, {method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({url:url,name:name,email:email,company:company,phone:phone,consent:consent})})
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, body:j}; }); })
+    .then(function(res){
+      if(!res.ok || !res.body.ok){ throw new Error((res.body && res.body.error) || 'The audit could not be completed.'); }
+      done(res.body);
+    })
+    .catch(function(e){ auHideLoading(); auShowErr(e.message || 'Something went wrong. Please try again.'); });
+}
+</script>
 
 <!-- ─── Footer ─── -->
 <footer>

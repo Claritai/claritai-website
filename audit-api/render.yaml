@@ -1,0 +1,31 @@
+# Render blueprint for the Claritai Audit API.
+# In Render: New +  →  Blueprint  →  point at this repo. Set the secret env vars
+# (marked sync:false) in the dashboard after the service is created.
+services:
+  - type: web
+    name: claritai-audit-api
+    runtime: node
+    rootDir: audit-api
+    plan: starter
+    buildCommand: npm install
+    startCommand: node index.js
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOWED_ORIGIN
+        value: https://claritai.ie,https://www.claritai.ie
+      - key: AZURE_OPENAI_API_VERSION
+        value: 2024-06-01
+      - key: AZURE_OPENAI_DEPLOYMENT
+        value: gpt-4o-mini
+      - key: RATE_LIMIT
+        value: "6"
+      - key: MOCK
+        value: "0"
+      - key: PAGESPEED_API_KEY
+        sync: false
+      - key: AZURE_OPENAI_ENDPOINT
+        sync: false
+      - key: AZURE_OPENAI_KEY
+        sync: false
+      - key: HUBSPOT_TOKEN
+        sync: false

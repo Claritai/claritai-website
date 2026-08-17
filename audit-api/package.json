@@ -1,0 +1,19 @@
+{
+  "name": "claritai-audit-api",
+  "version": "1.0.0",
+  "description": "Claritai AI Business Audit API — crawls a site, scores it, writes a SWOT with Azure OpenAI, and pushes the lead to HubSpot.",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
