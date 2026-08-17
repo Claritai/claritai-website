@@ -1,0 +1,16 @@
+# AWS App Runner config for the Claritai Audit API.
+# When creating the App Runner service, set "Source directory" to: audit-api
+# App Runner then reads this file from that folder.
+# Secrets (Azure key, HubSpot token, etc.) are set in the App Runner console
+# under Environment variables — do NOT put them here.
+version: 1.0
+runtime: nodejs22
+build:
+  commands:
+    build:
+      - npm install
+run:
+  command: node index.js
+  network:
+    port: 8080
+    env: PORT
