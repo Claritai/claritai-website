@@ -1955,6 +1955,8 @@ function runAudit(){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){return auShowErr('Please enter a valid work email.');}
   if(!consent){return auShowErr('Please tick the consent box so we can send you the results.');}
   auStartLoading();
+  // Send the lead to Formspree directly from the browser (reliable, same as the other forms).
+  try{ fetch('https://formspree.io/f/mqeowkly',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:name,email:email,phone:phone,company:company,website:url,source:'AI Business Audit'})}); }catch(e){}
   var done=function(rep){ auFinishLoading(function(){ renderResults(rep); }); };
   if(DEMO_MODE){
     auDemoReport(url, company).then(done);
