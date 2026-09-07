@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Claritai Desk</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* Claritai Desk — palette and type follow claritai.ie so the Desk reads as
+   part of the same product, with a dark counterpart for late shifts. */
+:root{
+  --font-display:'Sora',system-ui,sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --ground:#f1f7fc;
+  --surface:#ffffff;
+  --surface-2:#eef5fb;
+  --surface-3:#e0edf8;
+  --line:rgba(91,163,230,.20);
+  --line-strong:rgba(91,163,230,.38);
+  --ink:#1f2c3a;
+  --ink-2:#5a6b7d;
+  --ink-3:#8ba4bb;
+  --accent:#3d8ed1;
+  --accent-hover:#2e7cba;
+  --accent-ink:#ffffff;
+  --accent-soft:#e4f0fb;
+  --ok:#127954;
+  --ok-soft:#d9f0e7;
+  --warn:#8d5c05;
+  --warn-soft:#f8ecd4;
+  --crit:#ab2f29;
+  --crit-soft:#fadfdd;
+  --shadow-sm:0 1px 2px rgba(46,124,186,.06);
+  --shadow-md:0 1px 2px rgba(46,124,186,.06),0 10px 28px -14px rgba(46,124,186,.32);
+  --shadow-lg:0 2px 6px rgba(46,124,186,.10),0 28px 60px -20px rgba(46,124,186,.40);
+  --r-sm:6px; --r-md:10px; --r-lg:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0c141d;
+    --surface:#131f2a;
+    --surface-2:#1a2733;
+    --surface-3:#223340;
+    --line:rgba(123,180,222,.16);
+    --line-strong:rgba(123,180,222,.32);
+    --ink:#e6eef6;
+    --ink-2:#9db3c6;
+    --ink-3:#6f8698;
+    --accent:#6db4e6;
+    --accent-hover:#8cc6ef;
+    --accent-ink:#0c141d;
+    --accent-soft:#16293a;
+    --ok:#4fc394;
+    --ok-soft:#0f2e26;
+    --warn:#e0a93f;
+    --warn-soft:#332810;
+    --crit:#f0817a;
+    --crit-soft:#3a1d1e;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.45);
+    --shadow-md:0 1px 2px rgba(0,0,0,.5),0 10px 28px -14px rgba(0,0,0,.7);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.5),0 28px 60px -20px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0c141d;
+  --surface:#131f2a;
+  --surface-2:#1a2733;
+  --surface-3:#223340;
+  --line:rgba(123,180,222,.16);
+  --line-strong:rgba(123,180,222,.32);
+  --ink:#e6eef6;
+  --ink-2:#9db3c6;
+  --ink-3:#6f8698;
+  --accent:#6db4e6;
+  --accent-hover:#8cc6ef;
+  --accent-ink:#0c141d;
+  --accent-soft:#16293a;
+  --ok:#4fc394;
+  --ok-soft:#0f2e26;
+  --warn:#e0a93f;
+  --warn-soft:#332810;
+  --crit:#f0817a;
+  --crit-soft:#3a1d1e;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.45);
+  --shadow-md:0 1px 2px rgba(0,0,0,.5),0 10px 28px -14px rgba(0,0,0,.7);
+  --shadow-lg:0 2px 6px rgba(0,0,0,.5),0 28px 60px -20px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0;font-family:var(--font-display);font-weight:600;text-wrap:balance;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:224px minmax(0,1fr);height:100dvh;overflow:hidden}
+
+.rail{
+  background:var(--surface);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:2px;padding:18px 12px 12px;overflow:auto;
+}
+.brand{display:flex;align-items:baseline;gap:7px;padding:0 8px 18px;text-decoration:none}
+.brand b{font-family:var(--font-display);font-weight:600;font-size:20px;letter-spacing:-.5px;color:#2e7cba}
+.brand b i{font-style:normal;font-weight:700;background:linear-gradient(135deg,#3d8ed1 0%,#5ba3e6 50%,#6db4e6 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+:root[data-theme="dark"] .brand b{color:#8cc6ef}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand b{color:#8cc6ef}}
+.brand span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);font-weight:600}
+.navbtn{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  padding:8px 10px;border:0;background:transparent;border-radius:var(--r-md);
+  color:var(--ink-2);font-weight:500;cursor:pointer;
+}
+.navbtn:hover{background:var(--surface-2);color:var(--ink)}
+.navbtn[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.navbtn .ic{width:16px;flex:none;opacity:.85}
+.navbtn .tag{
+  margin-left:auto;font-size:11px;font-variant-numeric:tabular-nums;
+  color:var(--ink-3);background:var(--surface-2);border-radius:999px;padding:1px 7px;
+}
+.navbtn[aria-current="true"] .tag{background:var(--surface);color:var(--accent)}
+.navbtn .tag.alert{background:var(--crit-soft);color:var(--crit);font-weight:700}
+.rail hr{border:0;border-top:1px solid var(--line);margin:12px 4px}
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:14px}
+.mechip{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r-md);
+  border:1px solid var(--line);background:var(--surface-2);cursor:pointer;text-align:left;width:100%;
+}
+.footrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px}
+.signout{font-size:11px;color:var(--ink-3);text-decoration:none;white-space:nowrap}
+.signout:hover{color:var(--accent);text-decoration:underline}
+.avatar{
+  width:24px;height:24px;flex:none;border-radius:7px;display:grid;place-items:center;
+  background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:700;letter-spacing:.02em;
+}
+.mechip .who{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.mechip .who>span:last-child{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mechip .sub{font-size:9.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.09em;font-weight:600}
+.conn{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink-3);padding:0 4px}
+.conn .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
+.conn.off .dot{background:var(--warn)}
+
+main{overflow:auto;display:flex;flex-direction:column;min-width:0}
+.topbar{
+  position:sticky;top:0;z-index:5;background:var(--ground);
+  border-bottom:1px solid var(--line);padding:20px 26px 0;
+}
+.topbar .row1{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.topbar h1{font-size:22px}
+.topbar .lede{color:var(--ink-2);font-size:13px;margin-top:3px;max-width:62ch}
+.topbar .acts{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.metastrip{display:flex;gap:0;flex-wrap:wrap;padding:14px 0 0;margin-top:14px;border-top:1px solid var(--line)}
+.metastrip .m{padding:0 20px 14px;border-right:1px solid var(--line)}
+.metastrip .m:first-child{padding-left:0}
+.metastrip .m:last-child{border-right:0}
+.metastrip .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.11em;color:var(--ink-3);font-weight:600}
+.metastrip .v{font-family:var(--font-display);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.metastrip .v.warn{color:var(--warn)} .metastrip .v.crit{color:var(--crit)} .metastrip .v.ok{color:var(--ok)}
+.body{padding:22px 26px 60px;flex:1;min-width:0}
+
+/* ---------- controls ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--r-md);
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+  font-weight:500;font-size:13px;cursor:pointer;white-space:nowrap;
+}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn.danger{color:var(--crit);border-color:var(--line)}
+.btn.danger:hover{background:var(--crit-soft)}
+input[type=text],input[type=number],input[type=date],input[type=datetime-local],input[type=url],input[type=email],select,textarea{
+  width:100%;padding:7px 10px;border-radius:var(--r-sm);border:1px solid var(--line-strong);
+  background:var(--surface);color:var(--ink);
+}
+textarea{resize:vertical;min-height:70px;line-height:1.55}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+label.f{display:block}
+label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ---------- generic surfaces ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.panel>h3{
+  font-size:12px;text-transform:uppercase;letter-spacing:.11em;color:var(--ink-2);
+  padding:14px 16px 0;font-family:var(--font-body);font-weight:700;
+}
+.panel .pbody{padding:12px 16px 16px}
+.empty{color:var(--ink-3);font-size:13px;padding:18px 2px;text-align:center}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;
+  font-size:11px;font-weight:600;letter-spacing:.01em;background:var(--surface-2);color:var(--ink-2);
+}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.mono{font-family:var(--font-mono);font-size:12px;font-variant-numeric:tabular-nums}
+
+/* ---------- overview ---------- */
+.ovgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:16px}
+.barrow{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:10px;align-items:center;padding:5px 0}
+.barrow .bl{font-size:12.5px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bartrack{display:block;height:12px;background:var(--surface-2);border-radius:0 4px 4px 0;position:relative}
+.barfill{display:block;height:12px;background:var(--accent);border-radius:0 4px 4px 0;min-width:3px}
+.barrow .bv{font-family:var(--font-mono);font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tline{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.tline:last-child{border-bottom:0}
+.tline .when{
+  font-family:var(--font-mono);font-size:11px;color:var(--ink-3);width:66px;flex:none;
+  padding-top:2px;font-variant-numeric:tabular-nums;
+}
+.tline .what{min-width:0;flex:1}
+.tline .what b{font-weight:600;font-size:13px;display:block}
+.tline .what small{color:var(--ink-3);font-size:11.5px}
+
+/* ---------- pipeline board ---------- */
+.board{display:flex;gap:12px;overflow-x:auto;padding-bottom:14px;align-items:flex-start}
+.col{
+  flex:none;width:252px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px;
+}
+.col.over{border-color:var(--accent);background:var(--accent-soft)}
+.col>header{display:flex;align-items:center;gap:7px;padding:0 3px}
+.col>header b{font-size:12px;font-weight:700;letter-spacing:.02em}
+.col>header .n{margin-left:auto;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.col>header .stripe{width:3px;height:13px;border-radius:2px;background:var(--accent)}
+.col.won>header .stripe{background:var(--ok)} .col.lost>header .stripe{background:var(--ink-3)}
+.col .sum{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);padding:0 3px}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:10px 11px;cursor:grab;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:6px;
+}
+.card:hover{border-color:var(--line-strong)}
+.card.dragging{opacity:.45}
+.card .co{font-weight:600;font-size:13.5px;line-height:1.3}
+.card .pn{font-size:12px;color:var(--ink-2)}
+.card .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:1px}
+.card .val{font-family:var(--font-mono);font-size:12px;font-weight:600}
+.card .next{
+  font-size:11.5px;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:6px;
+  display:flex;gap:6px;align-items:baseline;
+}
+.card .next.due{color:var(--crit)}
+
+/* ---------- lists ---------- */
+.grouphead{
+  display:flex;align-items:center;gap:9px;margin:20px 0 8px;
+  font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--ink-2);
+}
+.grouphead:first-child{margin-top:4px}
+.grouphead .n{color:var(--ink-3);font-weight:600;letter-spacing:0}
+.grouphead .rule{flex:1;height:1px;background:var(--line)}
+.grouphead.crit{color:var(--crit)}
+.rows{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.row{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--surface-2)}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:500;font-size:13.5px}
+.row .s{font-size:11.5px;color:var(--ink-3);display:flex;gap:8px;flex-wrap:wrap;margin-top:1px}
+.row.done .t{text-decoration:line-through;color:var(--ink-3);font-weight:400}
+.check{
+  width:17px;height:17px;flex:none;border-radius:5px;border:1.5px solid var(--line-strong);
+  background:var(--surface);cursor:pointer;display:grid;place-items:center;padding:0;
+}
+.check:hover{border-color:var(--accent)}
+.check[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.check svg{opacity:0;width:11px;height:11px}
+.check[aria-pressed="true"] svg{opacity:1}
+.quickadd{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:9px 12px}
+.quickadd input[type=text]{border:0;padding:4px 0;background:transparent}
+.quickadd input[type=text]:focus{outline:none}
+.quickadd select,.quickadd input[type=date]{width:auto;border-color:var(--line);background:var(--surface-2);font-size:12.5px}
+
+/* ---------- sites ---------- */
+.sitegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:14px}
+.site{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);
+}
+.site .sev{height:3px;background:var(--ok)}
+.site.warn .sev{background:var(--warn)} .site.crit .sev{background:var(--crit)} .site.paused .sev{background:var(--ink-3)}
+.site .inner{padding:13px 15px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
+.site .h{display:flex;align-items:flex-start;gap:9px}
+.site .h b{font-size:14px;font-weight:600;line-height:1.25}
+.site .h .cl{font-size:11.5px;color:var(--ink-3)}
+.site a.url{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.site a.url:hover{text-decoration:underline}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:11.5px}
+.kv dt{color:var(--ink-3)} .kv dd{margin:0;font-family:var(--font-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.kv dd.crit{color:var(--crit)} .kv dd.warn{color:var(--warn)}
+.issues{display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--line);padding-top:9px}
+.issue{display:flex;gap:7px;align-items:flex-start;font-size:12px}
+.issue .b{width:5px;height:5px;border-radius:50%;margin-top:6px;flex:none;background:var(--warn)}
+.issue.crit .b{background:var(--crit)}
+.site .foot{display:flex;gap:6px;margin-top:auto;padding-top:4px}
+
+/* ---------- social ---------- */
+.socgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.chline{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.chline:last-child{border-bottom:0}
+.chan{
+  width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;
+  font-size:10px;font-weight:700;background:var(--surface-3);color:var(--ink-2);
+}
+.chline .g{flex:1;min-width:0}
+.chline .g b{font-size:13px;font-weight:600;display:block}
+.chline .g small{font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
+
+/* ---------- drawer / modal ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,13,20,.42);z-index:40;backdrop-filter:blur(2px)}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(460px,100vw);z-index:41;
+  background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow-lg);
+  display:flex;flex-direction:column;
+}
+.drawer header{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.drawer header h2{font-size:16px;flex:1;min-width:0}
+.drawer .dbody{padding:16px 18px 26px;overflow:auto;display:flex;flex-direction:column;gap:14px;flex:1}
+.drawer footer{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px}
+.modal{
+  position:fixed;z-index:41;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(460px,calc(100vw - 32px));max-height:86dvh;overflow:auto;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);
+}
+.modal .mb{padding:18px;display:flex;flex-direction:column;gap:13px}
+.notes{display:flex;flex-direction:column;gap:0}
+.note{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.note:last-child{border-bottom:0}
+.note .nm{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);margin-bottom:2px}
+.banner{
+  display:flex;align-items:center;gap:11px;padding:10px 14px;margin-bottom:16px;
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r-md);
+  background:var(--surface);font-size:12.5px;color:var(--ink-2);
+}
+.banner b{color:var(--ink)}
+.banner .btn{margin-left:auto}
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;
+  background:var(--ink);color:var(--ground);padding:9px 16px;border-radius:999px;
+  font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);
+}
+[hidden]{display:none!important}
+
+@media (max-width:900px){
+  .ovgrid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100dvh}
+  .rail{flex-direction:row;align-items:center;gap:6px;border-right:0;border-bottom:1px solid var(--line);padding:10px 12px;overflow-x:auto}
+  .brand{padding:0 10px 0 2px}
+  .navbtn{width:auto;white-space:nowrap}
+  .navbtn .tag{margin-left:4px}
+  .rail hr{display:none}
+  .rail-foot{margin:0 0 0 auto;flex-direction:row;align-items:center;padding:0}
+  .mechip{width:auto}.mechip .sub{display:none}
+  .conn span:not(.dot){display:none}
+  .topbar{padding:16px 16px 0}
+  .body{padding:16px 16px 50px}
+  .grid2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail">
+    <a class="brand" href="https://claritai.ie"><b>clarit<i>ai</i></b><span>Desk</span></a>
+    <button class="navbtn" data-view="overview"><span class="ic">◈</span>Overview</button>
+    <button class="navbtn" data-view="pipeline"><span class="ic">▤</span>Pipeline<span class="tag" data-tag="pipeline"></span></button>
+    <button class="navbtn" data-view="tasks"><span class="ic">✓</span>To-dos<span class="tag" data-tag="tasks"></span></button>
+    <button class="navbtn" data-view="meetings"><span class="ic">◷</span>Meetings<span class="tag" data-tag="meetings"></span></button>
+    <hr>
+    <button class="navbtn" data-view="sites"><span class="ic">◉</span>Live sites<span class="tag" data-tag="sites"></span></button>
+    <button class="navbtn" data-view="social"><span class="ic">◎</span>Social<span class="tag" data-tag="social"></span></button>
+    <div class="rail-foot">
+      <div class="mechip" id="mechip">
+        <span class="avatar" id="meAv">–</span>
+        <span class="who"><span class="sub">Signed in</span><span id="meName">…</span></span>
+      </div>
+      <div class="footrow">
+        <div class="conn" id="conn"><span class="dot"></span><span>Connecting…</span></div>
+        <a class="signout" href="/auth/logout">Sign out</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="topbar">
+      <div class="row1">
+        <div>
+          <h1 id="vTitle">Overview</h1>
+          <div class="lede" id="vLede"></div>
+        </div>
+        <div class="acts" id="vActs"></div>
+      </div>
+      <div class="metastrip" id="vMeta"></div>
+    </div>
+    <div class="body" id="content"></div>
+  </main>
+</div>
+
+<div id="layer"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ constants ============ */
+const STAGES = [
+  {id:"lead",        label:"New lead",      open:true},
+  {id:"contacted",   label:"Contacted",     open:true},
+  {id:"discovery",   label:"Discovery call",open:true},
+  {id:"proposal",    label:"Proposal sent", open:true},
+  {id:"negotiation", label:"Negotiation",   open:true},
+  {id:"won",         label:"Won",           open:false},
+  {id:"lost",        label:"Lost",          open:false}
+];
+const STAGE_LABEL = Object.fromEntries(STAGES.map(s=>[s.id,s.label]));
+const SITE_STATUS = {
+  ok:{label:"Healthy",cls:"ok"}, warn:{label:"Needs a look",cls:"warn"},
+  crit:{label:"Down / urgent",cls:"crit"}, paused:{label:"Paused",cls:"paused"}
+};
+const SOCIAL_STATUS = {
+  active:{label:"On schedule",cls:"ok"}, behind:{label:"Behind",cls:"warn"},
+  paused:{label:"Paused",cls:""}, setup:{label:"Setting up",cls:"accent"}
+};
+const CHANNELS = ["Instagram","Facebook","LinkedIn","TikTok","X","YouTube","Google Business","Newsletter"];
+const COLLS = ["deals","tasks","meetings","sites","social"];
+
+/* ============ state ============ */
+const data = {deals:[],tasks:[],meetings:[],sites:[],social:[]};
+let team = [];              // staff who have signed in, from the server
+let view = "overview";
+let me = "";                // display name of the signed-in user
+let meEmail = "";
+let overlay = null;
+let dirty = 0;              // in-flight writes; pause polling while they settle
+
+/* ============ helpers ============ */
+const $ = s=>document.querySelector(s);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const money = n => (Number(n)||0).toLocaleString("en-IE",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+const initials = n => String(n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+
+function todayISO(){ const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); }
+function dayDiff(iso){
+  if(!iso) return null;
+  const a = new Date(iso.slice(0,10)+"T00:00:00");
+  const b = new Date(todayISO()+"T00:00:00");
+  return Math.round((a-b)/864e5);
+}
+function fmtDate(iso){
+  if(!iso) return "—";
+  const d = new Date(iso.length<=10 ? iso+"T00:00:00" : iso);
+  if(isNaN(d)) return "—";
+  return d.toLocaleDateString("en-IE",{day:"numeric",month:"short"});
+}
+function fmtWhen(iso){
+  if(!iso) return "—";
+  const d = new Date(iso); if(isNaN(d)) return "—";
+  return d.toLocaleDateString("en-IE",{weekday:"short",day:"numeric",month:"short"})+" · "+
+         d.toLocaleTimeString("en-IE",{hour:"numeric",minute:"2-digit"});
+}
+function relDay(iso){
+  const n = dayDiff(iso);
+  if(n===null) return "";
+  if(n===0) return "today"; if(n===1) return "tomorrow"; if(n===-1) return "yesterday";
+  return n<0 ? Math.abs(n)+"d overdue" : "in "+n+"d";
+}
+function ago(iso){
+  const n = dayDiff(iso);
+  if(n===null) return "";
+  if(n===0) return "today"; if(n===-1) return "yesterday"; if(n===1) return "tomorrow";
+  return n<0 ? Math.abs(n)+"d ago" : "in "+n+"d";
+}
+function agoTime(iso){
+  if(!iso) return "";
+  const t = new Date(iso); if(isNaN(t)) return "";
+  const mins = Math.round((Date.now()-t.getTime())/6e4);
+  if(mins < 2) return "just now";
+  if(mins < 60) return mins+"m ago";
+  const hrs = Math.round(mins/60);
+  if(hrs < 36) return hrs+"h ago";
+  return Math.round(hrs/24)+"d ago";
+}
+function toast(msg){
+  const t = document.createElement("div"); t.className="toast"; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2200);
+}
+
+/* ============ persistence ============ */
+/* Writes go straight to the server and are also applied locally so the screen
+   never lags behind the click. Polling picks up what teammates change. */
+function setConn(state, label){
+  const c = $("#conn");
+  if(!c) return;
+  c.classList.toggle("off", state !== "ok");
+  c.lastElementChild.textContent = label;
+}
+
+async function api(method, path, body){
+  const res = await fetch(path, {
+    method,
+    headers: body ? {"Content-Type":"application/json"} : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: "same-origin"
+  });
+  if(res.status === 401){ location.href = "/login?next=" + encodeURIComponent(location.pathname); throw new Error("signed out"); }
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  return res.status === 204 ? null : res.json();
+}
+
+async function save(coll, rec){
+  const i = data[coll].findIndex(x=>x.id===rec.id);
+  if(i>=0) data[coll][i]=rec; else data[coll].push(rec);
+  render();
+  dirty++;
+  try{
+    await api("PUT", "/api/"+coll+"/"+encodeURIComponent(rec.id), rec);
+    setConn("ok","Saved");
+    setTimeout(()=>setConn("ok","Shared with your team"), 1200);
+  }catch(e){
+    setConn("off","Not saved — check your connection");
+    toast("Couldn't save that. Your connection may have dropped.");
+  }finally{ dirty--; }
+}
+
+async function remove(coll, id){
+  const prev = data[coll].slice();
+  data[coll] = data[coll].filter(x=>x.id!==id);
+  render();
+  dirty++;
+  try{
+    await api("DELETE", "/api/"+coll+"/"+encodeURIComponent(id));
+  }catch(e){
+    data[coll] = prev; render();
+    toast("Couldn't delete that.");
+  }finally{ dirty--; }
+}
+
+function byId(coll,id){ return data[coll].find(x=>x.id===id); }
+
+/* ============ derived ============ */
+const openDeals   = ()=> data.deals.filter(d=>d.stage!=="won" && d.stage!=="lost");
+const openTasks   = ()=> data.tasks.filter(t=>!t.done);
+const dueTasks    = ()=> openTasks().filter(t=>t.due && dayDiff(t.due)<=0);
+const upcoming    = ()=> data.meetings.filter(m=>m.start && new Date(m.start)>=new Date(Date.now()-36e5)).sort((a,b)=>a.start.localeCompare(b.start));
+const siteAlerts  = ()=> data.sites.filter(s=>s.status==="warn"||s.status==="crit");
+const socialBehind= ()=> data.social.filter(s=>s.status==="behind");
+const hasSample   = ()=> COLLS.some(c=>data[c].some(r=>r.sample));
+
+/* ============ nav ============ */
+document.querySelectorAll(".navbtn").forEach(b=>{
+  b.addEventListener("click",()=>{ view=b.dataset.view; closeOverlay(); render(); $("main").scrollTop=0; });
+});
+
+/* ============ render ============ */
+function render(){
+  document.querySelectorAll(".navbtn").forEach(b=>b.setAttribute("aria-current", String(b.dataset.view===view)));
+  setTag("pipeline", openDeals().length);
+  setTag("tasks", openTasks().length, dueTasks().length>0);
+  setTag("meetings", upcoming().length);
+  setTag("sites", siteAlerts().length || data.sites.length, siteAlerts().length>0);
+  setTag("social", socialBehind().length || data.social.length, socialBehind().length>0);
+
+  const V = VIEWS[view];
+  $("#vTitle").textContent = V.title;
+  $("#vLede").textContent = V.lede;
+  $("#vActs").innerHTML = V.actions();
+  $("#vMeta").innerHTML = V.meta();
+  $("#content").innerHTML = (hasSample()? sampleBanner() : "") + V.body();
+  V.after && V.after();
+}
+function setTag(name,n,alert){
+  const el = document.querySelector('[data-tag="'+name+'"]');
+  if(!el) return;
+  el.textContent = n||"";
+  el.classList.toggle("alert", !!alert);
+}
+function sampleBanner(){
+  return '<div class="banner"><span><b>Sample records loaded.</b> They are here so you can see how the desk works — clear them once your own data is in.</span>'+
+    '<button class="btn sm" data-act="clear-sample">Clear sample data</button></div>';
+}
+
+/* ---------- OVERVIEW ---------- */
+function stageValues(){
+  return STAGES.filter(s=>s.open).map(s=>({
+    label:s.label,
+    n:data.deals.filter(d=>d.stage===s.id).length,
+    v:data.deals.filter(d=>d.stage===s.id).reduce((a,d)=>a+(Number(d.value)||0),0)
+  }));
+}
+const VIEWS = {};
+
+VIEWS.overview = {
+  title:"Overview",
+  lede:"Where the studio stands right now — pipeline, commitments and anything asking for attention.",
+  actions:()=>'<button class="btn" data-act="settings">Team</button>',
+  meta(){
+    const open = openDeals().reduce((a,d)=>a+(Number(d.value)||0),0);
+    const od = dueTasks().length, al = siteAlerts().length;
+    return m([
+      ["Open pipeline", money(open), ""],
+      ["Open deals", openDeals().length, ""],
+      ["Tasks due or overdue", od, od?"warn":"ok"],
+      ["Sites needing attention", al, al?"crit":"ok"],
+      ["Meetings ahead", upcoming().length, ""]
+    ]);
+  },
+  body(){
+    const sv = stageValues();
+    const max = Math.max(1, ...sv.map(s=>s.v));
+    const bars = sv.map(s=>
+      '<div class="barrow" title="'+esc(s.label)+': '+s.n+' deal'+(s.n===1?"":"s")+', '+money(s.v)+'">'+
+        '<span class="bl">'+esc(s.label)+'</span>'+
+        '<span class="bartrack"><span class="barfill" style="width:'+Math.max(2,Math.round(s.v/max*100))+'%"></span></span>'+
+        '<span class="bv">'+money(s.v)+'</span>'+
+      '</div>').join("");
+
+    const week = [];
+    upcoming().slice(0,6).forEach(mt=>week.push({t:new Date(mt.start),when:fmtDate(mt.start),b:mt.title,s:"Meeting"+(mt.dealId&&byId("deals",mt.dealId)?" · "+byId("deals",mt.dealId).company:"")}));
+    openTasks().filter(t=>t.due).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,6)
+      .forEach(t=>week.push({t:new Date(t.due),when:fmtDate(t.due),b:t.title,s:"To-do · "+(t.owner||"Unassigned")+" · "+relDay(t.due)}));
+    week.sort((a,b)=>a.t-b.t);
+    const weekHtml = week.length ? week.slice(0,8).map(w=>
+      '<div class="tline"><span class="when">'+esc(w.when)+'</span><span class="what"><b>'+esc(w.b)+'</b><small>'+esc(w.s)+'</small></span></div>').join("")
+      : '<div class="empty">Nothing scheduled. Add a to-do or a meeting to fill this in.</div>';
+
+    const att = [];
+    siteAlerts().forEach(s=>att.push({p:s.status==="crit"?"crit":"warn",l:SITE_STATUS[s.status].label,b:s.name,s:(s.issues&&s.issues.filter(i=>!i.resolved)[0]||{}).text||"Flagged "+fmtDate(s.lastChecked)}));
+    socialBehind().forEach(s=>att.push({p:"warn",l:"Behind",b:s.client+" · "+s.channel,s:"Last post "+fmtDate(s.lastPost)}));
+    openDeals().filter(d=>d.nextStepDate && dayDiff(d.nextStepDate)<0)
+      .forEach(d=>att.push({p:"crit",l:"Follow-up late",b:d.company,s:(d.nextStep||"Next step")+" · "+relDay(d.nextStepDate)}));
+    const attHtml = att.length ? att.slice(0,8).map(a=>
+      '<div class="tline"><span class="what"><b>'+esc(a.b)+'</b><small>'+esc(a.s)+'</small></span><span class="pill '+a.p+'"><span class="dot"></span>'+esc(a.l)+'</span></div>').join("")
+      : '<div class="empty">Nothing flagged. Sites healthy, follow-ups on time.</div>';
+
+    return '<div class="ovgrid">'+
+      '<div class="stack">'+
+        '<section class="panel"><h3>Open pipeline by stage</h3><div class="pbody">'+bars+
+          '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>Won to date · '+
+          money(data.deals.filter(d=>d.stage==="won").reduce((a,d)=>a+(Number(d.value)||0),0))+' across '+
+          data.deals.filter(d=>d.stage==="won").length+' deal'+(data.deals.filter(d=>d.stage==="won").length===1?"":"s")+'</small></span></div>'+
+        '</div></section>'+
+        '<section class="panel"><h3>Next up</h3><div class="pbody">'+weekHtml+'</div></section>'+
+      '</div>'+
+      '<div class="stack">'+
+        '<section class="panel"><h3>Wants attention</h3><div class="pbody">'+attHtml+'</div></section>'+
+        '<section class="panel"><h3>Sites at a glance</h3><div class="pbody">'+
+          (data.sites.length? data.sites.map(s=>
+            '<div class="tline"><span class="what"><b>'+esc(s.name)+'</b><small>'+esc(s.client||"")+' · checked '+fmtDate(s.lastChecked)+'</small></span>'+
+            '<span class="pill '+SITE_STATUS[s.status||"ok"].cls+'"><span class="dot"></span>'+SITE_STATUS[s.status||"ok"].label+'</span></div>').join("")
+            : '<div class="empty">No sites tracked yet.</div>')+
+        '</div></section>'+
+      '</div></div>';
+  }
+};
+
+/* ---------- PIPELINE ---------- */
+VIEWS.pipeline = {
+  title:"Pipeline",
+  lede:"Every potential customer and the stage they're at. Drag a card to move it.",
+  actions:()=>'<button class="btn" data-act="export-pipeline">Export CSV</button><button class="btn primary" data-act="new-deal">New deal</button>',
+  meta(){
+    const open = openDeals();
+    const val = open.reduce((a,d)=>a+(Number(d.value)||0),0);
+    const late = open.filter(d=>d.nextStepDate&&dayDiff(d.nextStepDate)<0).length;
+    const won = data.deals.filter(d=>d.stage==="won");
+    return m([
+      ["Open deals", open.length, ""],
+      ["Open value", money(val), ""],
+      ["Follow-ups late", late, late?"crit":"ok"],
+      ["Won", money(won.reduce((a,d)=>a+(Number(d.value)||0),0)), "ok"]
+    ]);
+  },
+  body(){
+    return '<div class="board">'+STAGES.map(s=>{
+      const ds = data.deals.filter(d=>d.stage===s.id);
+      const sum = ds.reduce((a,d)=>a+(Number(d.value)||0),0);
+      return '<div class="col '+s.id+'" data-stage="'+s.id+'">'+
+        '<header><span class="stripe"></span><b>'+esc(s.label)+'</b><span class="n">'+ds.length+'</span></header>'+
+        '<div class="sum">'+money(sum)+'</div>'+
+        ds.map(dealCard).join("")+
+        (ds.length?"":'<div class="empty" style="padding:10px 2px;font-size:12px">Empty</div>')+
+      '</div>';
+    }).join("")+'</div>';
+  },
+  after(){
+    document.querySelectorAll(".card[data-deal]").forEach(c=>{
+      c.addEventListener("dragstart",e=>{ e.dataTransfer.setData("text/plain",c.dataset.deal); c.classList.add("dragging"); });
+      c.addEventListener("dragend",()=>c.classList.remove("dragging"));
+      c.addEventListener("click",()=>openDeal(c.dataset.deal));
+    });
+    document.querySelectorAll(".col").forEach(col=>{
+      col.addEventListener("dragover",e=>{ e.preventDefault(); col.classList.add("over"); });
+      col.addEventListener("dragleave",()=>col.classList.remove("over"));
+      col.addEventListener("drop",e=>{
+        e.preventDefault(); col.classList.remove("over");
+        const id = e.dataTransfer.getData("text/plain");
+        const d = byId("deals",id);
+        if(!d || d.stage===col.dataset.stage) return;
+        const from = STAGE_LABEL[d.stage];
+        d.stage = col.dataset.stage; d.updatedAt = new Date().toISOString();
+        d.notes = (d.notes||[]).concat([{by:me||"Someone",at:new Date().toISOString(),text:"Moved from "+from+" to "+STAGE_LABEL[d.stage]+"."}]);
+        save("deals",d);
+      });
+    });
+  }
+};
+function dealCard(d){
+  const late = d.nextStepDate && dayDiff(d.nextStepDate)<0;
+  return '<article class="card" draggable="true" data-deal="'+esc(d.id)+'" tabindex="0">'+
+    '<span class="co">'+esc(d.company||"Untitled")+'</span>'+
+    (d.contact?'<span class="pn">'+esc(d.contact)+'</span>':'')+
+    '<span class="meta"><span class="val">'+money(d.value)+'</span>'+
+      (d.owner?'<span class="pill">'+esc(d.owner)+'</span>':'')+'</span>'+
+    (d.nextStep?'<span class="next'+(late?" due":"")+'"><span>→</span><span>'+esc(d.nextStep)+
+      (d.nextStepDate?' <span class="mono">'+esc(relDay(d.nextStepDate))+'</span>':'')+'</span></span>':'')+
+  '</article>';
+}
+
+/* ---------- TASKS ---------- */
+VIEWS.tasks = {
+  title:"To-dos",
+  lede:"Shared list. Anything with a date shows up on the overview.",
+  actions:()=>'<button class="btn" data-act="toggle-done">'+(showDone?"Hide done":"Show done")+'</button>',
+  meta(){
+    const od = openTasks().filter(t=>t.due&&dayDiff(t.due)<0).length;
+    const td = openTasks().filter(t=>t.due&&dayDiff(t.due)===0).length;
+    const mine = openTasks().filter(t=>t.owner===me).length;
+    return m([
+      ["Open", openTasks().length, ""],
+      ["Overdue", od, od?"crit":"ok"],
+      ["Due today", td, td?"warn":""],
+      ["Assigned to you", mine, ""]
+    ]);
+  },
+  body(){
+    const q = '<div class="quickadd">'+
+      '<input type="text" id="qaText" placeholder="Add a to-do and press Enter…">'+
+      '<select id="qaOwner">'+ownerOptions(me)+'</select>'+
+      '<input type="date" id="qaDue" value="">'+
+      '<button class="btn primary sm" data-act="qa-add">Add</button></div>';
+
+    const groups = [
+      {k:"Overdue",cls:"crit",f:t=>!t.done&&t.due&&dayDiff(t.due)<0},
+      {k:"Today",cls:"",f:t=>!t.done&&t.due&&dayDiff(t.due)===0},
+      {k:"Next 7 days",cls:"",f:t=>!t.done&&t.due&&dayDiff(t.due)>0&&dayDiff(t.due)<=7},
+      {k:"Later",cls:"",f:t=>!t.done&&t.due&&dayDiff(t.due)>7},
+      {k:"No date",cls:"",f:t=>!t.done&&!t.due}
+    ];
+    if(showDone) groups.push({k:"Done",cls:"",f:t=>t.done});
+    let out = q;
+    let any = false;
+    groups.forEach(g=>{
+      const list = data.tasks.filter(g.f).sort((a,b)=>(a.due||"9").localeCompare(b.due||"9"));
+      if(!list.length) return;
+      any = true;
+      out += '<div class="grouphead '+g.cls+'">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
+        '<div class="rows">'+list.map(taskRow).join("")+'</div>';
+    });
+    if(!any) out += '<div class="empty" style="padding:44px 0">No to-dos yet. Add the first one above.</div>';
+    return out;
+  },
+  after(){
+    const t = $("#qaText");
+    if(t){
+      t.value = qaDraft;
+      t.addEventListener("input",()=>{qaDraft=t.value;});
+      t.addEventListener("keydown",e=>{ if(e.key==="Enter") addQuickTask(); });
+    }
+  }
+};
+let showDone = false, qaDraft = "";
+function taskRow(t){
+  const late = !t.done && t.due && dayDiff(t.due)<0;
+  const link = t.dealId && byId("deals",t.dealId);
+  return '<div class="row'+(t.done?" done":"")+'" data-task="'+esc(t.id)+'">'+
+    '<button class="check" aria-pressed="'+(t.done?"true":"false")+'" data-act="task-toggle" aria-label="Mark done">'+
+      '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6.2 4.6 9 10 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+    '<span class="grow"><span class="t">'+esc(t.title)+'</span><span class="s">'+
+      (t.owner?'<span>'+esc(t.owner)+'</span>':'<span>Unassigned</span>')+
+      (t.due?'<span'+(late?' style="color:var(--crit);font-weight:600"':'')+'>'+fmtDate(t.due)+' · '+esc(relDay(t.due))+'</span>':'')+
+      (link?'<span>'+esc(link.company)+'</span>':'')+
+    '</span></span>'+
+    '<button class="btn ghost sm" data-act="task-edit">Edit</button>'+
+  '</div>';
+}
+function addQuickTask(){
+  const title = ($("#qaText").value||"").trim();
+  if(!title) return;
+  save("tasks",{id:uid(),title,owner:$("#qaOwner").value||"",due:$("#qaDue").value||"",done:false,createdAt:new Date().toISOString()});
+  qaDraft=""; $("#qaText").value="";
+  setTimeout(()=>{ const t=$("#qaText"); t && t.focus(); },0);
+}
+
+/* ---------- MEETINGS ---------- */
+VIEWS.meetings = {
+  title:"Meetings",
+  lede:"Scheduled calls and site reviews, with the agenda you'll actually need in the room.",
+  actions:()=>'<button class="btn primary" data-act="new-meeting">Schedule meeting</button>',
+  meta(){
+    const up = upcoming();
+    const wk = up.filter(x=>dayDiff(x.start)<=7).length;
+    return m([
+      ["Upcoming", up.length, ""],
+      ["Next 7 days", wk, wk?"warn":""],
+      ["Next one", up.length?fmtDate(up[0].start):"—", ""],
+      ["Held", data.meetings.length-up.length, ""]
+    ]);
+  },
+  body(){
+    const up = upcoming();
+    const past = data.meetings.filter(x=>!up.includes(x)).sort((a,b)=>(b.start||"").localeCompare(a.start||""));
+    let out = "";
+    out += '<div class="grouphead">Upcoming<span class="n">'+up.length+'</span><span class="rule"></span></div>';
+    out += up.length ? '<div class="rows">'+up.map(meetingRow).join("")+'</div>'
+                     : '<div class="empty" style="padding:34px 0">Nothing scheduled yet.</div>';
+    if(past.length){
+      out += '<div class="grouphead">Past<span class="n">'+past.length+'</span><span class="rule"></span></div>'+
+             '<div class="rows">'+past.slice(0,12).map(meetingRow).join("")+'</div>';
+    }
+    return out;
+  }
+};
+function meetingRow(mt){
+  const d = mt.dealId && byId("deals",mt.dealId);
+  const soon = mt.start && dayDiff(mt.start)>=0 && dayDiff(mt.start)<=1;
+  return '<div class="row" data-meeting="'+esc(mt.id)+'">'+
+    '<span class="grow"><span class="t">'+esc(mt.title||"Meeting")+'</span><span class="s">'+
+      '<span class="mono">'+esc(fmtWhen(mt.start))+'</span>'+
+      (mt.duration?'<span>'+esc(mt.duration)+' min</span>':'')+
+      (mt.location?'<span>'+esc(mt.location)+'</span>':'')+
+      (d?'<span>'+esc(d.company)+'</span>':'')+
+      (mt.attendees?'<span>'+esc(mt.attendees)+'</span>':'')+
+    '</span></span>'+
+    (soon?'<span class="pill accent"><span class="dot"></span>'+esc(relDay(mt.start))+'</span>':'')+
+    '<button class="btn ghost sm" data-act="meeting-edit">Open</button>'+
+  '</div>';
+}
+
+/* ---------- SITES ---------- */
+VIEWS.sites = {
+  title:"Live sites",
+  lede:"The sites we look after. Every one is fetched automatically on the hour — log a check yourself any time to record what you saw.",
+  actions:()=>'<button class="btn primary" data-act="new-site">Add site</button>',
+  meta(){
+    const crit = data.sites.filter(s=>s.status==="crit").length;
+    const warn = data.sites.filter(s=>s.status==="warn").length;
+    const stale = data.sites.filter(s=>!s.lastChecked || dayDiff(s.lastChecked)<-7).length;
+    const issues = data.sites.reduce((a,s)=>a+((s.issues||[]).filter(i=>!i.resolved).length),0);
+    const mon = data.sites.filter(s=>s.monitor!==false && s.status!=="paused" && !s.sample && s.url).length;
+    return m([
+      ["Sites managed", data.sites.length, ""],
+      ["Down or urgent", crit, crit?"crit":"ok"],
+      ["Needs a look", warn, warn?"warn":"ok"],
+      ["Open issues", issues, issues?"warn":"ok"],
+      ["Checked hourly", mon, ""],
+      ["Unchecked 7+ days", stale, stale?"warn":""]
+    ]);
+  },
+  body(){
+    if(!data.sites.length) return '<div class="empty" style="padding:44px 0">No sites yet. Add the first one you manage.</div>';
+    const order = {crit:0,warn:1,ok:2,paused:3};
+    return '<div class="sitegrid">'+[...data.sites].sort((a,b)=>(order[a.status]??2)-(order[b.status]??2)).map(siteCard).join("")+'</div>';
+  }
+};
+function autoLabel(s){
+  if(s.monitor===false) return "off";
+  if(s.status==="paused") return "paused";
+  if(!s.autoCheckedAt) return "next run, on the hour";
+  const bits = [];
+  bits.push(s.autoStatus==="crit" ? "failing" : (s.autoStatus==="warn" ? "flagged" : "responding"));
+  if(s.httpStatus) bits.push("HTTP "+s.httpStatus);
+  if(s.responseMs) bits.push(s.responseMs < 1000 ? s.responseMs+"ms" : (s.responseMs/1000).toFixed(1)+"s");
+  bits.push(agoTime(s.autoCheckedAt));
+  return bits.join(" · ");
+}
+function siteCard(s){
+  const st = SITE_STATUS[s.status||"ok"];
+  const open = (s.issues||[]).filter(i=>!i.resolved);
+  const sslDays = dayDiff(s.sslExpiry);
+  const chkDays = dayDiff(s.lastChecked);
+  return '<article class="site '+st.cls+'" data-site="'+esc(s.id)+'">'+
+    '<div class="sev"></div><div class="inner">'+
+      '<div class="h"><div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b>'+
+        (s.client?'<div class="cl">'+esc(s.client)+(s.plan?' · '+esc(s.plan):'')+'</div>':'')+'</div>'+
+        '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span></div>'+
+      (s.url?'<a class="url" href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.url.replace(/^https?:\/\//,""))+'</a>':'')+
+      '<dl class="kv">'+
+        '<dt>Last checked</dt><dd'+(chkDays!==null&&chkDays<-7?' class="warn"':'')+'>'+(s.lastChecked?fmtDate(s.lastChecked)+" · "+ago(s.lastChecked):"never")+'</dd>'+
+        '<dt>SSL expires</dt><dd'+(sslDays!==null&&sslDays<14?' class="crit"':'')+'>'+(s.sslExpiry?fmtDate(s.sslExpiry)+(sslDays!==null?" · "+sslDays+"d":""):"—")+'</dd>'+
+        (s.platform?'<dt>Platform</dt><dd>'+esc(s.platform)+'</dd>':'')+
+        '<dt>Auto-check</dt><dd class="'+(s.autoStatus==="crit"?"crit":(s.autoStatus==="warn"?"warn":""))+'">'+esc(autoLabel(s))+'</dd>'+
+      '</dl>'+
+      (open.length?'<div class="issues">'+open.map(i=>'<div class="issue '+(i.severity==="crit"?"crit":"")+'"><span class="b"></span><span>'+esc(i.text)+'</span></div>').join("")+'</div>':'')+
+      '<div class="foot"><button class="btn sm" data-act="site-check">Log check</button>'+
+        '<button class="btn ghost sm" data-act="site-edit">Details</button></div>'+
+    '</div></article>';
+}
+
+/* ---------- SOCIAL ---------- */
+VIEWS.social = {
+  title:"Social",
+  lede:"Which accounts we run, how often they should post, and what's slipped.",
+  actions:()=>'<button class="btn primary" data-act="new-social">Add account</button>',
+  meta(){
+    const behind = socialBehind().length;
+    const due = data.social.filter(s=>s.nextPost && dayDiff(s.nextPost)<=2 && s.status!=="paused").length;
+    const clients = new Set(data.social.map(s=>s.client)).size;
+    return m([
+      ["Accounts", data.social.length, ""],
+      ["Clients", clients, ""],
+      ["Behind schedule", behind, behind?"warn":"ok"],
+      ["Posting in 48h", due, ""]
+    ]);
+  },
+  body(){
+    if(!data.social.length) return '<div class="empty" style="padding:44px 0">No accounts yet. Add the first channel you manage.</div>';
+    const clients = [...new Set(data.social.map(s=>s.client||"Unassigned"))].sort();
+    return '<div class="socgrid">'+clients.map(c=>{
+      const rows = data.social.filter(s=>(s.client||"Unassigned")===c);
+      return '<section class="panel"><h3>'+esc(c)+'</h3><div class="pbody">'+rows.map(socialRow).join("")+'</div></section>';
+    }).join("")+'</div>';
+  }
+};
+function socialRow(s){
+  const st = SOCIAL_STATUS[s.status||"active"];
+  return '<div class="chline" data-social="'+esc(s.id)+'">'+
+    '<span class="chan">'+esc((s.channel||"?").slice(0,2).toUpperCase())+'</span>'+
+    '<span class="g"><b>'+esc(s.channel||"Channel")+'</b><small>'+esc(s.handle||"—")+' · '+esc(s.cadence||"no cadence")+'</small></span>'+
+    '<span style="text-align:right"><span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
+      '<div class="mono" style="color:var(--ink-3);margin-top:3px">next '+(s.nextPost?fmtDate(s.nextPost):"—")+'</div></span>'+
+    '<button class="btn ghost sm" data-act="social-edit">Edit</button>'+
+  '</div>';
+}
+
+/* ============ meta strip helper ============ */
+function m(items){
+  return items.map(([k,v,c])=>'<div class="m"><div class="k">'+esc(k)+'</div><div class="v '+(c||"")+'">'+esc(v)+'</div></div>').join("");
+}
+function ownerOptions(sel){
+  // Everyone who has signed in, plus whoever is already on this record — so an
+  // owner set before someone left never silently disappears from the dropdown.
+  const names = team.slice();
+  if(sel && names.indexOf(sel) < 0) names.push(sel);
+  return '<option value="">Unassigned</option>'+
+    names.map(t=>'<option value="'+esc(t)+'"'+(t===sel?" selected":"")+'>'+esc(t)+'</option>').join("");
+}
+function dealOptions(sel){
+  return '<option value="">No linked deal</option>'+data.deals.map(d=>'<option value="'+esc(d.id)+'"'+(d.id===sel?" selected":"")+'>'+esc(d.company)+'</option>').join("");
+}
+function selOpts(map,sel){
+  return Object.entries(map).map(([k,v])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+esc(v.label||v)+'</option>').join("");
+}
+
+/* ============ overlays ============ */
+function closeOverlay(){
+  if(!overlay) return;
+  overlay.remove(); overlay=null;
+  document.removeEventListener("keydown",escClose);
+}
+function escClose(e){ if(e.key==="Escape") closeOverlay(); }
+function shell(kind,inner){
+  closeOverlay();
+  const wrap = document.createElement("div");
+  wrap.innerHTML = '<div class="scrim" data-close></div>'+inner;
+  overlay = wrap;
+  $("#layer").appendChild(wrap);
+  wrap.querySelector("[data-close]").addEventListener("click",closeOverlay);
+  document.addEventListener("keydown",escClose);
+  const first = wrap.querySelector("input,select,textarea");
+  first && first.focus();
+  return wrap;
+}
+function drawer(title,body,footer){
+  return shell("drawer",'<aside class="drawer" role="dialog" aria-modal="true">'+
+    '<header><h2>'+esc(title)+'</h2><button class="btn ghost sm" data-close>Close</button></header>'+
+    '<div class="dbody">'+body+'</div>'+
+    (footer?'<footer>'+footer+'</footer>':'')+'</aside>');
+}
+function modal(title,body,footer){
+  return shell("modal",'<div class="modal" role="dialog" aria-modal="true">'+
+    '<div class="mb"><h2 style="font-size:16px">'+esc(title)+'</h2>'+body+
+    '<div style="display:flex;gap:8px;justify-content:flex-end">'+footer+'</div></div></div>');
+}
+function val(sel){ const e=overlay.querySelector(sel); return e?e.value.trim():""; }
+
+/* ----- who's here ----- */
+function openTeam(){
+  const rows = team.length
+    ? team.map(t=>'<div class="tline"><span class="what"><b>'+esc(t)+'</b>'+
+        (t===me?'<small>That\'s you</small>':'')+'</span></div>').join("")
+    : '<div class="empty">Nobody else has signed in yet.</div>';
+  modal("The team",
+    '<p style="font-size:13px;color:var(--ink-2);margin:0;line-height:1.55">Anyone with a '+
+      '<b>@claritai.ie</b> Google account can sign in, and they appear here once they do. '+
+      'To remove someone\'s access, remove their Claritai Google account.</p>'+
+    '<div>'+rows+'</div>'+
+    '<p style="font-size:12px;color:var(--ink-3);margin:0">Signed in as '+esc(meEmail)+'</p>',
+    '<a class="btn" href="/auth/logout">Sign out</a><button class="btn primary" data-close>Done</button>');
+}
+function paintMe(){
+  $("#meName").textContent = me || "…";
+  $("#meAv").textContent = me ? initials(me) : "–";
+  $("#mechip").title = meEmail || "";
+}
+
+/* ----- deal ----- */
+function openDeal(id){
+  const d = id? byId("deals",id) : null;
+  const x = d || {id:uid(),company:"",contact:"",email:"",phone:"",value:0,stage:"lead",owner:me,source:"",nextStep:"",nextStepDate:"",notes:[],createdAt:new Date().toISOString()};
+  const notes = (x.notes||[]).slice().reverse().map(n=>
+    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>').join("")
+    || '<div class="empty" style="padding:10px 0">No activity yet.</div>';
+
+  drawer(d? x.company||"Deal" : "New deal",
+    '<input type="hidden" id="dId" value="'+esc(x.id)+'">'+
+    '<label class="f"><span>Company</span><input type="text" id="dCompany" value="'+esc(x.company)+'" placeholder="Acme Joinery"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Contact</span><input type="text" id="dContact" value="'+esc(x.contact)+'"></label>'+
+      '<label class="f"><span>Deal value (EUR)</span><input type="number" id="dValue" value="'+esc(x.value||0)+'" min="0" step="100"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Email</span><input type="email" id="dEmail" value="'+esc(x.email)+'"></label>'+
+      '<label class="f"><span>Phone</span><input type="text" id="dPhone" value="'+esc(x.phone)+'"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Stage</span><select id="dStage">'+STAGES.map(s=>'<option value="'+s.id+'"'+(s.id===x.stage?" selected":"")+'>'+esc(s.label)+'</option>').join("")+'</select></label>'+
+      '<label class="f"><span>Owner</span><select id="dOwner">'+ownerOptions(x.owner)+'</select></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Next step</span><input type="text" id="dNext" value="'+esc(x.nextStep)+'" placeholder="Send proposal"></label>'+
+      '<label class="f"><span>Next step due</span><input type="date" id="dNextDate" value="'+esc(x.nextStepDate||"")+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>How they found us</span><input type="text" id="dSource" value="'+esc(x.source)+'" placeholder="Referral · Google · Instagram"></label>'+
+    '<label class="f"><span>Add a note</span><textarea id="dNote" placeholder="What happened on the call?"></textarea></label>'+
+    '<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:4px">Activity</div>'+
+      '<div class="notes">'+notes+'</div></div>',
+    (d?'<button class="btn danger" data-act="deal-delete">Delete</button>':'')+
+    '<button class="btn primary" data-act="deal-save" style="margin-left:auto">'+(d?"Save changes":"Create deal")+'</button>');
+}
+function saveDeal(){
+  const id = val("#dId");
+  const prev = byId("deals",id);
+  const rec = {
+    id,
+    company: val("#dCompany")||"Untitled",
+    contact: val("#dContact"), email: val("#dEmail"), phone: val("#dPhone"),
+    value: Number(val("#dValue"))||0,
+    stage: val("#dStage"), owner: val("#dOwner"),
+    nextStep: val("#dNext"), nextStepDate: val("#dNextDate"),
+    source: val("#dSource"),
+    notes: (prev && prev.notes)||[],
+    createdAt: (prev && prev.createdAt)||new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    sample: prev? !!prev.sample : false
+  };
+  const note = val("#dNote");
+  if(note) rec.notes = rec.notes.concat([{by:me||"Someone",at:new Date().toISOString(),text:note}]);
+  if(prev && prev.stage!==rec.stage)
+    rec.notes = rec.notes.concat([{by:me||"Someone",at:new Date().toISOString(),text:"Moved from "+STAGE_LABEL[prev.stage]+" to "+STAGE_LABEL[rec.stage]+"."}]);
+  save("deals",rec); closeOverlay(); toast(prev?"Deal updated":"Deal added");
+}
+
+/* ----- task ----- */
+function openTask(id){
+  const t = id? byId("tasks",id) : null;
+  const x = t || {id:uid(),title:"",owner:me,due:"",done:false,dealId:"",notes:"",createdAt:new Date().toISOString()};
+  modal(t?"Edit to-do":"New to-do",
+    '<input type="hidden" id="tId" value="'+esc(x.id)+'">'+
+    '<label class="f"><span>Task</span><input type="text" id="tTitle" value="'+esc(x.title)+'"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Owner</span><select id="tOwner">'+ownerOptions(x.owner)+'</select></label>'+
+      '<label class="f"><span>Due</span><input type="date" id="tDue" value="'+esc(x.due||"")+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>Linked deal</span><select id="tDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '<label class="f"><span>Notes</span><textarea id="tNotes">'+esc(x.notes||"")+'</textarea></label>',
+    (t?'<button class="btn danger" data-act="task-delete" style="margin-right:auto">Delete</button>':'')+
+    '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="task-save">Save</button>');
+}
+function saveTask(){
+  const id = val("#tId"); const prev = byId("tasks",id);
+  save("tasks",{id,title:val("#tTitle")||"Untitled",owner:val("#tOwner"),due:val("#tDue"),
+    dealId:val("#tDeal"),notes:val("#tNotes"),done:prev?prev.done:false,
+    createdAt:(prev&&prev.createdAt)||new Date().toISOString(), sample: prev?!!prev.sample:false});
+  closeOverlay();
+}
+
+/* ----- meeting ----- */
+function openMeeting(id){
+  const mt = id? byId("meetings",id) : null;
+  const x = mt || {id:uid(),title:"",start:"",duration:30,location:"",attendees:me,dealId:"",agenda:""};
+  drawer(mt?"Meeting":"Schedule meeting",
+    '<input type="hidden" id="mId" value="'+esc(x.id)+'">'+
+    '<label class="f"><span>What is it</span><input type="text" id="mTitle" value="'+esc(x.title)+'" placeholder="Discovery call — Acme"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Starts</span><input type="datetime-local" id="mStart" value="'+esc((x.start||"").slice(0,16))+'"></label>'+
+      '<label class="f"><span>Minutes</span><input type="number" id="mDur" value="'+esc(x.duration||30)+'" min="5" step="5"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Where</span><input type="text" id="mLoc" value="'+esc(x.location)+'" placeholder="Google Meet · their office"></label>'+
+      '<label class="f"><span>Who</span><input type="text" id="mWho" value="'+esc(x.attendees)+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>Linked deal</span><select id="mDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '<label class="f"><span>Agenda &amp; notes</span><textarea id="mAgenda" style="min-height:130px">'+esc(x.agenda||"")+'</textarea></label>',
+    (mt?'<button class="btn danger" data-act="meeting-delete">Delete</button>':'')+
+    '<button class="btn primary" data-act="meeting-save" style="margin-left:auto">'+(mt?"Save":"Schedule")+'</button>');
+}
+function saveMeeting(){
+  const id = val("#mId"); const prev = byId("meetings",id);
+  save("meetings",{id,title:val("#mTitle")||"Meeting",start:val("#mStart"),duration:Number(val("#mDur"))||30,
+    location:val("#mLoc"),attendees:val("#mWho"),dealId:val("#mDeal"),agenda:val("#mAgenda"),
+    sample: prev?!!prev.sample:false});
+  closeOverlay(); toast(prev?"Meeting updated":"Meeting scheduled");
+}
+
+/* ----- site ----- */
+function openSite(id){
+  const s = id? byId("sites",id) : null;
+  const x = s || {id:uid(),name:"",url:"",client:"",plan:"",platform:"",status:"ok",lastChecked:todayISO(),sslExpiry:"",notes:"",issues:[]};
+  const issues = (x.issues||[]).map((i,n)=>
+    '<div class="issue '+(i.severity==="crit"?"crit":"")+(i.resolved?" done":"")+'" style="'+(i.resolved?"opacity:.5;":"")+'">'+
+      '<span class="b"></span><span style="flex:1'+(i.resolved?";text-decoration:line-through":"")+'">'+esc(i.text)+
+        (i.by?' <span class="mono" style="color:var(--ink-3)">— '+esc(i.by)+'</span>':'')+'</span>'+
+      '<button class="btn ghost sm" data-act="issue-toggle" data-i="'+n+'">'+(i.resolved?"Reopen":"Resolve")+'</button></div>').join("")
+    || '<div class="empty" style="padding:8px 0">No issues logged.</div>';
+
+  drawer(s? x.name||"Site" : "Add site",
+    '<input type="hidden" id="sId" value="'+esc(x.id)+'">'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Site name</span><input type="text" id="sName" value="'+esc(x.name)+'"></label>'+
+      '<label class="f"><span>Client</span><input type="text" id="sClient" value="'+esc(x.client)+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>URL</span><input type="url" id="sUrl" value="'+esc(x.url)+'" placeholder="https://example.com.au"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Status</span><select id="sStatus">'+selOpts(SITE_STATUS,x.status)+'</select></label>'+
+      '<label class="f"><span>Last checked</span><input type="date" id="sChecked" value="'+esc(x.lastChecked||"")+'"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>SSL expires</span><input type="date" id="sSsl" value="'+esc(x.sslExpiry||"")+'"></label>'+
+      '<label class="f"><span>Platform</span><input type="text" id="sPlatform" value="'+esc(x.platform||"")+'" placeholder="WordPress · Webflow"></label>'+
+    '</div>'+
+    '<label class="f"><span>Care plan</span><input type="text" id="sPlan" value="'+esc(x.plan||"")+'" placeholder="Monthly care · €180"></label>'+
+    '<label class="f" style="display:flex;gap:9px;align-items:flex-start"><input type="checkbox" id="sMonitor" style="width:auto;margin-top:2px"'+(x.monitor===false?"":" checked")+'>'+
+      '<span style="margin:0;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--ink-2);font-weight:400">Fetch this site every hour and log what comes back. '+
+      'Paused sites and sample records are always skipped.</span></label>'+
+    '<label class="f"><span>Log an issue</span><input type="text" id="sIssue" placeholder="Contact form not sending"></label>'+
+    '<label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="sIssueCrit" style="width:auto"><span style="margin:0;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--ink-2)">Urgent</span></label>'+
+    '<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:6px">Issue log</div>'+
+      '<div class="issues" style="border-top:0;padding-top:0">'+issues+'</div></div>'+
+    '<label class="f"><span>Notes</span><textarea id="sNotes">'+esc(x.notes||"")+'</textarea></label>',
+    (s?'<button class="btn danger" data-act="site-delete">Delete</button>':'')+
+    '<button class="btn primary" data-act="site-save" style="margin-left:auto">'+(s?"Save":"Add site")+'</button>');
+}
+function saveSite(){
+  const id = val("#sId"); const prev = byId("sites",id);
+  const issues = (prev && prev.issues)? prev.issues.slice() : [];
+  const newIssue = val("#sIssue");
+  if(newIssue) issues.unshift({text:newIssue,severity:overlay.querySelector("#sIssueCrit").checked?"crit":"warn",openedAt:new Date().toISOString(),by:me||"",resolved:false});
+  save("sites",{id,name:val("#sName")||"Untitled site",url:val("#sUrl"),client:val("#sClient"),
+    plan:val("#sPlan"),platform:val("#sPlatform"),status:val("#sStatus"),lastChecked:val("#sChecked"),
+    sslExpiry:val("#sSsl"),notes:val("#sNotes"),issues,
+    monitor: overlay.querySelector("#sMonitor").checked,
+    autoStatus:(prev&&prev.autoStatus)||"", autoCheckedAt:(prev&&prev.autoCheckedAt)||"", autoNote:(prev&&prev.autoNote)||"",
+    sample: prev?!!prev.sample:false});
+  closeOverlay(); toast(prev?"Site updated":"Site added");
+}
+function logCheck(id){
+  const s = byId("sites",id); if(!s) return;
+  modal("Log a check — "+(s.name||"site"),
+    '<input type="hidden" id="cId" value="'+esc(id)+'">'+
+    '<label class="f"><span>What did you find?</span><select id="cStatus">'+selOpts(SITE_STATUS,s.status||"ok")+'</select></label>'+
+    '<label class="f"><span>Note (optional)</span><input type="text" id="cNote" placeholder="Plugins updated, all green"></label>',
+    '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="check-save">Record check</button>');
+}
+
+/* ----- social ----- */
+function openSocial(id){
+  const s = id? byId("social",id) : null;
+  const x = s || {id:uid(),client:"",channel:"Instagram",handle:"",cadence:"",status:"active",lastPost:"",nextPost:"",owner:me,notes:""};
+  modal(s?"Edit account":"Add social account",
+    '<input type="hidden" id="oId" value="'+esc(x.id)+'">'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Client</span><input type="text" id="oClient" value="'+esc(x.client)+'"></label>'+
+      '<label class="f"><span>Channel</span><select id="oChannel">'+CHANNELS.map(c=>'<option'+(c===x.channel?" selected":"")+'>'+esc(c)+'</option>').join("")+'</select></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Handle</span><input type="text" id="oHandle" value="'+esc(x.handle)+'" placeholder="@acmejoinery"></label>'+
+      '<label class="f"><span>Cadence</span><input type="text" id="oCadence" value="'+esc(x.cadence)+'" placeholder="3 posts / week"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Last post</span><input type="date" id="oLast" value="'+esc(x.lastPost||"")+'"></label>'+
+      '<label class="f"><span>Next scheduled</span><input type="date" id="oNext" value="'+esc(x.nextPost||"")+'"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Status</span><select id="oStatus">'+selOpts(SOCIAL_STATUS,x.status)+'</select></label>'+
+      '<label class="f"><span>Owner</span><select id="oOwner">'+ownerOptions(x.owner)+'</select></label>'+
+    '</div>'+
+    '<label class="f"><span>Notes</span><textarea id="oNotes">'+esc(x.notes||"")+'</textarea></label>',
+    (s?'<button class="btn danger" data-act="social-delete" style="margin-right:auto">Delete</button>':'')+
+    '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="social-save">Save</button>');
+}
+function saveSocial(){
+  const id = val("#oId"); const prev = byId("social",id);
+  save("social",{id,client:val("#oClient")||"Unassigned",channel:val("#oChannel"),handle:val("#oHandle"),
+    cadence:val("#oCadence"),lastPost:val("#oLast"),nextPost:val("#oNext"),status:val("#oStatus"),
+    owner:val("#oOwner"),notes:val("#oNotes"), sample: prev?!!prev.sample:false});
+  closeOverlay();
+}
+
+/* ============ export ============ */
+async function exportPipeline(){
+  const head = ["Company","Contact","Email","Phone","Value EUR","Stage","Owner","Next step","Next step due","Source"];
+  const q = v => '"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  const csv = "﻿" + [head.map(q).join(",")].concat(
+    data.deals.map(d=>[d.company,d.contact,d.email,d.phone,d.value,STAGE_LABEL[d.stage]||d.stage,d.owner,d.nextStep,d.nextStepDate,d.source].map(q).join(","))
+  ).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+  const a = document.createElement("a");
+  a.href = url; a.download = "claritai-pipeline-"+todayISO()+".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  toast("Pipeline exported");
+}
+
+/* ============ event delegation ============ */
+document.addEventListener("click",e=>{
+  const closer = e.target.closest("[data-close]");
+  if(closer && overlay && overlay.contains(closer)){ closeOverlay(); return; }
+  const b = e.target.closest("[data-act]");
+  if(!b) return;
+  const act = b.dataset.act;
+  const row = b.closest("[data-task],[data-meeting],[data-site],[data-social]");
+
+  if(act==="settings") return openTeam();
+
+  if(act==="new-deal") return openDeal(null);
+  if(act==="deal-save") return saveDeal();
+  if(act==="deal-delete"){ const id=val("#dId"); closeOverlay(); return remove("deals",id); }
+  if(act==="export-pipeline") return exportPipeline();
+
+  if(act==="qa-add") return addQuickTask();
+  if(act==="toggle-done"){ showDone=!showDone; return render(); }
+  if(act==="task-toggle"){
+    const t = byId("tasks",row.dataset.task); if(!t) return;
+    t.done = !t.done; t.doneAt = t.done? new Date().toISOString() : null; t.doneBy = t.done? (me||"") : "";
+    return save("tasks",t);
+  }
+  if(act==="task-edit") return openTask(row.dataset.task);
+  if(act==="task-save") return saveTask();
+  if(act==="task-delete"){ const id=val("#tId"); closeOverlay(); return remove("tasks",id); }
+
+  if(act==="new-meeting") return openMeeting(null);
+  if(act==="meeting-edit") return openMeeting(row.dataset.meeting);
+  if(act==="meeting-save") return saveMeeting();
+  if(act==="meeting-delete"){ const id=val("#mId"); closeOverlay(); return remove("meetings",id); }
+
+  if(act==="new-site") return openSite(null);
+  if(act==="site-edit") return openSite(row.dataset.site);
+  if(act==="site-save") return saveSite();
+  if(act==="site-delete"){ const id=val("#sId"); closeOverlay(); return remove("sites",id); }
+  if(act==="site-check") return logCheck(row.dataset.site);
+  if(act==="check-save"){
+    const s = byId("sites",val("#cId")); if(!s) return closeOverlay();
+    s.status = val("#cStatus"); s.lastChecked = todayISO();
+    const note = val("#cNote");
+    if(note){
+      s.issues = s.issues||[];
+      if(s.status==="ok"){ s.notes = (fmtDate(todayISO())+" — "+note+"\n"+(s.notes||"")).trim(); }
+      else s.issues.unshift({text:note,severity:s.status==="crit"?"crit":"warn",openedAt:new Date().toISOString(),by:me||"",resolved:false});
+    }
+    save("sites",s); closeOverlay(); return toast("Check recorded");
+  }
+  if(act==="issue-toggle"){
+    const s = byId("sites",val("#sId")); if(!s) return;
+    const i = Number(b.dataset.i); const iss = (s.issues||[])[i]; if(!iss) return;
+    iss.resolved = !iss.resolved; iss.resolvedAt = iss.resolved? new Date().toISOString() : null;
+    save("sites",s); openSite(s.id); return;
+  }
+
+  if(act==="new-social") return openSocial(null);
+  if(act==="social-edit") return openSocial(row.dataset.social);
+  if(act==="social-save") return saveSocial();
+  if(act==="social-delete"){ const id=val("#oId"); closeOverlay(); return remove("social",id); }
+
+  if(act==="clear-sample"){
+    COLLS.forEach(c=>{ data[c].filter(r=>r.sample).forEach(r=>remove(c,r.id)); });
+    return toast("Sample data cleared");
+  }
+});
+document.addEventListener("keydown",e=>{
+  if((e.metaKey||e.ctrlKey) && e.key==="Enter" && overlay){
+    const p = overlay.querySelector(".btn.primary"); p && p.click();
+  }
+});
+
+/* ============ boot ============ */
+$("#mechip").addEventListener("click", openTeam);
+render();
+
+async function refresh(){
+  // Don't stomp on a record that is mid-save.
+  if(dirty > 0) return;
+  const payload = await api("GET", "/api/data");
+  COLLS.forEach(c=>{ data[c] = payload[c] || []; });
+  team = payload.team || [];
+  render();
+}
+
+(async function boot(){
+  try{
+    const who = await api("GET", "/api/me");
+    me = who.name || who.email.split("@")[0];
+    meEmail = who.email;
+    paintMe();
+  }catch(e){ return; } // api() already redirected to the login screen
+
+  try{
+    await refresh();
+    setConn("ok","Shared with your team");
+  }catch(e){
+    setConn("off","Couldn't load — retrying");
+  }
+
+  // Everyone works off the same records, so pick up teammates' changes on a
+  // steady tick, and immediately when someone comes back to the tab.
+  setInterval(()=>{ refresh().then(()=>setConn("ok","Shared with your team"))
+                            .catch(()=>setConn("off","Reconnecting…")); }, 20000);
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.visibilityState === "visible") refresh().catch(()=>{});
+  });
+})();
+})();
+</script>
+
+</body>
+</html>

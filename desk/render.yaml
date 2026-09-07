@@ -1,0 +1,53 @@
+# Render blueprint for Claritai Desk (internal CRM).
+# In Render: New +  →  Blueprint  →  point at this repo.
+# Set the secret env vars (marked sync:false) in the dashboard after creation.
+databases:
+  - name: claritai-desk-db
+    plan: 0.1c-256mb
+    databaseName: claritai_desk
+    user: claritai_desk
+
+services:
+  # The Desk web app: Google sign-in + CRM API + UI.
+  - type: web
+    name: claritai-desk
+    runtime: node
+    rootDir: desk
+    plan: starter
+    buildCommand: npm install
+    startCommand: node index.js
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: claritai-desk-db
+          property: connectionString
+      - key: ALLOWED_DOMAIN
+        value: claritai.ie
+      # BASE_URL is deliberately left out until desk.claritai.ie is live.
+      # Without it the app uses whichever hostname it was reached on, so you can
+      # test on the .onrender.com URL first. Add it in the dashboard once DNS is
+      # done:  BASE_URL = https://desk.claritai.ie
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  # Hourly uptime + SSL check for every site in the Live sites tab.
+  - type: cron
+    name: claritai-desk-site-check
+    runtime: node
+    rootDir: desk
+    plan: starter
+    schedule: "0 * * * *"
+    buildCommand: npm install
+    startCommand: node cron/check-sites.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: claritai-desk-db
+          property: connectionString

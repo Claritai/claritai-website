@@ -1,0 +1,20 @@
+{
+  "name": "claritai-desk",
+  "version": "1.0.0",
+  "description": "Claritai Desk — internal CRM: pipeline, to-dos, meetings, live site health and social accounts. Google sign-in restricted to claritai.ie.",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "check-sites": "node cron/check-sites.js",
+    "test": "node test/app.test.js && node test/monitor.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}
