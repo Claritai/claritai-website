@@ -142,8 +142,10 @@ button,input,select,textarea{font:inherit;color:inherit}
   display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r-md);
   border:1px solid var(--line);background:var(--surface-2);cursor:pointer;text-align:left;width:100%;
 }
-.footrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px}
-.signout{font-size:11px;color:var(--ink-3);text-decoration:none;white-space:nowrap}
+.footrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px;flex-wrap:nowrap}
+.footrow .conn{min-width:0;padding:0}
+.footrow .conn span:not(.dot){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.signout{font-size:11px;color:var(--ink-3);text-decoration:none;white-space:nowrap;flex:none}
 .signout:hover{color:var(--accent);text-decoration:underline}
 .avatar{
   width:24px;height:24px;flex:none;border-radius:7px;display:grid;place-items:center;
@@ -317,6 +319,62 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .issue.crit .b{background:var(--crit)}
 .site .foot{display:flex;gap:6px;margin-top:auto;padding-top:4px}
 
+/* ---------- customers ---------- */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ccard{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:15px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow-sm);cursor:pointer;
+}
+.ccard:hover{border-color:var(--line-strong)}
+.ccard .ch{display:flex;align-items:flex-start;gap:9px}
+.ccard .ch b{font-size:15px;font-weight:600;line-height:1.25;flex:1;min-width:0}
+.ccard .who{font-size:12px;color:var(--ink-3)}
+.ccard .fee{display:flex;align-items:baseline;gap:6px}
+.ccard .fee .amt{font-family:var(--font-display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.ccard .fee .per{font-size:11.5px;color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  font-size:11px;padding:2px 8px;border-radius:6px;background:var(--surface-2);
+  color:var(--ink-2);border:1px solid var(--line);white-space:nowrap;
+}
+.chip.off{opacity:.5;text-decoration:line-through}
+.ccard .cfoot{
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:9px;
+  border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-3);
+}
+.ccard .cfoot .warn{color:var(--warn);font-weight:600}
+.ccard .cfoot .crit{color:var(--crit);font-weight:600}
+
+/* repeatable rows inside the customer drawer */
+.rowset{display:flex;flex-direction:column;gap:7px}
+.rrow{display:flex;gap:6px;align-items:center}
+.rrow input,.rrow select{padding:6px 8px;font-size:13px}
+.rrow[data-row="contact"]{flex-wrap:wrap;padding-bottom:9px;border-bottom:1px dashed var(--line)}
+.rrow[data-row="contact"]:last-child{border-bottom:0}
+.rrow .del{
+  flex:none;width:26px;height:30px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink-3);border-radius:var(--r-sm);cursor:pointer;line-height:1;font-size:15px;
+}
+.rrow .del:hover{border-color:var(--crit);color:var(--crit)}
+.addrow{
+  align-self:flex-start;margin-top:2px;padding:4px 10px;font-size:12px;
+  border:1px dashed var(--line-strong);background:transparent;color:var(--ink-2);
+  border-radius:var(--r-sm);cursor:pointer;
+}
+.addrow:hover{border-color:var(--accent);color:var(--accent)}
+.subhead{
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);
+  font-weight:700;margin:6px 0 -4px;padding-top:10px;border-top:1px solid var(--line);
+}
+.linked{display:flex;flex-direction:column;gap:0}
+.linked a,.linked div.li{
+  display:flex;gap:8px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--ink);text-decoration:none;
+}
+.linked a:last-child,.linked div.li:last-child{border-bottom:0}
+.linked a:hover{color:var(--accent)}
+.linked small{color:var(--ink-3);font-size:11.5px;margin-left:auto;white-space:nowrap}
+
 /* ---------- social ---------- */
 .socgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
 .chline{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -391,6 +449,7 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
     <a class="brand" href="https://claritai.ie"><b>clarit<i>ai</i></b><span>Desk</span></a>
     <button class="navbtn" data-view="overview"><span class="ic">◈</span>Overview</button>
     <button class="navbtn" data-view="pipeline"><span class="ic">▤</span>Pipeline<span class="tag" data-tag="pipeline"></span></button>
+    <button class="navbtn" data-view="clients"><span class="ic">◆</span>Customers<span class="tag" data-tag="clients"></span></button>
     <button class="navbtn" data-view="tasks"><span class="ic">✓</span>To-dos<span class="tag" data-tag="tasks"></span></button>
     <button class="navbtn" data-view="meetings"><span class="ic">◷</span>Meetings<span class="tag" data-tag="meetings"></span></button>
     <hr>
@@ -449,10 +508,15 @@ const SOCIAL_STATUS = {
   paused:{label:"Paused",cls:""}, setup:{label:"Setting up",cls:"accent"}
 };
 const CHANNELS = ["Instagram","Facebook","LinkedIn","TikTok","X","YouTube","Google Business","Newsletter"];
-const COLLS = ["deals","tasks","meetings","sites","social"];
+const COLLS = ["clients","deals","tasks","meetings","sites","social"];
+const CLIENT_STATUS = {
+  active:{label:"Active",cls:"ok"}, onboarding:{label:"Onboarding",cls:"accent"},
+  paused:{label:"Paused",cls:"warn"}, former:{label:"Former",cls:""}
+};
+const CADENCE = {monthly:"per month", yearly:"per year", once:"one-off"};
 
 /* ============ state ============ */
-const data = {deals:[],tasks:[],meetings:[],sites:[],social:[]};
+const data = {clients:[],deals:[],tasks:[],meetings:[],sites:[],social:[]};
 let team = [];              // staff who have signed in, from the server
 let view = "overview";
 let me = "";                // display name of the signed-in user
@@ -574,6 +638,44 @@ const siteAlerts  = ()=> data.sites.filter(s=>s.status==="warn"||s.status==="cri
 const socialBehind= ()=> data.social.filter(s=>s.status==="behind");
 const hasSample   = ()=> COLLS.some(c=>data[c].some(r=>r.sample));
 
+/* ---- customers ---- */
+function clientById(id){ return id ? data.clients.find(c=>c.id===id) : null; }
+// Records made before Customers existed carry a typed name; fall back to it so
+// nothing looks blank while the linking is being tidied up.
+function clientNameOf(rec){
+  const c = clientById(rec.clientId);
+  return c ? c.name : (rec.client || "");
+}
+const activeClients = ()=> data.clients.filter(c=>(c.status||"active")==="active" || c.status==="onboarding");
+
+// A service priced yearly still contributes to the monthly figure; one-offs never do.
+function monthlyOf(client){
+  return ((client && client.services) || [])
+    .filter(s=>s.active!==false)
+    .reduce((a,s)=>{
+      const amt = Number(s.amount)||0;
+      if(s.cadence==="yearly") return a + amt/12;
+      if(s.cadence==="once")   return a;
+      return a + amt;
+    },0);
+}
+const mrr = ()=> activeClients().reduce((a,c)=>a+monthlyOf(c),0);
+function renewalsDue(days){
+  const win = days||60;
+  return data.clients.filter(c=>{
+    if(c.status==="former") return false;
+    const d = c.contract && c.contract.renewalDate;
+    if(!d) return false;
+    const n = dayDiff(d);
+    return n!==null && n<=win;
+  });
+}
+const sitesOf  = id => data.sites.filter(s=>s.clientId===id);
+const socialOf = id => data.social.filter(s=>s.clientId===id);
+const dealsOf  = id => data.deals.filter(d=>d.clientId===id);
+function linkedTasks(id){ return data.tasks.filter(t=>!t.done && (t.clientId===id || (t.dealId && (byId("deals",t.dealId)||{}).clientId===id))); }
+function linkedMeetings(id){ return upcoming().filter(m=>m.clientId===id || (m.dealId && (byId("deals",m.dealId)||{}).clientId===id)); }
+
 /* ============ nav ============ */
 document.querySelectorAll(".navbtn").forEach(b=>{
   b.addEventListener("click",()=>{ view=b.dataset.view; closeOverlay(); render(); $("main").scrollTop=0; });
@@ -583,6 +685,7 @@ document.querySelectorAll(".navbtn").forEach(b=>{
 function render(){
   document.querySelectorAll(".navbtn").forEach(b=>b.setAttribute("aria-current", String(b.dataset.view===view)));
   setTag("pipeline", openDeals().length);
+  setTag("clients", activeClients().length, renewalsDue().length>0);
   setTag("tasks", openTasks().length, dueTasks().length>0);
   setTag("meetings", upcoming().length);
   setTag("sites", siteAlerts().length || data.sites.length, siteAlerts().length>0);
@@ -608,6 +711,18 @@ function sampleBanner(){
 }
 
 /* ---------- OVERVIEW ---------- */
+// Monthly-equivalent recurring revenue, grouped by what the service is called.
+function revenueByService(){
+  const map = {};
+  activeClients().forEach(c=>(c.services||[]).filter(s=>s.active!==false).forEach(s=>{
+    const amt = Number(s.amount)||0;
+    const mo = s.cadence==="yearly" ? amt/12 : (s.cadence==="once" ? 0 : amt);
+    if(!mo) return;
+    const key = (s.label||"").trim() || "Unlabelled";
+    map[key] = (map[key]||0) + mo;
+  }));
+  return Object.entries(map).map(([label,v])=>({label,v})).sort((a,b)=>b.v-a.v);
+}
 function stageValues(){
   return STAGES.filter(s=>s.open).map(s=>({
     label:s.label,
@@ -617,6 +732,28 @@ function stageValues(){
 }
 const VIEWS = {};
 
+function revenuePanel(){
+  const rows = revenueByService();
+  if(!rows.length){
+    return '<section class="panel"><h3>Recurring revenue</h3><div class="pbody">'+
+      '<div class="empty">No recurring services recorded yet. Open a customer and add what they pay each month.</div>'+
+      '</div></section>';
+  }
+  const max = Math.max(1, ...rows.map(r=>r.v));
+  const total = rows.reduce((a,r)=>a+r.v,0);
+  const bars = rows.map(r=>
+    '<div class="barrow" title="'+esc(r.label)+': '+money(r.v)+' per month">'+
+      '<span class="bl">'+esc(r.label)+'</span>'+
+      '<span class="bartrack"><span class="barfill" style="width:'+Math.max(3,Math.round(r.v/max*100))+'%"></span></span>'+
+      '<span class="bv">'+money(r.v)+'</span>'+
+    '</div>').join("");
+  return '<section class="panel"><h3>Recurring revenue by service</h3><div class="pbody">'+bars+
+    '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>'+
+      money(total)+' a month across '+activeClients().length+' active customer'+(activeClients().length===1?"":"s")+
+      ' · '+money(total*12)+' a year</small></span></div>'+
+    '</div></section>';
+}
+
 VIEWS.overview = {
   title:"Overview",
   lede:"Where the studio stands right now — pipeline, commitments and anything asking for attention.",
@@ -624,7 +761,9 @@ VIEWS.overview = {
   meta(){
     const open = openDeals().reduce((a,d)=>a+(Number(d.value)||0),0);
     const od = dueTasks().length, al = siteAlerts().length;
+    const monthly = mrr();
     return m([
+      ["Monthly recurring", money(monthly), monthly?"ok":""],
       ["Open pipeline", money(open), ""],
       ["Open deals", openDeals().length, ""],
       ["Tasks due or overdue", od, od?"warn":"ok"],
@@ -643,7 +782,10 @@ VIEWS.overview = {
       '</div>').join("");
 
     const week = [];
-    upcoming().slice(0,6).forEach(mt=>week.push({t:new Date(mt.start),when:fmtDate(mt.start),b:mt.title,s:"Meeting"+(mt.dealId&&byId("deals",mt.dealId)?" · "+byId("deals",mt.dealId).company:"")}));
+    upcoming().slice(0,6).forEach(mt=>{
+      const who = (clientById(mt.clientId)||{}).name || (byId("deals",mt.dealId)||{}).company || "";
+      week.push({t:new Date(mt.start),when:fmtDate(mt.start),b:mt.title,s:"Meeting"+(who?" · "+who:"")});
+    });
     openTasks().filter(t=>t.due).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,6)
       .forEach(t=>week.push({t:new Date(t.due),when:fmtDate(t.due),b:t.title,s:"To-do · "+(t.owner||"Unassigned")+" · "+relDay(t.due)}));
     week.sort((a,b)=>a.t-b.t);
@@ -653,9 +795,14 @@ VIEWS.overview = {
 
     const att = [];
     siteAlerts().forEach(s=>att.push({p:s.status==="crit"?"crit":"warn",l:SITE_STATUS[s.status].label,b:s.name,s:(s.issues&&s.issues.filter(i=>!i.resolved)[0]||{}).text||"Flagged "+fmtDate(s.lastChecked)}));
-    socialBehind().forEach(s=>att.push({p:"warn",l:"Behind",b:s.client+" · "+s.channel,s:"Last post "+fmtDate(s.lastPost)}));
+    socialBehind().forEach(s=>att.push({p:"warn",l:"Behind",b:(clientNameOf(s)||"Unassigned")+" · "+s.channel,s:"Last post "+fmtDate(s.lastPost)}));
     openDeals().filter(d=>d.nextStepDate && dayDiff(d.nextStepDate)<0)
       .forEach(d=>att.push({p:"crit",l:"Follow-up late",b:d.company,s:(d.nextStep||"Next step")+" · "+relDay(d.nextStepDate)}));
+    renewalsDue(45).forEach(c=>{
+      const n = dayDiff(c.contract.renewalDate);
+      att.push({p:n<0?"crit":"warn", l:n<0?"Renewal passed":"Renewal due", b:c.name,
+                s:money(monthlyOf(c))+" per month · "+fmtDate(c.contract.renewalDate)+" · "+relDay(c.contract.renewalDate)});
+    });
     const attHtml = att.length ? att.slice(0,8).map(a=>
       '<div class="tline"><span class="what"><b>'+esc(a.b)+'</b><small>'+esc(a.s)+'</small></span><span class="pill '+a.p+'"><span class="dot"></span>'+esc(a.l)+'</span></div>').join("")
       : '<div class="empty">Nothing flagged. Sites healthy, follow-ups on time.</div>';
@@ -667,13 +814,14 @@ VIEWS.overview = {
           money(data.deals.filter(d=>d.stage==="won").reduce((a,d)=>a+(Number(d.value)||0),0))+' across '+
           data.deals.filter(d=>d.stage==="won").length+' deal'+(data.deals.filter(d=>d.stage==="won").length===1?"":"s")+'</small></span></div>'+
         '</div></section>'+
+        revenuePanel()+
         '<section class="panel"><h3>Next up</h3><div class="pbody">'+weekHtml+'</div></section>'+
       '</div>'+
       '<div class="stack">'+
         '<section class="panel"><h3>Wants attention</h3><div class="pbody">'+attHtml+'</div></section>'+
         '<section class="panel"><h3>Sites at a glance</h3><div class="pbody">'+
           (data.sites.length? data.sites.map(s=>
-            '<div class="tline"><span class="what"><b>'+esc(s.name)+'</b><small>'+esc(s.client||"")+' · checked '+fmtDate(s.lastChecked)+'</small></span>'+
+            '<div class="tline"><span class="what"><b>'+esc(s.name)+'</b><small>'+esc(clientNameOf(s)||"—")+' · checked '+fmtDate(s.lastChecked)+'</small></span>'+
             '<span class="pill '+SITE_STATUS[s.status||"ok"].cls+'"><span class="dot"></span>'+SITE_STATUS[s.status||"ok"].label+'</span></div>').join("")
             : '<div class="empty">No sites tracked yet.</div>')+
         '</div></section>'+
@@ -728,6 +876,7 @@ VIEWS.pipeline = {
         d.stage = col.dataset.stage; d.updatedAt = new Date().toISOString();
         d.notes = (d.notes||[]).concat([{by:me||"Someone",at:new Date().toISOString(),text:"Moved from "+from+" to "+STAGE_LABEL[d.stage]+"."}]);
         save("deals",d);
+        if(d.stage==="won" && !d.clientId) offerConvert(d);
       });
     });
   }
@@ -742,6 +891,59 @@ function dealCard(d){
     (d.nextStep?'<span class="next'+(late?" due":"")+'"><span>→</span><span>'+esc(d.nextStep)+
       (d.nextStepDate?' <span class="mono">'+esc(relDay(d.nextStepDate))+'</span>':'')+'</span></span>':'')+
   '</article>';
+}
+
+/* ---------- CUSTOMERS ---------- */
+VIEWS.clients = {
+  title:"Customers",
+  lede:"Everyone we look after, what they pay, and when their agreement comes up for review.",
+  actions:()=>'<button class="btn" data-act="export-clients">Export CSV</button><button class="btn primary" data-act="new-client">New customer</button>',
+  meta(){
+    const monthly = mrr();
+    const due = renewalsDue(60).length;
+    const paused = data.clients.filter(c=>c.status==="paused").length;
+    return m([
+      ["Active customers", activeClients().length, ""],
+      ["Monthly recurring", money(monthly), monthly?"ok":""],
+      ["Annual run rate", money(monthly*12), ""],
+      ["Renewals in 60 days", due, due?"warn":""],
+      ["Paused", paused, paused?"warn":""]
+    ]);
+  },
+  body(){
+    if(!data.clients.length){
+      return '<div class="empty" style="padding:44px 0">No customers yet.<br><br>'+
+        'Add one directly, or win a deal in the Pipeline and you\'ll be offered the record with its details already filled in.</div>';
+    }
+    const order = {active:0,onboarding:1,paused:2,former:3};
+    const list = data.clients.slice().sort((a,b)=>{
+      const s = (order[a.status||"active"]??0) - (order[b.status||"active"]??0);
+      return s !== 0 ? s : monthlyOf(b) - monthlyOf(a);
+    });
+    return '<div class="cgrid">'+list.map(clientCard).join("")+'</div>';
+  }
+};
+function clientCard(c){
+  const st = CLIENT_STATUS[c.status||"active"] || CLIENT_STATUS.active;
+  const primary = (c.contacts||[]).find(x=>x.primary) || (c.contacts||[])[0];
+  const services = (c.services||[]);
+  const sites = sitesOf(c.id).length, socials = socialOf(c.id).length;
+  const ren = c.contract && c.contract.renewalDate;
+  const renDays = ren ? dayDiff(ren) : null;
+  const renCls = renDays===null ? "" : (renDays<0 ? "crit" : (renDays<=60 ? "warn" : ""));
+  return '<article class="ccard" data-client="'+esc(c.id)+'" tabindex="0">'+
+    '<div class="ch"><b>'+esc(c.name||"Untitled")+'</b>'+
+      '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span></div>'+
+    (primary?'<div class="who">'+esc(primary.name||"")+(primary.role?' · '+esc(primary.role):'')+'</div>':'')+
+    '<div class="fee"><span class="amt">'+money(monthlyOf(c))+'</span><span class="per">per month</span></div>'+
+    (services.length?'<div class="chips">'+services.slice(0,5).map(s=>
+      '<span class="chip'+(s.active===false?" off":"")+'">'+esc(s.label||"Service")+' · '+money(s.amount)+
+      (s.cadence==="yearly"?"/yr":(s.cadence==="once"?" once":""))+'</span>').join("")+'</div>':'')+
+    '<div class="cfoot">'+
+      '<span>'+sites+' site'+(sites===1?"":"s")+'</span>'+
+      '<span>'+socials+' channel'+(socials===1?"":"s")+'</span>'+
+      (ren?'<span class="'+renCls+'">Renews '+fmtDate(ren)+(renDays!==null&&renDays<=60?' · '+relDay(ren):'')+'</span>':'')+
+    '</div></article>';
 }
 
 /* ---------- TASKS ---------- */
@@ -814,7 +1016,7 @@ function taskRow(t){
 function addQuickTask(){
   const title = ($("#qaText").value||"").trim();
   if(!title) return;
-  save("tasks",{id:uid(),title,owner:$("#qaOwner").value||"",due:$("#qaDue").value||"",done:false,createdAt:new Date().toISOString()});
+  save("tasks",{id:uid(),title,owner:$("#qaOwner").value||"",due:$("#qaDue").value||"",done:false,dealId:"",clientId:"",createdAt:new Date().toISOString()});
   qaDraft=""; $("#qaText").value="";
   setTimeout(()=>{ const t=$("#qaText"); t && t.focus(); },0);
 }
@@ -909,7 +1111,7 @@ function siteCard(s){
   return '<article class="site '+st.cls+'" data-site="'+esc(s.id)+'">'+
     '<div class="sev"></div><div class="inner">'+
       '<div class="h"><div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b>'+
-        (s.client?'<div class="cl">'+esc(s.client)+(s.plan?' · '+esc(s.plan):'')+'</div>':'')+'</div>'+
+        (clientNameOf(s)||s.plan?'<div class="cl">'+esc(clientNameOf(s))+(s.plan?(clientNameOf(s)?' · ':'')+esc(s.plan):'')+'</div>':'')+'</div>'+
         '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span></div>'+
       (s.url?'<a class="url" href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.url.replace(/^https?:\/\//,""))+'</a>':'')+
       '<dl class="kv">'+
@@ -932,7 +1134,7 @@ VIEWS.social = {
   meta(){
     const behind = socialBehind().length;
     const due = data.social.filter(s=>s.nextPost && dayDiff(s.nextPost)<=2 && s.status!=="paused").length;
-    const clients = new Set(data.social.map(s=>s.client)).size;
+    const clients = new Set(data.social.map(s=>clientNameOf(s))).size;
     return m([
       ["Accounts", data.social.length, ""],
       ["Clients", clients, ""],
@@ -942,9 +1144,9 @@ VIEWS.social = {
   },
   body(){
     if(!data.social.length) return '<div class="empty" style="padding:44px 0">No accounts yet. Add the first channel you manage.</div>';
-    const clients = [...new Set(data.social.map(s=>s.client||"Unassigned"))].sort();
+    const clients = [...new Set(data.social.map(s=>clientNameOf(s)||"Unassigned"))].sort();
     return '<div class="socgrid">'+clients.map(c=>{
-      const rows = data.social.filter(s=>(s.client||"Unassigned")===c);
+      const rows = data.social.filter(s=>(clientNameOf(s)||"Unassigned")===c);
       return '<section class="panel"><h3>'+esc(c)+'</h3><div class="pbody">'+rows.map(socialRow).join("")+'</div></section>';
     }).join("")+'</div>';
   }
@@ -971,6 +1173,12 @@ function ownerOptions(sel){
   if(sel && names.indexOf(sel) < 0) names.push(sel);
   return '<option value="">Unassigned</option>'+
     names.map(t=>'<option value="'+esc(t)+'"'+(t===sel?" selected":"")+'>'+esc(t)+'</option>').join("");
+}
+function clientOptions(sel){
+  const list = data.clients.slice().sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+  return '<option value="">No customer linked</option>'+
+    list.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===sel?" selected":"")+'>'+esc(c.name)+
+      (c.status==="former"?" (former)":"")+'</option>').join("");
 }
 function dealOptions(sel){
   return '<option value="">No linked deal</option>'+data.deals.map(d=>'<option value="'+esc(d.id)+'"'+(d.id===sel?" selected":"")+'>'+esc(d.company)+'</option>').join("");
@@ -1031,6 +1239,178 @@ function paintMe(){
   $("#mechip").title = meEmail || "";
 }
 
+/* ----- customer ----- */
+function contactRow(c){
+  c = c||{};
+  return '<div class="rrow" data-row="contact">'+
+    '<input type="text" data-k="name" placeholder="Name" value="'+esc(c.name||"")+'" style="flex:1 1 44%">'+
+    '<input type="text" data-k="role" placeholder="Role" value="'+esc(c.role||"")+'" style="flex:1 1 30%">'+
+    '<button class="del" data-act="row-del" title="Remove" type="button">×</button>'+
+    '<input type="email" data-k="email" placeholder="Email" value="'+esc(c.email||"")+'" style="flex:1 1 55%">'+
+    '<input type="text" data-k="phone" placeholder="Phone" value="'+esc(c.phone||"")+'" style="flex:1 1 34%">'+
+  '</div>';
+}
+function serviceRow(s){
+  s = s||{cadence:"monthly",active:true};
+  const cad = s.cadence||"monthly";
+  return '<div class="rrow" data-row="service">'+
+    '<input type="text" data-k="label" placeholder="Care plan" value="'+esc(s.label||"")+'" style="flex:1 1 40%">'+
+    '<input type="number" data-k="amount" placeholder="0" min="0" step="10" value="'+esc(s.amount==null?"":s.amount)+'" style="width:92px">'+
+    '<select data-k="cadence" style="width:auto">'+
+      Object.entries(CADENCE).map(([k,v])=>'<option value="'+k+'"'+(k===cad?" selected":"")+'>'+esc(v)+'</option>').join("")+
+    '</select>'+
+    '<label style="display:flex;gap:4px;align-items:center;font-size:11px;color:var(--ink-3);white-space:nowrap">'+
+      '<input type="checkbox" data-k="active" style="width:auto"'+(s.active===false?"":" checked")+'> on</label>'+
+    '<button class="del" data-act="row-del" title="Remove" type="button">×</button>'+
+  '</div>';
+}
+function linkRow(l){
+  l = l||{};
+  return '<div class="rrow" data-row="link">'+
+    '<input type="text" data-k="label" placeholder="Brand folder" value="'+esc(l.label||"")+'" style="flex:0 0 34%">'+
+    '<input type="url" data-k="url" placeholder="https://…" value="'+esc(l.url||"")+'" style="flex:1">'+
+    '<button class="del" data-act="row-del" title="Remove" type="button">×</button>'+
+  '</div>';
+}
+function readRows(rowType, keys){
+  return Array.from(overlay.querySelectorAll('[data-row="'+rowType+'"]')).map(r=>{
+    const o = {};
+    keys.forEach(k=>{
+      const el = r.querySelector('[data-k="'+k+'"]');
+      if(!el) { o[k] = ""; return; }
+      o[k] = el.type === "checkbox" ? el.checked : el.value.trim();
+    });
+    return o;
+  }).filter(o=>keys.some(k=>o[k] !== "" && o[k] !== false));
+}
+
+function openClient(id){
+  const c = id ? byId("clients",id) : null;
+  const x = c || {id:uid(),name:"",status:"active",owner:me,contacts:[],services:[],
+                  billing:{},contract:{},links:[],notes:"",activity:[],createdAt:new Date().toISOString()};
+  const b = x.billing||{}, k = x.contract||{};
+  const sites = sitesOf(x.id), socials = socialOf(x.id),
+        tasks = linkedTasks(x.id), meets = linkedMeetings(x.id), deals = dealsOf(x.id);
+
+  const linkedBlock = (!c) ? "" :
+    '<div class="subhead">Everything linked to them</div><div class="linked">'+
+    (sites.length ? sites.map(s=>'<div class="li"><span>◉ '+esc(s.name)+'</span><small>'+
+        (SITE_STATUS[s.status||"ok"]||SITE_STATUS.ok).label+'</small></div>').join("") : '')+
+    (socials.length ? socials.map(s=>'<div class="li"><span>◎ '+esc(s.channel)+' '+esc(s.handle||"")+'</span><small>'+
+        ((SOCIAL_STATUS[s.status||"active"]||SOCIAL_STATUS.active).label)+'</small></div>').join("") : '')+
+    (deals.length ? deals.map(d=>'<div class="li"><span>▤ '+esc(d.company)+'</span><small>'+
+        esc(STAGE_LABEL[d.stage]||d.stage)+'</small></div>').join("") : '')+
+    (tasks.length ? tasks.map(t=>'<div class="li"><span>✓ '+esc(t.title)+'</span><small>'+
+        (t.due?esc(relDay(t.due)):"no date")+'</small></div>').join("") : '')+
+    (meets.length ? meets.map(mt=>'<div class="li"><span>◷ '+esc(mt.title)+'</span><small>'+
+        esc(fmtDate(mt.start))+'</small></div>').join("") : '')+
+    (!sites.length && !socials.length && !deals.length && !tasks.length && !meets.length
+      ? '<div class="empty" style="padding:10px 0">Nothing linked yet. Pick this customer on a site or social account and it shows up here.</div>' : '')+
+    '</div>';
+
+  const activity = (x.activity||[]).slice().reverse().map(n=>
+    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>').join("");
+
+  drawer(c ? (x.name||"Customer") : "New customer",
+    '<input type="hidden" id="cId" value="'+esc(x.id)+'">'+
+    '<label class="f"><span>Business name</span><input type="text" id="cName" value="'+esc(x.name)+'" placeholder="RM Cleary Tarmacadam Ltd"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Status</span><select id="cStatus">'+selOpts(CLIENT_STATUS,x.status||"active")+'</select></label>'+
+      '<label class="f"><span>Looked after by</span><select id="cOwner">'+ownerOptions(x.owner)+'</select></label>'+
+    '</div>'+
+
+    '<div class="subhead">Contacts</div>'+
+    '<div class="rowset" id="cContacts">'+((x.contacts||[]).map(contactRow).join("") || contactRow({}))+'</div>'+
+    '<button class="addrow" data-act="add-contact" type="button">+ Add contact</button>'+
+    '<p style="font-size:11.5px;color:var(--ink-3);margin:0">The first one is treated as the main contact.</p>'+
+
+    '<div class="subhead">What they pay</div>'+
+    '<div class="rowset" id="cServices">'+((x.services||[]).map(serviceRow).join("") || serviceRow({})) +'</div>'+
+    '<button class="addrow" data-act="add-service" type="button">+ Add service</button>'+
+    '<p style="font-size:12.5px;color:var(--ink-2);margin:0">Monthly total: <b id="cTotal" class="mono">'+money(monthlyOf(x))+'</b> '+
+      '<span style="color:var(--ink-3)">— yearly prices are divided by twelve; one-offs are left out.</span></p>'+
+
+    '<div class="subhead">Billing</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Invoice email</span><input type="email" id="cBillEmail" value="'+esc(b.email||"")+'"></label>'+
+      '<label class="f"><span>Pays on day</span><input type="number" id="cPayDay" min="1" max="31" value="'+esc(b.payDay||"")+'" placeholder="1"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>VAT number</span><input type="text" id="cVat" value="'+esc(b.vat||"")+'"></label>'+
+      '<label class="f"><span>How they pay</span><input type="text" id="cMethod" value="'+esc(b.method||"")+'" placeholder="SEPA · card · transfer"></label>'+
+    '</div>'+
+    '<label class="f"><span>Billing address</span><textarea id="cAddress" style="min-height:56px">'+esc(b.address||"")+'</textarea></label>'+
+
+    '<div class="subhead">Agreement</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Started</span><input type="date" id="cStart" value="'+esc(k.startDate||"")+'"></label>'+
+      '<label class="f"><span>Renews / reviewed</span><input type="date" id="cRenew" value="'+esc(k.renewalDate||"")+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>Notice period</span><input type="text" id="cNotice" value="'+esc(k.noticePeriod||"")+'" placeholder="30 days"></label>'+
+
+    '<div class="subhead">Links</div>'+
+    '<div class="rowset" id="cLinks">'+((x.links||[]).map(linkRow).join("") || linkRow({}))+'</div>'+
+    '<button class="addrow" data-act="add-link" type="button">+ Add link</button>'+
+    '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Addresses only — don\'t keep passwords here.</p>'+
+
+    '<div class="subhead">Notes</div>'+
+    '<label class="f"><span style="display:none">Notes</span><textarea id="cNotes">'+esc(x.notes||"")+'</textarea></label>'+
+    '<label class="f"><span>Add to the history</span><textarea id="cNote" placeholder="Renewed for another year at €400/month"></textarea></label>'+
+    (activity?'<div class="notes">'+activity+'</div>':'')+
+    linkedBlock,
+
+    (c?'<button class="btn danger" data-act="client-delete">Delete</button>':'')+
+    '<button class="btn primary" data-act="client-save" style="margin-left:auto">'+(c?"Save changes":"Create customer")+'</button>');
+
+  // Keep the monthly total honest as they type.
+  const svc = overlay.querySelector("#cServices");
+  if(svc) svc.addEventListener("input", recalcClientTotal);
+  if(svc) svc.addEventListener("change", recalcClientTotal);
+}
+function recalcClientTotal(){
+  const el = overlay && overlay.querySelector("#cTotal");
+  if(!el) return;
+  el.textContent = money(monthlyOf({services: readRows("service",["label","amount","cadence","active"])}));
+}
+function saveClient(){
+  const id = val("#cId"); const prev = byId("clients",id);
+  const services = readRows("service",["label","amount","cadence","active"])
+    .map(s=>({label:s.label, amount:Number(s.amount)||0, cadence:s.cadence||"monthly", active:s.active!==false}));
+  const rec = {
+    id,
+    name: val("#cName")||"Untitled",
+    status: val("#cStatus"),
+    owner: val("#cOwner"),
+    contacts: readRows("contact",["name","role","email","phone"]),
+    services,
+    billing: {email:val("#cBillEmail"), payDay:val("#cPayDay"), vat:val("#cVat"),
+              method:val("#cMethod"), address:val("#cAddress")},
+    contract: {startDate:val("#cStart"), renewalDate:val("#cRenew"), noticePeriod:val("#cNotice")},
+    links: readRows("link",["label","url"]),
+    notes: val("#cNotes"),
+    activity: (prev && prev.activity) || [],
+    createdAt: (prev && prev.createdAt) || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  const note = val("#cNote");
+  if(note) rec.activity = rec.activity.concat([{by:me||"Someone",at:new Date().toISOString(),text:note}]);
+  if(prev && prev.status !== rec.status)
+    rec.activity = rec.activity.concat([{by:me||"Someone",at:new Date().toISOString(),
+      text:"Status changed from "+((CLIENT_STATUS[prev.status]||{}).label||prev.status)+" to "+CLIENT_STATUS[rec.status].label+"."}]);
+  save("clients",rec); closeOverlay(); toast(prev?"Customer updated":"Customer added");
+}
+// Deleting a customer must not leave sites and channels pointing at nothing.
+function deleteClient(id){
+  ["sites","social","deals","tasks","meetings"].forEach(coll=>{
+    data[coll].filter(r=>r.clientId===id).forEach(r=>{
+      const copy = Object.assign({}, r); copy.clientId = "";
+      save(coll, copy);
+    });
+  });
+  remove("clients", id);
+  toast("Customer deleted — anything linked to them was unlinked, not removed");
+}
+
 /* ----- deal ----- */
 function openDeal(id){
   const d = id? byId("deals",id) : null;
@@ -1059,6 +1439,9 @@ function openDeal(id){
       '<label class="f"><span>Next step due</span><input type="date" id="dNextDate" value="'+esc(x.nextStepDate||"")+'"></label>'+
     '</div>'+
     '<label class="f"><span>How they found us</span><input type="text" id="dSource" value="'+esc(x.source)+'" placeholder="Referral · Google · Instagram"></label>'+
+    '<label class="f"><span>Existing customer</span><select id="dClient">'+clientOptions(x.clientId)+'</select>'+
+      '<span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11.5px;color:var(--ink-3);margin-top:4px;display:block">'+
+      'Leave unset for a new prospect — winning the deal offers to create the customer.</span></label>'+
     '<label class="f"><span>Add a note</span><textarea id="dNote" placeholder="What happened on the call?"></textarea></label>'+
     '<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:4px">Activity</div>'+
       '<div class="notes">'+notes+'</div></div>',
@@ -1076,6 +1459,7 @@ function saveDeal(){
     stage: val("#dStage"), owner: val("#dOwner"),
     nextStep: val("#dNext"), nextStepDate: val("#dNextDate"),
     source: val("#dSource"),
+    clientId: val("#dClient"),
     notes: (prev && prev.notes)||[],
     createdAt: (prev && prev.createdAt)||new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -1086,6 +1470,7 @@ function saveDeal(){
   if(prev && prev.stage!==rec.stage)
     rec.notes = rec.notes.concat([{by:me||"Someone",at:new Date().toISOString(),text:"Moved from "+STAGE_LABEL[prev.stage]+" to "+STAGE_LABEL[rec.stage]+"."}]);
   save("deals",rec); closeOverlay(); toast(prev?"Deal updated":"Deal added");
+  if(rec.stage==="won" && !rec.clientId && (!prev || prev.stage!=="won")) offerConvert(rec);
 }
 
 /* ----- task ----- */
@@ -1099,7 +1484,10 @@ function openTask(id){
       '<label class="f"><span>Owner</span><select id="tOwner">'+ownerOptions(x.owner)+'</select></label>'+
       '<label class="f"><span>Due</span><input type="date" id="tDue" value="'+esc(x.due||"")+'"></label>'+
     '</div>'+
-    '<label class="f"><span>Linked deal</span><select id="tDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Linked deal</span><select id="tDeal">'+dealOptions(x.dealId)+'</select></label>'+
+      '<label class="f"><span>Customer</span><select id="tClient">'+clientOptions(x.clientId)+'</select></label>'+
+    '</div>'+
     '<label class="f"><span>Notes</span><textarea id="tNotes">'+esc(x.notes||"")+'</textarea></label>',
     (t?'<button class="btn danger" data-act="task-delete" style="margin-right:auto">Delete</button>':'')+
     '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="task-save">Save</button>');
@@ -1107,7 +1495,7 @@ function openTask(id){
 function saveTask(){
   const id = val("#tId"); const prev = byId("tasks",id);
   save("tasks",{id,title:val("#tTitle")||"Untitled",owner:val("#tOwner"),due:val("#tDue"),
-    dealId:val("#tDeal"),notes:val("#tNotes"),done:prev?prev.done:false,
+    dealId:val("#tDeal"),clientId:val("#tClient"),notes:val("#tNotes"),done:prev?prev.done:false,
     createdAt:(prev&&prev.createdAt)||new Date().toISOString(), sample: prev?!!prev.sample:false});
   closeOverlay();
 }
@@ -1127,7 +1515,10 @@ function openMeeting(id){
       '<label class="f"><span>Where</span><input type="text" id="mLoc" value="'+esc(x.location)+'" placeholder="Google Meet · their office"></label>'+
       '<label class="f"><span>Who</span><input type="text" id="mWho" value="'+esc(x.attendees)+'"></label>'+
     '</div>'+
-    '<label class="f"><span>Linked deal</span><select id="mDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Linked deal</span><select id="mDeal">'+dealOptions(x.dealId)+'</select></label>'+
+      '<label class="f"><span>Customer</span><select id="mClient">'+clientOptions(x.clientId)+'</select></label>'+
+    '</div>'+
     '<label class="f"><span>Agenda &amp; notes</span><textarea id="mAgenda" style="min-height:130px">'+esc(x.agenda||"")+'</textarea></label>',
     (mt?'<button class="btn danger" data-act="meeting-delete">Delete</button>':'')+
     '<button class="btn primary" data-act="meeting-save" style="margin-left:auto">'+(mt?"Save":"Schedule")+'</button>');
@@ -1135,7 +1526,7 @@ function openMeeting(id){
 function saveMeeting(){
   const id = val("#mId"); const prev = byId("meetings",id);
   save("meetings",{id,title:val("#mTitle")||"Meeting",start:val("#mStart"),duration:Number(val("#mDur"))||30,
-    location:val("#mLoc"),attendees:val("#mWho"),dealId:val("#mDeal"),agenda:val("#mAgenda"),
+    location:val("#mLoc"),attendees:val("#mWho"),dealId:val("#mDeal"),clientId:val("#mClient"),agenda:val("#mAgenda"),
     sample: prev?!!prev.sample:false});
   closeOverlay(); toast(prev?"Meeting updated":"Meeting scheduled");
 }
@@ -1155,8 +1546,11 @@ function openSite(id){
     '<input type="hidden" id="sId" value="'+esc(x.id)+'">'+
     '<div class="grid2">'+
       '<label class="f"><span>Site name</span><input type="text" id="sName" value="'+esc(x.name)+'"></label>'+
-      '<label class="f"><span>Client</span><input type="text" id="sClient" value="'+esc(x.client)+'"></label>'+
+      '<label class="f"><span>Customer</span><select id="sClient">'+clientOptions(x.clientId)+'</select></label>'+
     '</div>'+
+    (x.client && !x.clientId
+      ? '<p style="font-size:12px;color:var(--warn);margin:-4px 0 0">Currently typed in as “'+esc(x.client)+
+        '”. Pick the customer above to link it properly.</p>' : '')+
     '<label class="f"><span>URL</span><input type="url" id="sUrl" value="'+esc(x.url)+'" placeholder="https://example.com.au"></label>'+
     '<div class="grid2">'+
       '<label class="f"><span>Status</span><select id="sStatus">'+selOpts(SITE_STATUS,x.status)+'</select></label>'+
@@ -1183,7 +1577,9 @@ function saveSite(){
   const issues = (prev && prev.issues)? prev.issues.slice() : [];
   const newIssue = val("#sIssue");
   if(newIssue) issues.unshift({text:newIssue,severity:overlay.querySelector("#sIssueCrit").checked?"crit":"warn",openedAt:new Date().toISOString(),by:me||"",resolved:false});
-  save("sites",{id,name:val("#sName")||"Untitled site",url:val("#sUrl"),client:val("#sClient"),
+  const clientId = val("#sClient");
+  save("sites",{id,name:val("#sName")||"Untitled site",url:val("#sUrl"),
+    clientId, client: clientId ? "" : ((prev && prev.client) || ""),
     plan:val("#sPlan"),platform:val("#sPlatform"),status:val("#sStatus"),lastChecked:val("#sChecked"),
     sslExpiry:val("#sSsl"),notes:val("#sNotes"),issues,
     monitor: overlay.querySelector("#sMonitor").checked,
@@ -1207,7 +1603,7 @@ function openSocial(id){
   modal(s?"Edit account":"Add social account",
     '<input type="hidden" id="oId" value="'+esc(x.id)+'">'+
     '<div class="grid2">'+
-      '<label class="f"><span>Client</span><input type="text" id="oClient" value="'+esc(x.client)+'"></label>'+
+      '<label class="f"><span>Customer</span><select id="oClient">'+clientOptions(x.clientId)+'</select></label>'+
       '<label class="f"><span>Channel</span><select id="oChannel">'+CHANNELS.map(c=>'<option'+(c===x.channel?" selected":"")+'>'+esc(c)+'</option>').join("")+'</select></label>'+
     '</div>'+
     '<div class="grid2">'+
@@ -1228,13 +1624,77 @@ function openSocial(id){
 }
 function saveSocial(){
   const id = val("#oId"); const prev = byId("social",id);
-  save("social",{id,client:val("#oClient")||"Unassigned",channel:val("#oChannel"),handle:val("#oHandle"),
+  const oClientId = val("#oClient");
+  save("social",{id,clientId:oClientId, client: oClientId ? "" : ((prev && prev.client) || ""),
+    channel:val("#oChannel"),handle:val("#oHandle"),
     cadence:val("#oCadence"),lastPost:val("#oLast"),nextPost:val("#oNext"),status:val("#oStatus"),
     owner:val("#oOwner"),notes:val("#oNotes"), sample: prev?!!prev.sample:false});
   closeOverlay();
 }
 
+/* ============ deal → customer ============ */
+// Offered, never silent: winning a deal proposes the customer record with the
+// details already carried across.
+function offerConvert(deal){
+  modal("Add "+(deal.company||"them")+" as a customer?",
+    '<input type="hidden" id="cvDealId" value="'+esc(deal.id)+'">'+
+    '<p style="margin:0;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+      'The deal stays in the Pipeline as history. The customer record is where their contact details, '+
+      'what they pay and their agreement dates live from here on.</p>'+
+    '<p style="margin:0;font-size:13px;color:var(--ink-3)">'+
+      esc(deal.contact||"No contact name")+(deal.email?' · '+esc(deal.email):'')+
+      '<br>You can add what they pay monthly on the next screen.</p>',
+    '<button class="btn" data-close>Not now</button>'+
+    '<button class="btn primary" data-act="convert-deal">Create customer</button>');
+}
+function createClientFromDeal(deal){
+  const rec = {
+    id: uid(),
+    name: deal.company || "Untitled",
+    status: "onboarding",
+    owner: deal.owner || me,
+    contacts: deal.contact || deal.email || deal.phone
+      ? [{name:deal.contact||"", role:"", email:deal.email||"", phone:deal.phone||""}] : [],
+    services: [],
+    billing: {email: deal.email||""},
+    contract: {startDate: todayISO()},
+    links: [],
+    notes: "",
+    activity: [{by:me||"Someone", at:new Date().toISOString(),
+                text:"Created from the won deal — "+money(deal.value)+" at "+(deal.source||"unknown source")+"."}],
+    createdAt: new Date().toISOString()
+  };
+  save("clients", rec);
+  const d = Object.assign({}, deal, {clientId: rec.id});
+  save("deals", d);
+  view = "clients"; render();
+  openClient(rec.id);
+  toast("Customer created — add what they pay");
+}
+
 /* ============ export ============ */
+function downloadCsv(name, head, rows){
+  const q = v => '"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  const csv = "﻿" + [head.map(q).join(",")].concat(rows.map(r=>r.map(q).join(","))).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+  const a = document.createElement("a");
+  a.href = url; a.download = name+"-"+todayISO()+".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  toast("Exported");
+}
+function exportClients(){
+  const head = ["Customer","Status","Looked after by","Main contact","Email","Phone",
+                "Monthly EUR","Annual EUR","Services","Started","Renews","Sites","Channels","VAT"];
+  downloadCsv("claritai-customers", head, data.clients.map(c=>{
+    const p = (c.contacts||[])[0] || {};
+    const k = c.contract||{}, b = c.billing||{};
+    return [c.name, (CLIENT_STATUS[c.status||"active"]||{}).label, c.owner, p.name, p.email||b.email, p.phone,
+            Math.round(monthlyOf(c)), Math.round(monthlyOf(c)*12),
+            (c.services||[]).map(s=>s.label+" "+money(s.amount)+(s.cadence==="yearly"?"/yr":s.cadence==="once"?" once":"/mo")).join(" | "),
+            k.startDate, k.renewalDate, sitesOf(c.id).length, socialOf(c.id).length, b.vat];
+  }));
+}
 async function exportPipeline(){
   const head = ["Company","Contact","Email","Phone","Value EUR","Stage","Owner","Next step","Next step due","Source"];
   const q = v => '"'+String(v==null?"":v).replace(/"/g,'""')+'"';
@@ -1253,12 +1713,28 @@ async function exportPipeline(){
 document.addEventListener("click",e=>{
   const closer = e.target.closest("[data-close]");
   if(closer && overlay && overlay.contains(closer)){ closeOverlay(); return; }
+  const ccard = e.target.closest("[data-client]");
+  if(ccard && !e.target.closest("[data-act]")) return openClient(ccard.dataset.client);
   const b = e.target.closest("[data-act]");
   if(!b) return;
   const act = b.dataset.act;
   const row = b.closest("[data-task],[data-meeting],[data-site],[data-social]");
 
   if(act==="settings") return openTeam();
+
+  if(act==="new-client") return openClient(null);
+  if(act==="client-save") return saveClient();
+  if(act==="client-delete"){ const id=val("#cId"); closeOverlay(); return deleteClient(id); }
+  if(act==="export-clients") return exportClients();
+  if(act==="add-contact"){ overlay.querySelector("#cContacts").insertAdjacentHTML("beforeend", contactRow({})); return; }
+  if(act==="add-service"){ overlay.querySelector("#cServices").insertAdjacentHTML("beforeend", serviceRow({})); return; }
+  if(act==="add-link"){ overlay.querySelector("#cLinks").insertAdjacentHTML("beforeend", linkRow({})); return; }
+  if(act==="row-del"){ b.closest(".rrow").remove(); recalcClientTotal(); return; }
+  if(act==="convert-deal"){
+    const d = byId("deals", val("#cvDealId")); closeOverlay();
+    if(d) createClientFromDeal(d);
+    return;
+  }
 
   if(act==="new-deal") return openDeal(null);
   if(act==="deal-save") return saveDeal();
