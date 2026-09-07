@@ -448,6 +448,7 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
   <nav class="rail">
     <a class="brand" href="https://claritai.ie"><b>clarit<i>ai</i></b><span>Desk</span></a>
     <button class="navbtn" data-view="overview"><span class="ic">◈</span>Overview</button>
+    <button class="navbtn" data-view="leads"><span class="ic">◇</span>Leads<span class="tag" data-tag="leads"></span></button>
     <button class="navbtn" data-view="pipeline"><span class="ic">▤</span>Pipeline<span class="tag" data-tag="pipeline"></span></button>
     <button class="navbtn" data-view="clients"><span class="ic">◆</span>Customers<span class="tag" data-tag="clients"></span></button>
     <button class="navbtn" data-view="tasks"><span class="ic">✓</span>To-dos<span class="tag" data-tag="tasks"></span></button>
@@ -508,7 +509,13 @@ const SOCIAL_STATUS = {
   paused:{label:"Paused",cls:""}, setup:{label:"Setting up",cls:"accent"}
 };
 const CHANNELS = ["Instagram","Facebook","LinkedIn","TikTok","X","YouTube","Google Business","Newsletter"];
-const COLLS = ["clients","deals","tasks","meetings","sites","social"];
+const COLLS = ["leads","clients","deals","tasks","meetings","sites","social"];
+const LEAD_STATUS = {
+  new:{label:"To research",cls:""}, researching:{label:"Researching",cls:"accent"},
+  contacted:{label:"Contacted",cls:"warn"}, promoted:{label:"In pipeline",cls:"ok"},
+  dead:{label:"Not a fit",cls:""}
+};
+const FIT = {"":"Not rated", hot:"Good fit", warm:"Maybe", cold:"Long shot"};
 const CLIENT_STATUS = {
   active:{label:"Active",cls:"ok"}, onboarding:{label:"Onboarding",cls:"accent"},
   paused:{label:"Paused",cls:"warn"}, former:{label:"Former",cls:""}
@@ -516,7 +523,7 @@ const CLIENT_STATUS = {
 const CADENCE = {monthly:"per month", yearly:"per year", once:"one-off"};
 
 /* ============ state ============ */
-const data = {clients:[],deals:[],tasks:[],meetings:[],sites:[],social:[]};
+const data = {leads:[],clients:[],deals:[],tasks:[],meetings:[],sites:[],social:[]};
 let team = [];              // staff who have signed in, from the server
 let view = "overview";
 let me = "";                // display name of the signed-in user
@@ -638,6 +645,15 @@ const siteAlerts  = ()=> data.sites.filter(s=>s.status==="warn"||s.status==="cri
 const socialBehind= ()=> data.social.filter(s=>s.status==="behind");
 const hasSample   = ()=> COLLS.some(c=>data[c].some(r=>r.sample));
 
+/* ---- leads ---- */
+// "Open" means still worth a look: not yet promoted into the pipeline, not parked.
+const openLeads = ()=> data.leads.filter(l=>l.status!=="promoted" && l.status!=="dead");
+function promotedThisYear(){
+  const y = new Date().getFullYear();
+  return data.leads.filter(l=>l.status==="promoted" && l.promotedAt &&
+    new Date(l.promotedAt).getFullYear()===y);
+}
+
 /* ---- customers ---- */
 function clientById(id){ return id ? data.clients.find(c=>c.id===id) : null; }
 // Records made before Customers existed carry a typed name; fall back to it so
@@ -698,6 +714,7 @@ document.querySelectorAll(".navbtn").forEach(b=>{
 /* ============ render ============ */
 function render(){
   document.querySelectorAll(".navbtn").forEach(b=>b.setAttribute("aria-current", String(b.dataset.view===view)));
+  setTag("leads", openLeads().length);
   setTag("pipeline", openDeals().length);
   setTag("clients", activeClients().length, renewalsDue().length>0);
   setTag("tasks", openTasks().length, dueTasks().length>0);
@@ -910,6 +927,192 @@ function dealCard(d){
     (d.nextStep?'<span class="next'+(late?" due":"")+'"><span>→</span><span>'+esc(d.nextStep)+
       (d.nextStepDate?' <span class="mono">'+esc(relDay(d.nextStepDate))+'</span>':'')+'</span></span>':'')+
   '</article>';
+}
+
+/* ---------- LEADS ---------- */
+let showDead = false, leadDraft = "";
+
+VIEWS.leads = {
+  title:"Leads",
+  lede:"Businesses worth a look. Nothing here counts as a deal — promote one into the Pipeline when it's worth chasing.",
+  actions:()=>'<button class="btn" data-act="paste-leads">Paste a list</button>'+
+    '<button class="btn" data-act="toggle-dead">'+(showDead?"Hide parked":"Show parked")+'</button>'+
+    '<button class="btn primary" data-act="new-lead">New lead</button>',
+  meta(){
+    const open = openLeads();
+    const fresh = data.leads.filter(l=>(l.status||"new")==="new").length;
+    const contacted = data.leads.filter(l=>l.status==="contacted").length;
+    const dead = data.leads.filter(l=>l.status==="dead").length;
+    return m([
+      ["Still to chase", open.length, ""],
+      ["Not looked at yet", fresh, ""],
+      ["Contacted", contacted, ""],
+      ["Promoted this year", promotedThisYear().length, promotedThisYear().length?"ok":""],
+      ["Parked", dead, ""]
+    ]);
+  },
+  body(){
+    const q = '<div class="quickadd">'+
+      '<input type="text" id="laText" placeholder="Business name — press Enter to add">'+
+      '<input type="text" id="laSite" placeholder="Website (optional)" style="width:210px">'+
+      '<input type="text" id="laSource" placeholder="Where from?" style="width:150px">'+
+      '<button class="btn primary sm" data-act="la-add">Add</button></div>';
+
+    const groups = [
+      {k:"Not looked at yet", f:l=>(l.status||"new")==="new"},
+      {k:"Researching",       f:l=>l.status==="researching"},
+      {k:"Contacted",         f:l=>l.status==="contacted"},
+      {k:"Promoted",          f:l=>l.status==="promoted"}
+    ];
+    if(showDead) groups.push({k:"Parked — not a fit", f:l=>l.status==="dead"});
+
+    let out = q, any = false;
+    groups.forEach(g=>{
+      const list = data.leads.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
+      if(!list.length) return;
+      any = true;
+      out += '<div class="grouphead">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
+             '<div class="rows">'+list.map(leadRow).join("")+'</div>';
+    });
+    if(!any) out += '<div class="empty" style="padding:44px 0">No leads yet.<br><br>'+
+      'Add one above, or use <b>Paste a list</b> to drop in a whole batch of names at once.</div>';
+    return out;
+  },
+  after(){
+    const t = $("#laText");
+    if(t){
+      t.value = leadDraft;
+      t.addEventListener("input",()=>{leadDraft=t.value;});
+      t.addEventListener("keydown",e=>{ if(e.key==="Enter") addQuickLead(); });
+    }
+    const s = $("#laSource");
+    if(s) s.addEventListener("keydown",e=>{ if(e.key==="Enter") addQuickLead(); });
+  }
+};
+
+function leadRow(l){
+  const st = LEAD_STATUS[l.status||"new"] || LEAD_STATUS.new;
+  const host = (l.website||"").replace(/^https?:\/\//,"").replace(/\/$/,"");
+  return '<div class="row" data-lead="'+esc(l.id)+'">'+
+    '<span class="grow"><span class="t">'+esc(l.name||"Untitled")+'</span><span class="s">'+
+      (host?'<a href="'+esc(l.website)+'" target="_blank" rel="noopener" class="mono" style="color:var(--accent);text-decoration:none">'+esc(host)+'</a>':'')+
+      (l.source?'<span>'+esc(l.source)+'</span>':'')+
+      (l.contact?'<span>'+esc(l.contact)+'</span>':'')+
+      (l.fit?'<span>'+esc(FIT[l.fit]||l.fit)+'</span>':'')+
+    '</span></span>'+
+    '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
+    (l.status==="promoted" ? '' :
+      '<button class="btn sm" data-act="lead-promote">Promote</button>')+
+    '<button class="btn ghost sm" data-act="lead-edit">Open</button>'+
+  '</div>';
+}
+
+function addQuickLead(){
+  const name = ($("#laText").value||"").trim();
+  if(!name) return;
+  let site = ($("#laSite").value||"").trim();
+  if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
+  save("leads",{id:uid(),name,website:site,source:($("#laSource").value||"").trim(),
+    contact:"",email:"",phone:"",fit:"",status:"new",notes:"",
+    addedBy:me||"",addedAt:new Date().toISOString()});
+  leadDraft=""; $("#laText").value=""; $("#laSite").value="";
+  setTimeout(()=>{ const t=$("#laText"); t && t.focus(); },0);
+}
+
+function openPasteLeads(){
+  modal("Paste a list of businesses",
+    '<p style="margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
+      'One per line. If you have websites too, put them after a comma — '+
+      '<span class="mono">Acme Joinery, acmejoinery.ie</span>. Anything already on the list is skipped.</p>'+
+    '<label class="f"><span>Businesses</span><textarea id="plText" style="min-height:170px" '+
+      'placeholder="Acme Joinery, acmejoinery.ie&#10;Ratoath Motors&#10;Dunboyne Dental, dunboynedental.ie"></textarea></label>'+
+    '<label class="f"><span>Where did these come from?</span><input type="text" id="plSource" placeholder="Google Maps · Chamber list · LinkedIn"></label>',
+    '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="pl-add">Add them</button>');
+}
+function addPastedLeads(){
+  const raw = (overlay.querySelector("#plText").value||"").split("\n");
+  const source = val("#plSource");
+  const existing = new Set(data.leads.map(l=>(l.name||"").trim().toLowerCase()));
+  let added = 0, skipped = 0;
+  raw.forEach(line=>{
+    const t = line.trim(); if(!t) return;
+    const bits = t.split(",");
+    const name = (bits[0]||"").trim();
+    if(!name) return;
+    if(existing.has(name.toLowerCase())){ skipped++; return; }
+    existing.add(name.toLowerCase());
+    let site = (bits[1]||"").trim();
+    if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
+    save("leads",{id:uid(),name,website:site,source,contact:"",email:"",phone:"",
+      fit:"",status:"new",notes:"",addedBy:me||"",addedAt:new Date().toISOString()});
+    added++;
+  });
+  closeOverlay();
+  toast(added+" lead"+(added===1?"":"s")+" added"+(skipped?", "+skipped+" already on the list":""));
+}
+
+function openLead(id){
+  const l = id ? byId("leads",id) : null;
+  const x = l || {id:uid(),name:"",website:"",source:"",contact:"",email:"",phone:"",
+                  fit:"",status:"new",notes:"",addedBy:me||"",addedAt:new Date().toISOString()};
+  drawer(l ? (x.name||"Lead") : "New lead",
+    '<input type="hidden" id="lId" value="'+esc(x.id)+'">'+
+    '<label class="f"><span>Business name</span><input type="text" id="lName" value="'+esc(x.name)+'"></label>'+
+    '<label class="f"><span>Website</span><input type="url" id="lWeb" value="'+esc(x.website)+'" placeholder="https://…"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Where you found them</span><input type="text" id="lSource" value="'+esc(x.source)+'" placeholder="Google Maps · referral"></label>'+
+      '<label class="f"><span>Worth chasing?</span><select id="lFit">'+
+        Object.entries(FIT).map(([k,v])=>'<option value="'+k+'"'+(k===(x.fit||"")?" selected":"")+'>'+esc(v)+'</option>').join("")+
+      '</select></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Contact</span><input type="text" id="lContact" value="'+esc(x.contact)+'"></label>'+
+      '<label class="f"><span>Status</span><select id="lStatus">'+selOpts(LEAD_STATUS,x.status||"new")+'</select></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Email</span><input type="email" id="lEmail" value="'+esc(x.email)+'"></label>'+
+      '<label class="f"><span>Phone</span><input type="text" id="lPhone" value="'+esc(x.phone)+'"></label>'+
+    '</div>'+
+    '<label class="f"><span>Notes</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
+    (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
+      (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : '')+
+    (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : ''),
+
+    (l?'<button class="btn danger" data-act="lead-delete">Delete</button>':'')+
+    (l && x.status!=="promoted" ? '<button class="btn" data-act="lead-promote-drawer">Promote to deal</button>':'')+
+    '<button class="btn primary" data-act="lead-save" style="margin-left:auto">'+(l?"Save":"Add lead")+'</button>');
+}
+function saveLead(){
+  const id = val("#lId"); const prev = byId("leads",id);
+  let site = val("#lWeb");
+  if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
+  save("leads",{id,name:val("#lName")||"Untitled",website:site,source:val("#lSource"),
+    contact:val("#lContact"),email:val("#lEmail"),phone:val("#lPhone"),
+    fit:val("#lFit"),status:val("#lStatus"),notes:val("#lNotes"),
+    addedBy:(prev&&prev.addedBy)||me||"", addedAt:(prev&&prev.addedAt)||new Date().toISOString(),
+    promotedAt:(prev&&prev.promotedAt)||"", dealId:(prev&&prev.dealId)||""});
+  closeOverlay();
+}
+// Promoting hands the lead to the Pipeline and leaves a record behind, so a
+// scraped list never gets researched twice.
+function promoteLead(id){
+  const l = byId("leads",id); if(!l) return;
+  const deal = {
+    id: uid(),
+    company: l.name, contact: l.contact||"", email: l.email||"", phone: l.phone||"",
+    value: 0, stage: "lead", owner: me||"",
+    nextStep: "First contact", nextStepDate: "",
+    source: l.source||"", clientId: "",
+    notes: [{by:me||"Someone", at:new Date().toISOString(),
+             text:"Promoted from Leads"+(l.source?" — found via "+l.source:"")+(l.notes?". "+l.notes:"")}],
+    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), wonAt:""
+  };
+  save("deals", deal);
+  save("leads", Object.assign({}, l, {status:"promoted", promotedAt:new Date().toISOString(), dealId:deal.id}));
+  closeOverlay();
+  view = "pipeline"; render();
+  openDeal(deal.id);
+  toast("Moved into the Pipeline");
 }
 
 /* ---------- CUSTOMERS ---------- */
@@ -1740,9 +1943,20 @@ document.addEventListener("click",e=>{
   const b = e.target.closest("[data-act]");
   if(!b) return;
   const act = b.dataset.act;
-  const row = b.closest("[data-task],[data-meeting],[data-site],[data-social]");
+  const row = b.closest("[data-lead],[data-task],[data-meeting],[data-site],[data-social]");
 
   if(act==="settings") return openTeam();
+
+  if(act==="new-lead") return openLead(null);
+  if(act==="lead-save") return saveLead();
+  if(act==="lead-edit") return openLead(row.dataset.lead);
+  if(act==="lead-promote") return promoteLead(row.dataset.lead);
+  if(act==="lead-promote-drawer") return promoteLead(val("#lId"));
+  if(act==="lead-delete"){ const id=val("#lId"); closeOverlay(); return remove("leads",id); }
+  if(act==="la-add") return addQuickLead();
+  if(act==="paste-leads") return openPasteLeads();
+  if(act==="pl-add") return addPastedLeads();
+  if(act==="toggle-dead"){ showDead=!showDead; return render(); }
 
   if(act==="new-client") return openClient(null);
   if(act==="client-save") return saveClient();

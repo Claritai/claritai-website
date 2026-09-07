@@ -16,7 +16,7 @@ const pool = new Pool({
 // The record types the Desk stores. Each row is {id, data jsonb, updated_at}:
 // the app works in whole records, so a document shape keeps the API thin and means
 // adding a field to a form never needs a migration. JSONB is still fully queryable.
-const COLLECTIONS = ['clients', 'deals', 'tasks', 'meetings', 'sites', 'social'];
+const COLLECTIONS = ['leads', 'clients', 'deals', 'tasks', 'meetings', 'sites', 'social'];
 
 async function init() {
   const client = await pool.connect();
