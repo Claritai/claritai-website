@@ -319,6 +319,26 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .issue.crit .b{background:var(--crit)}
 .site .foot{display:flex;gap:6px;margin-top:auto;padding-top:4px}
 
+/* ---------- lead demo toggle ---------- */
+.demotoggle{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;flex:none;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-3);
+  font:inherit;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+}
+.demotoggle:hover{border-color:var(--accent);color:var(--accent)}
+.demotoggle .box{
+  width:13px;height:13px;border-radius:3px;border:1.5px solid currentColor;
+  display:grid;place-items:center;font-size:9px;line-height:1;flex:none;
+}
+.demotoggle .box span{opacity:0}
+.demotoggle[aria-pressed="true"]{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.demotoggle[aria-pressed="true"] .box{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.demotoggle[aria-pressed="true"] .box span{opacity:1}
+.demotoggle.sent{background:var(--accent-soft);color:var(--accent)}
+.demotoggle.sent .box{background:var(--accent);border-color:var(--accent)}
+.demolink{font-size:11px;color:var(--accent);text-decoration:none;white-space:nowrap;flex:none}
+.demolink:hover{text-decoration:underline}
+
 /* ---------- customers ---------- */
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .ccard{
@@ -943,9 +963,11 @@ VIEWS.leads = {
     const fresh = data.leads.filter(l=>(l.status||"new")==="new").length;
     const contacted = data.leads.filter(l=>l.status==="contacted").length;
     const dead = data.leads.filter(l=>l.status==="dead").length;
+    const toSend = open.filter(l=>l.demoBuilt && !l.demoSent).length;
     return m([
       ["Still to chase", open.length, ""],
       ["Not looked at yet", fresh, ""],
+      ["Demos to send", toSend, toSend?"warn":""],
       ["Contacted", contacted, ""],
       ["Promoted this year", promotedThisYear().length, promotedThisYear().length?"ok":""],
       ["Parked", dead, ""]
@@ -993,6 +1015,7 @@ VIEWS.leads = {
 function leadRow(l){
   const st = LEAD_STATUS[l.status||"new"] || LEAD_STATUS.new;
   const host = (l.website||"").replace(/^https?:\/\//,"").replace(/\/$/,"");
+  const built = !!l.demoBuilt, sent = built && !!l.demoSent;
   return '<div class="row" data-lead="'+esc(l.id)+'">'+
     '<span class="grow"><span class="t">'+esc(l.name||"Untitled")+'</span><span class="s">'+
       (host?'<a href="'+esc(l.website)+'" target="_blank" rel="noopener" class="mono" style="color:var(--accent);text-decoration:none">'+esc(host)+'</a>':'')+
@@ -1000,11 +1023,27 @@ function leadRow(l){
       (l.contact?'<span>'+esc(l.contact)+'</span>':'')+
       (l.fit?'<span>'+esc(FIT[l.fit]||l.fit)+'</span>':'')+
     '</span></span>'+
+    // One click marks a demo built; a second marks it sent. Both are undone by
+    // a third, so the whole state lives in one control.
+    '<button class="demotoggle'+(sent?" sent":"")+'" aria-pressed="'+(built?"true":"false")+'" '+
+      'data-act="lead-demo" title="'+(sent?"Demo sent — click to clear":(built?"Demo built — click to mark sent":"Click when a demo site is built"))+'">'+
+      '<span class="box"><span>✓</span></span>'+(sent?"Demo sent":(built?"Demo ready":"Demo"))+'</button>'+
+    (built && l.demoUrl ? '<a class="demolink" href="'+esc(l.demoUrl)+'" target="_blank" rel="noopener">View</a>' : '')+
     '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
     (l.status==="promoted" ? '' :
       '<button class="btn sm" data-act="lead-promote">Promote</button>')+
     '<button class="btn ghost sm" data-act="lead-edit">Open</button>'+
   '</div>';
+}
+// off → built → sent → off
+function cycleDemo(id){
+  const l = byId("leads",id); if(!l) return;
+  const rec = Object.assign({}, l);
+  if(!rec.demoBuilt){ rec.demoBuilt = true; rec.demoSent = false; rec.demoBuiltAt = new Date().toISOString(); }
+  else if(!rec.demoSent){ rec.demoSent = true; rec.demoSentAt = new Date().toISOString(); }
+  else { rec.demoBuilt = false; rec.demoSent = false; rec.demoBuiltAt = ""; rec.demoSentAt = ""; }
+  save("leads", rec);
+  if(rec.demoBuilt && !rec.demoUrl) toast("Marked as built — add the demo link in Open");
 }
 
 function addQuickLead(){
@@ -1014,6 +1053,7 @@ function addQuickLead(){
   if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
   save("leads",{id:uid(),name,website:site,source:($("#laSource").value||"").trim(),
     contact:"",email:"",phone:"",fit:"",status:"new",notes:"",
+    demoBuilt:false,demoSent:false,demoUrl:"",
     addedBy:me||"",addedAt:new Date().toISOString()});
   leadDraft=""; $("#laText").value=""; $("#laSite").value="";
   setTimeout(()=>{ const t=$("#laText"); t && t.focus(); },0);
@@ -1044,7 +1084,8 @@ function addPastedLeads(){
     let site = (bits[1]||"").trim();
     if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
     save("leads",{id:uid(),name,website:site,source,contact:"",email:"",phone:"",
-      fit:"",status:"new",notes:"",addedBy:me||"",addedAt:new Date().toISOString()});
+      fit:"",status:"new",notes:"",demoBuilt:false,demoSent:false,demoUrl:"",
+      addedBy:me||"",addedAt:new Date().toISOString()});
     added++;
   });
   closeOverlay();
@@ -1073,7 +1114,17 @@ function openLead(id){
       '<label class="f"><span>Email</span><input type="email" id="lEmail" value="'+esc(x.email)+'"></label>'+
       '<label class="f"><span>Phone</span><input type="text" id="lPhone" value="'+esc(x.phone)+'"></label>'+
     '</div>'+
-    '<label class="f"><span>Notes</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
+    '<div class="subhead">Demo site</div>'+
+    '<label class="f" style="display:flex;gap:9px;align-items:flex-start"><input type="checkbox" id="lDemoBuilt" style="width:auto;margin-top:2px"'+(x.demoBuilt?" checked":"")+'>'+
+      '<span style="margin:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);font-weight:500">We\'ve built a demo site for them</span></label>'+
+    '<label class="f" style="display:flex;gap:9px;align-items:flex-start"><input type="checkbox" id="lDemoSent" style="width:auto;margin-top:2px"'+(x.demoSent?" checked":"")+'>'+
+      '<span style="margin:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);font-weight:500">And we\'ve sent it to them</span></label>'+
+    '<label class="f"><span>Demo link</span><input type="url" id="lDemoUrl" value="'+esc(x.demoUrl||"")+'" placeholder="https://…"></label>'+
+    (x.demoBuiltAt||x.demoSentAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">'+
+      (x.demoBuiltAt?'Built '+fmtDate(x.demoBuiltAt):'')+
+      (x.demoSentAt?' · sent '+fmtDate(x.demoSentAt):'')+'</p>' : '')+
+    '<div class="subhead">Notes</div>'+
+    '<label class="f"><span style="display:none">Notes</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
     (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
       (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : '')+
     (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : ''),
@@ -1089,6 +1140,11 @@ function saveLead(){
   save("leads",{id,name:val("#lName")||"Untitled",website:site,source:val("#lSource"),
     contact:val("#lContact"),email:val("#lEmail"),phone:val("#lPhone"),
     fit:val("#lFit"),status:val("#lStatus"),notes:val("#lNotes"),
+    demoBuilt: overlay.querySelector("#lDemoBuilt").checked,
+    demoSent: overlay.querySelector("#lDemoBuilt").checked && overlay.querySelector("#lDemoSent").checked,
+    demoUrl: (function(u){ return u && !/^https?:\/\//i.test(u) ? "https://"+u : u; })(val("#lDemoUrl")),
+    demoBuiltAt: (prev&&prev.demoBuiltAt) || (overlay.querySelector("#lDemoBuilt").checked ? new Date().toISOString() : ""),
+    demoSentAt: (prev&&prev.demoSentAt) || (overlay.querySelector("#lDemoSent").checked ? new Date().toISOString() : ""),
     addedBy:(prev&&prev.addedBy)||me||"", addedAt:(prev&&prev.addedAt)||new Date().toISOString(),
     promotedAt:(prev&&prev.promotedAt)||"", dealId:(prev&&prev.dealId)||""});
   closeOverlay();
@@ -1104,7 +1160,9 @@ function promoteLead(id){
     nextStep: "First contact", nextStepDate: "",
     source: l.source||"", clientId: "",
     notes: [{by:me||"Someone", at:new Date().toISOString(),
-             text:"Promoted from Leads"+(l.source?" — found via "+l.source:"")+(l.notes?". "+l.notes:"")}],
+             text:"Promoted from Leads"+(l.source?" — found via "+l.source:"")+
+                  (l.demoBuilt?". Demo site built"+(l.demoSent?" and sent":" (not sent yet)")+(l.demoUrl?": "+l.demoUrl:""):"")+
+                  (l.notes?". "+l.notes:"")}],
     createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), wonAt:""
   };
   save("deals", deal);
@@ -1951,6 +2009,7 @@ document.addEventListener("click",e=>{
   if(act==="lead-save") return saveLead();
   if(act==="lead-edit") return openLead(row.dataset.lead);
   if(act==="lead-promote") return promoteLead(row.dataset.lead);
+  if(act==="lead-demo") return cycleDemo(row.dataset.lead);
   if(act==="lead-promote-drawer") return promoteLead(val("#lId"));
   if(act==="lead-delete"){ const id=val("#lId"); closeOverlay(); return remove("leads",id); }
   if(act==="la-add") return addQuickLead();
