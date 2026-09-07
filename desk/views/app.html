@@ -670,6 +670,20 @@ function renewalsDue(days){
     return n!==null && n<=win;
   });
 }
+/* ---- won business ---- */
+// Deals won before wonAt was recorded fall back to when they were last touched,
+// so historical records still land in a sensible year.
+const wonAtOf = d => d.wonAt || d.updatedAt || d.createdAt || "";
+function wonThisYear(){
+  const y = new Date().getFullYear();
+  return data.deals.filter(d=>d.stage==="won").filter(d=>{
+    const t = wonAtOf(d); if(!t) return false;
+    const dt = new Date(t);
+    return !isNaN(dt) && dt.getFullYear() === y;
+  });
+}
+const sumValue = list => list.reduce((a,d)=>a+(Number(d.value)||0),0);
+
 const sitesOf  = id => data.sites.filter(s=>s.clientId===id);
 const socialOf = id => data.social.filter(s=>s.clientId===id);
 const dealsOf  = id => data.deals.filter(d=>d.clientId===id);
@@ -762,10 +776,11 @@ VIEWS.overview = {
     const open = openDeals().reduce((a,d)=>a+(Number(d.value)||0),0);
     const od = dueTasks().length, al = siteAlerts().length;
     const monthly = mrr();
+    const won = wonThisYear();
     return m([
       ["Monthly recurring", money(monthly), monthly?"ok":""],
+      ["Won this year", money(sumValue(won)), sumValue(won)?"ok":""],
       ["Open pipeline", money(open), ""],
-      ["Open deals", openDeals().length, ""],
       ["Tasks due or overdue", od, od?"warn":"ok"],
       ["Sites needing attention", al, al?"crit":"ok"],
       ["Meetings ahead", upcoming().length, ""]
@@ -773,8 +788,9 @@ VIEWS.overview = {
   },
   body(){
     const sv = stageValues();
+    const anyOpen = openDeals().length > 0;
     const max = Math.max(1, ...sv.map(s=>s.v));
-    const bars = sv.map(s=>
+    const bars = !anyOpen ? '<div class="empty">Nothing in the pipeline right now. Add a deal and the funnel fills in here.</div>' : sv.map(s=>
       '<div class="barrow" title="'+esc(s.label)+': '+s.n+' deal'+(s.n===1?"":"s")+', '+money(s.v)+'">'+
         '<span class="bl">'+esc(s.label)+'</span>'+
         '<span class="bartrack"><span class="barfill" style="width:'+Math.max(2,Math.round(s.v/max*100))+'%"></span></span>'+
@@ -810,9 +826,9 @@ VIEWS.overview = {
     return '<div class="ovgrid">'+
       '<div class="stack">'+
         '<section class="panel"><h3>Open pipeline by stage</h3><div class="pbody">'+bars+
-          '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>Won to date · '+
-          money(data.deals.filter(d=>d.stage==="won").reduce((a,d)=>a+(Number(d.value)||0),0))+' across '+
-          data.deals.filter(d=>d.stage==="won").length+' deal'+(data.deals.filter(d=>d.stage==="won").length===1?"":"s")+'</small></span></div>'+
+          (wonThisYear().length ? '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>Won this year · '+
+          money(sumValue(wonThisYear()))+' across '+wonThisYear().length+' deal'+(wonThisYear().length===1?"":"s")+
+          '</small></span></div>' : '')+
         '</div></section>'+
         revenuePanel()+
         '<section class="panel"><h3>Next up</h3><div class="pbody">'+weekHtml+'</div></section>'+
@@ -838,12 +854,13 @@ VIEWS.pipeline = {
     const open = openDeals();
     const val = open.reduce((a,d)=>a+(Number(d.value)||0),0);
     const late = open.filter(d=>d.nextStepDate&&dayDiff(d.nextStepDate)<0).length;
-    const won = data.deals.filter(d=>d.stage==="won");
+    const won = wonThisYear();
     return m([
       ["Open deals", open.length, ""],
       ["Open value", money(val), ""],
       ["Follow-ups late", late, late?"crit":"ok"],
-      ["Won", money(won.reduce((a,d)=>a+(Number(d.value)||0),0)), "ok"]
+      ["Won this year", money(sumValue(won)), sumValue(won)?"ok":""],
+      ["Deals won", won.length, ""]
     ]);
   },
   body(){
@@ -874,6 +891,8 @@ VIEWS.pipeline = {
         if(!d || d.stage===col.dataset.stage) return;
         const from = STAGE_LABEL[d.stage];
         d.stage = col.dataset.stage; d.updatedAt = new Date().toISOString();
+        if(d.stage==="won" && !d.wonAt) d.wonAt = new Date().toISOString();
+        if(d.stage!=="won") d.wonAt = "";
         d.notes = (d.notes||[]).concat([{by:me||"Someone",at:new Date().toISOString(),text:"Moved from "+from+" to "+STAGE_LABEL[d.stage]+"."}]);
         save("deals",d);
         if(d.stage==="won" && !d.clientId) offerConvert(d);
@@ -1463,6 +1482,9 @@ function saveDeal(){
     notes: (prev && prev.notes)||[],
     createdAt: (prev && prev.createdAt)||new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    // Stamped the moment it first reaches Won, so "won this year" stays true
+    // even if the record is edited later.
+    wonAt: val("#dStage")==="won" ? ((prev && prev.stage==="won" && prev.wonAt) || new Date().toISOString()) : "",
     sample: prev? !!prev.sample : false
   };
   const note = val("#dNote");
