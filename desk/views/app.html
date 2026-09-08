@@ -557,6 +557,16 @@ const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const money = n => (Number(n)||0).toLocaleString("en-IE",{style:"currency",currency:"EUR",maximumFractionDigits:0});
 const initials = n => String(n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+// Most of what the studio sells has two shapes: a one-off build and a monthly
+// fee. Showing them as one blended number would flatter both, so they stay
+// side by side wherever a total appears.
+function moneyPair(once, monthly){
+  once = Number(once)||0; monthly = Number(monthly)||0;
+  if(!monthly) return money(once);
+  if(!once) return money(monthly)+"/mo";
+  return money(once)+" + "+money(monthly)+"/mo";
+}
+const sumMonthly = list => list.reduce((a,d)=>a+(Number(d.monthlyValue)||0),0);
 
 function todayISO(){ const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); }
 function dayDiff(iso){
@@ -816,7 +826,7 @@ VIEWS.overview = {
     const won = wonThisYear();
     return m([
       ["Monthly recurring", money(monthly), monthly?"ok":""],
-      ["Won this year", money(sumValue(won)), sumValue(won)?"ok":""],
+      ["Won this year", moneyPair(sumValue(won), sumMonthly(won)), sumValue(won)||sumMonthly(won)?"ok":""],
       ["Open pipeline", money(open), ""],
       ["Tasks due or overdue", od, od?"warn":"ok"],
       ["Sites needing attention", al, al?"crit":"ok"],
@@ -863,8 +873,10 @@ VIEWS.overview = {
     return '<div class="ovgrid">'+
       '<div class="stack">'+
         '<section class="panel"><h3>Open pipeline by stage</h3><div class="pbody">'+bars+
-          (wonThisYear().length ? '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>Won this year · '+
-          money(sumValue(wonThisYear()))+' across '+wonThisYear().length+' deal'+(wonThisYear().length===1?"":"s")+
+          (sumMonthly(openDeals()) ? '<div class="tline" style="border:0;padding-top:10px"><span class="what"><small>Bars show one-off value · a further '+
+          money(sumMonthly(openDeals()))+' a month is riding on these deals</small></span></div>' : '')+
+          (wonThisYear().length ? '<div class="tline" style="border:0;padding-top:'+(sumMonthly(openDeals())?'2px':'10px')+'"><span class="what"><small>Won this year · '+
+          moneyPair(sumValue(wonThisYear()), sumMonthly(wonThisYear()))+' across '+wonThisYear().length+' deal'+(wonThisYear().length===1?"":"s")+
           '</small></span></div>' : '')+
         '</div></section>'+
         revenuePanel()+
@@ -889,14 +901,13 @@ VIEWS.pipeline = {
   actions:()=>'<button class="btn" data-act="export-pipeline">Export CSV</button><button class="btn primary" data-act="new-deal">New deal</button>',
   meta(){
     const open = openDeals();
-    const val = open.reduce((a,d)=>a+(Number(d.value)||0),0);
     const late = open.filter(d=>d.nextStepDate&&dayDiff(d.nextStepDate)<0).length;
     const won = wonThisYear();
     return m([
       ["Open deals", open.length, ""],
-      ["Open value", money(val), ""],
+      ["Open value", moneyPair(sumValue(open), sumMonthly(open)), ""],
       ["Follow-ups late", late, late?"crit":"ok"],
-      ["Won this year", money(sumValue(won)), sumValue(won)?"ok":""],
+      ["Won this year", moneyPair(sumValue(won), sumMonthly(won)), sumValue(won)||sumMonthly(won)?"ok":""],
       ["Deals won", won.length, ""]
     ]);
   },
@@ -942,7 +953,7 @@ function dealCard(d){
   return '<article class="card" draggable="true" data-deal="'+esc(d.id)+'" tabindex="0">'+
     '<span class="co">'+esc(d.company||"Untitled")+'</span>'+
     (d.contact?'<span class="pn">'+esc(d.contact)+'</span>':'')+
-    '<span class="meta"><span class="val">'+money(d.value)+'</span>'+
+    '<span class="meta"><span class="val">'+moneyPair(d.value,d.monthlyValue)+'</span>'+
       (d.owner?'<span class="pill">'+esc(d.owner)+'</span>':'')+'</span>'+
     (d.nextStep?'<span class="next'+(late?" due":"")+'"><span>→</span><span>'+esc(d.nextStep)+
       (d.nextStepDate?' <span class="mono">'+esc(relDay(d.nextStepDate))+'</span>':'')+'</span></span>':'')+
@@ -961,14 +972,14 @@ VIEWS.leads = {
   meta(){
     const open = openLeads();
     const fresh = data.leads.filter(l=>(l.status||"new")==="new").length;
-    const contacted = data.leads.filter(l=>l.status==="contacted").length;
     const dead = data.leads.filter(l=>l.status==="dead").length;
     const toSend = open.filter(l=>l.demoBuilt && !l.demoSent).length;
+    const potential = moneyPair(sumValue(open), sumMonthly(open));
     return m([
       ["Still to chase", open.length, ""],
       ["Not looked at yet", fresh, ""],
       ["Demos to send", toSend, toSend?"warn":""],
-      ["Contacted", contacted, ""],
+      ["If they all landed", potential, ""],
       ["Promoted this year", promotedThisYear().length, promotedThisYear().length?"ok":""],
       ["Parked", dead, ""]
     ]);
@@ -1022,6 +1033,7 @@ function leadRow(l){
       (l.source?'<span>'+esc(l.source)+'</span>':'')+
       (l.contact?'<span>'+esc(l.contact)+'</span>':'')+
       (l.fit?'<span>'+esc(FIT[l.fit]||l.fit)+'</span>':'')+
+      ((l.value||l.monthlyValue)?'<span style="font-weight:600;color:var(--ink-2)">'+esc(moneyPair(l.value,l.monthlyValue))+'</span>':'')+
     '</span></span>'+
     // One click marks a demo built; a second marks it sent. Both are undone by
     // a third, so the whole state lives in one control.
@@ -1053,7 +1065,7 @@ function addQuickLead(){
   if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
   save("leads",{id:uid(),name,website:site,source:($("#laSource").value||"").trim(),
     contact:"",email:"",phone:"",fit:"",status:"new",notes:"",
-    demoBuilt:false,demoSent:false,demoUrl:"",
+    demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,
     addedBy:me||"",addedAt:new Date().toISOString()});
   leadDraft=""; $("#laText").value=""; $("#laSite").value="";
   setTimeout(()=>{ const t=$("#laText"); t && t.focus(); },0);
@@ -1084,7 +1096,7 @@ function addPastedLeads(){
     let site = (bits[1]||"").trim();
     if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
     save("leads",{id:uid(),name,website:site,source,contact:"",email:"",phone:"",
-      fit:"",status:"new",notes:"",demoBuilt:false,demoSent:false,demoUrl:"",
+      fit:"",status:"new",notes:"",demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,
       addedBy:me||"",addedAt:new Date().toISOString()});
     added++;
   });
@@ -1106,6 +1118,11 @@ function openLead(id){
         Object.entries(FIT).map(([k,v])=>'<option value="'+k+'"'+(k===(x.fit||"")?" selected":"")+'>'+esc(v)+'</option>').join("")+
       '</select></label>'+
     '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Likely one-off (EUR)</span><input type="number" id="lValue" value="'+esc(x.value||"")+'" min="0" step="100" placeholder="Build"></label>'+
+      '<label class="f"><span>Likely monthly (EUR)</span><input type="number" id="lMonthly" value="'+esc(x.monthlyValue||"")+'" min="0" step="10" placeholder="Care plan"></label>'+
+    '</div>'+
+    '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Rough guesses are fine — these are only to help you decide who to chase, and they don\'t count as pipeline until you promote them.</p>'+
     '<div class="grid2">'+
       '<label class="f"><span>Contact</span><input type="text" id="lContact" value="'+esc(x.contact)+'"></label>'+
       '<label class="f"><span>Status</span><select id="lStatus">'+selOpts(LEAD_STATUS,x.status||"new")+'</select></label>'+
@@ -1140,6 +1157,7 @@ function saveLead(){
   save("leads",{id,name:val("#lName")||"Untitled",website:site,source:val("#lSource"),
     contact:val("#lContact"),email:val("#lEmail"),phone:val("#lPhone"),
     fit:val("#lFit"),status:val("#lStatus"),notes:val("#lNotes"),
+    value:Number(val("#lValue"))||0, monthlyValue:Number(val("#lMonthly"))||0,
     demoBuilt: overlay.querySelector("#lDemoBuilt").checked,
     demoSent: overlay.querySelector("#lDemoBuilt").checked && overlay.querySelector("#lDemoSent").checked,
     demoUrl: (function(u){ return u && !/^https?:\/\//i.test(u) ? "https://"+u : u; })(val("#lDemoUrl")),
@@ -1156,7 +1174,7 @@ function promoteLead(id){
   const deal = {
     id: uid(),
     company: l.name, contact: l.contact||"", email: l.email||"", phone: l.phone||"",
-    value: 0, stage: "lead", owner: me||"",
+    value: Number(l.value)||0, monthlyValue: Number(l.monthlyValue)||0, stage: "lead", owner: me||"",
     nextStep: "First contact", nextStepDate: "",
     source: l.source||"", clientId: "",
     notes: [{by:me||"Someone", at:new Date().toISOString(),
@@ -1702,9 +1720,10 @@ function openDeal(id){
   drawer(d? x.company||"Deal" : "New deal",
     '<input type="hidden" id="dId" value="'+esc(x.id)+'">'+
     '<label class="f"><span>Company</span><input type="text" id="dCompany" value="'+esc(x.company)+'" placeholder="Acme Joinery"></label>'+
+    '<label class="f"><span>Contact</span><input type="text" id="dContact" value="'+esc(x.contact)+'"></label>'+
     '<div class="grid2">'+
-      '<label class="f"><span>Contact</span><input type="text" id="dContact" value="'+esc(x.contact)+'"></label>'+
-      '<label class="f"><span>Deal value (EUR)</span><input type="number" id="dValue" value="'+esc(x.value||0)+'" min="0" step="100"></label>'+
+      '<label class="f"><span>One-off value (EUR)</span><input type="number" id="dValue" value="'+esc(x.value||0)+'" min="0" step="100" placeholder="Build, setup"></label>'+
+      '<label class="f"><span>Monthly value (EUR)</span><input type="number" id="dMonthly" value="'+esc(x.monthlyValue||0)+'" min="0" step="10" placeholder="Care plan, social"></label>'+
     '</div>'+
     '<div class="grid2">'+
       '<label class="f"><span>Email</span><input type="email" id="dEmail" value="'+esc(x.email)+'"></label>'+
@@ -1736,6 +1755,7 @@ function saveDeal(){
     company: val("#dCompany")||"Untitled",
     contact: val("#dContact"), email: val("#dEmail"), phone: val("#dPhone"),
     value: Number(val("#dValue"))||0,
+    monthlyValue: Number(val("#dMonthly"))||0,
     stage: val("#dStage"), owner: val("#dOwner"),
     nextStep: val("#dNext"), nextStepDate: val("#dNextDate"),
     source: val("#dSource"),
@@ -1979,10 +1999,10 @@ function exportClients(){
   }));
 }
 async function exportPipeline(){
-  const head = ["Company","Contact","Email","Phone","Value EUR","Stage","Owner","Next step","Next step due","Source"];
+  const head = ["Company","Contact","Email","Phone","One-off EUR","Monthly EUR","Stage","Owner","Next step","Next step due","Source"];
   const q = v => '"'+String(v==null?"":v).replace(/"/g,'""')+'"';
   const csv = "﻿" + [head.map(q).join(",")].concat(
-    data.deals.map(d=>[d.company,d.contact,d.email,d.phone,d.value,STAGE_LABEL[d.stage]||d.stage,d.owner,d.nextStep,d.nextStepDate,d.source].map(q).join(","))
+    data.deals.map(d=>[d.company,d.contact,d.email,d.phone,d.value,d.monthlyValue||0,STAGE_LABEL[d.stage]||d.stage,d.owner,d.nextStep,d.nextStepDate,d.source].map(q).join(","))
   ).join("\r\n");
   const url = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
   const a = document.createElement("a");
