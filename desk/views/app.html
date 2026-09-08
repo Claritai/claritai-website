@@ -319,6 +319,19 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .issue.crit .b{background:var(--crit)}
 .site .foot{display:flex;gap:6px;margin-top:auto;padding-top:4px}
 
+/* ---------- search ---------- */
+.searchbox{
+  width:210px;max-width:100%;padding:6px 13px;border-radius:999px;
+  border:1px solid var(--line-strong);background:var(--surface);font-size:13px;
+}
+.searchbox::placeholder{color:var(--ink-3)}
+.searchbox:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.countline{
+  display:flex;align-items:center;gap:8px;margin:0 0 12px;
+  font-size:12.5px;color:var(--ink-2);
+}
+.countline b{color:var(--ink)}
+
 /* ---------- attached file ---------- */
 .filecard{
   display:flex;align-items:center;gap:10px;padding:9px 12px;
@@ -574,6 +587,7 @@ let me = "";                // display name of the signed-in user
 let meEmail = "";
 let overlay = null;
 let dirty = 0;              // in-flight writes; pause polling while they settle
+let query = "";             // the live search term, cleared when you change section
 
 /* ============ helpers ============ */
 const $ = s=>document.querySelector(s);
@@ -708,6 +722,43 @@ function promotedThisYear(){
     new Date(l.promotedAt).getFullYear()===y);
 }
 
+/* ---- search ---- */
+// Every word has to appear somewhere in the record, so "cleary tarmac" finds
+// RM Cleary Tarmacadam but "cleary dental" doesn't.
+function matches(hay, q){
+  if(!q) return true;
+  const s = String(hay||"").toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>s.indexOf(w)>=0);
+}
+function clientText(c){
+  return [c.name, c.owner, (CLIENT_STATUS[c.status||"active"]||{}).label, c.notes,
+    (c.contacts||[]).map(x=>[x.name,x.role,x.email,x.phone].join(" ")).join(" "),
+    (c.services||[]).map(x=>x.label).join(" "),
+    (c.billing||{}).email, (c.billing||{}).vat,
+    (c.links||[]).map(l=>l.label+" "+l.url).join(" ")].join(" ");
+}
+function leadText(l){
+  return [l.name, l.website, l.source, l.contact, l.email, l.phone, l.notes,
+    (LEAD_STATUS[l.status||"new"]||{}).label, FIT[l.fit||""], l.demoUrl].join(" ");
+}
+function docText(d){
+  return [d.title, DOC_KIND[d.kind], (DOC_STATUS[d.status||"draft"]||{}).label,
+    docOwnerName(d), (d.file||{}).name, d.notes].join(" ");
+}
+function searchBox(placeholder){
+  return '<input type="search" class="searchbox" id="searchBox" autocomplete="off" '+
+    'placeholder="'+esc(placeholder)+'" value="'+esc(query)+'">';
+}
+// Says what the filter is doing, so an empty-looking list is never a mystery.
+function countLine(shown, total, noun){
+  if(!query) return "";
+  return '<div class="countline">Showing <b>'+shown+'</b> of '+total+' '+esc(noun)+
+    ' matching “'+esc(query)+'”<button class="btn ghost sm" data-act="clear-search">Clear</button></div>';
+}
+function noMatches(noun){
+  return '<div class="empty" style="padding:38px 0">No '+esc(noun)+' match “'+esc(query)+'”.</div>';
+}
+
 /* ---- documents ---- */
 const awaitingDecision = ()=> data.docs.filter(d=>DECIDABLE.indexOf(d.kind)>=0 && d.status==="sent");
 const agreedDocs = ()=> data.docs.filter(d=>d.status==="signed"||d.status==="accepted");
@@ -784,11 +835,31 @@ function linkedMeetings(id){ return upcoming().filter(m=>m.clientId===id || (m.d
 
 /* ============ nav ============ */
 document.querySelectorAll(".navbtn").forEach(b=>{
-  b.addEventListener("click",()=>{ view=b.dataset.view; closeOverlay(); render(); $("main").scrollTop=0; });
+  b.addEventListener("click",()=>{ view=b.dataset.view; query=""; closeOverlay(); render(); $("main").scrollTop=0; });
 });
 
 /* ============ render ============ */
+function renderBody(){
+  const V = VIEWS[view];
+  $("#content").innerHTML = (hasSample()? sampleBanner() : "") + V.body();
+  V.after && V.after();
+}
+
+// Delegated, so it survives the header being rebuilt on every render.
+document.addEventListener("input", e=>{
+  if(e.target && e.target.id === "searchBox"){ query = e.target.value; renderBody(); }
+});
+document.addEventListener("keydown", e=>{
+  if(e.target && e.target.id === "searchBox" && e.key === "Escape"){
+    query = ""; e.target.value = ""; renderBody();
+  }
+});
+
 function render(){
+  // A background refresh must not yank the caret out of the search box.
+  const active = document.activeElement;
+  const typing = active && active.id === "searchBox";
+  const caret = typing ? active.selectionStart : null;
   document.querySelectorAll(".navbtn").forEach(b=>b.setAttribute("aria-current", String(b.dataset.view===view)));
   setTag("leads", openLeads().length);
   setTag("pipeline", openDeals().length);
@@ -806,6 +877,11 @@ function render(){
   $("#vMeta").innerHTML = V.meta();
   $("#content").innerHTML = (hasSample()? sampleBanner() : "") + V.body();
   V.after && V.after();
+
+  if(typing){
+    const sb = $("#searchBox");
+    if(sb){ sb.focus(); try{ sb.setSelectionRange(caret, caret); }catch(e){} }
+  }
 }
 function setTag(name,n,alert){
   const el = document.querySelector('[data-tag="'+name+'"]');
@@ -1013,7 +1089,8 @@ let showDead = false, leadDraft = "";
 VIEWS.leads = {
   title:"Leads",
   lede:"Businesses worth a look. Nothing here counts as a deal — promote one into the Pipeline when it's worth chasing.",
-  actions:()=>'<button class="btn" data-act="paste-leads">Paste a list</button>'+
+  actions:()=>searchBox("Search leads…")+
+    '<button class="btn" data-act="paste-leads">Paste a list</button>'+
     '<button class="btn" data-act="toggle-dead">'+(showDead?"Hide parked":"Show parked")+'</button>'+
     '<button class="btn primary" data-act="new-lead">New lead</button>',
   meta(){
@@ -1046,15 +1123,17 @@ VIEWS.leads = {
     ];
     if(showDead) groups.push({k:"Parked — not a fit", f:l=>l.status==="dead"});
 
-    let out = q, any = false;
+    const hits = data.leads.filter(l=>matches(leadText(l), query));
+    let out = q + countLine(hits.length, data.leads.length, "leads"), any = false;
     groups.forEach(g=>{
-      const list = data.leads.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
+      const list = hits.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
       if(!list.length) return;
       any = true;
       out += '<div class="grouphead">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
              '<div class="rows">'+list.map(leadRow).join("")+'</div>';
     });
-    if(!any) out += '<div class="empty" style="padding:44px 0">No leads yet.<br><br>'+
+    if(!any && query) out += noMatches("leads");
+    else if(!any) out += '<div class="empty" style="padding:44px 0">No leads yet.<br><br>'+
       'Add one above, or use <b>Paste a list</b> to drop in a whole batch of names at once.</div>';
     return out;
   },
@@ -1242,7 +1321,9 @@ function promoteLead(id){
 VIEWS.clients = {
   title:"Customers",
   lede:"Everyone we look after, what they pay, and when their agreement comes up for review.",
-  actions:()=>'<button class="btn" data-act="export-clients">Export CSV</button><button class="btn primary" data-act="new-client">New customer</button>',
+  actions:()=>searchBox("Search customers…")+
+    '<button class="btn" data-act="export-clients">Export CSV</button>'+
+    '<button class="btn primary" data-act="new-client">New customer</button>',
   meta(){
     const monthly = mrr();
     const due = renewalsDue(60).length;
@@ -1261,11 +1342,14 @@ VIEWS.clients = {
         'Add one directly, or win a deal in the Pipeline and you\'ll be offered the record with its details already filled in.</div>';
     }
     const order = {active:0,onboarding:1,paused:2,former:3};
-    const list = data.clients.slice().sort((a,b)=>{
+    const all = data.clients.slice().sort((a,b)=>{
       const s = (order[a.status||"active"]??0) - (order[b.status||"active"]??0);
       return s !== 0 ? s : monthlyOf(b) - monthlyOf(a);
     });
-    return '<div class="cgrid">'+list.map(clientCard).join("")+'</div>';
+    const list = all.filter(c=>matches(clientText(c), query));
+    if(!list.length) return countLine(0, all.length, "customers") + noMatches("customers");
+    return countLine(list.length, all.length, "customers")+
+      '<div class="cgrid">'+list.map(clientCard).join("")+'</div>';
   }
 };
 function clientCard(c){
@@ -1295,7 +1379,8 @@ function clientCard(c){
 VIEWS.docs = {
   title:"Documents",
   lede:"Proposals, contracts and the working documents a job accumulates — filed against the customer or deal they belong to.",
-  actions:()=>'<button class="btn primary" data-act="new-doc">New document</button>',
+  actions:()=>searchBox("Search documents…")+
+    '<button class="btn primary" data-act="new-doc">New document</button>',
   meta(){
     const waiting = awaitingDecision();
     const drafts = data.docs.filter(d=>d.status==="draft").length;
@@ -1321,13 +1406,16 @@ VIEWS.docs = {
       {k:"Sent",                 f:d=>d.status==="sent" && DECIDABLE.indexOf(d.kind)<0},
       {k:"Closed out",           f:d=>d.status==="declined"||d.status==="superseded"}
     ];
-    let out = "";
+    const hits = data.docs.filter(d=>matches(docText(d), query));
+    let out = countLine(hits.length, data.docs.length, "documents"), any = false;
     groups.forEach(g=>{
-      const list = data.docs.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
+      const list = hits.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
       if(!list.length) return;
+      any = true;
       out += '<div class="grouphead">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
              '<div class="rows">'+list.map(docRow).join("")+'</div>';
     });
+    if(!any) out += noMatches("documents");
     return out;
   }
 };
@@ -2267,6 +2355,11 @@ document.addEventListener("click",e=>{
   const act = b.dataset.act;
   const row = b.closest("[data-lead],[data-doc],[data-task],[data-meeting],[data-site],[data-social]");
 
+  if(act==="clear-search"){
+    query = ""; render();
+    const sb = $("#searchBox"); if(sb) sb.focus();
+    return;
+  }
   if(act==="settings") return openTeam();
 
   if(act==="new-doc"){ docReturn=null; return openDoc(null); }
