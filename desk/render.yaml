@@ -17,6 +17,13 @@ services:
     buildCommand: npm install
     startCommand: node index.js
     healthCheckPath: /health
+    # Uploaded documents live on a persistent disk rather than in the database.
+    # Note: a service with a disk restarts rather than rolling over on deploy,
+    # so expect a few seconds' downtime when you push. Fine for an internal tool.
+    disk:
+      name: desk-files
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -24,6 +31,8 @@ services:
           property: connectionString
       - key: ALLOWED_DOMAIN
         value: claritai.ie
+      - key: FILES_DIR
+        value: /var/data/files
       # BASE_URL is deliberately left out until desk.claritai.ie is live.
       # Without it the app uses whichever hostname it was reached on, so you can
       # test on the .onrender.com URL first. Add it in the dashboard once DNS is

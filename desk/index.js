@@ -22,12 +22,18 @@ try {
 
 const path = require('path');
 const express = require('express');
+const fs = require('fs');
 const db = require('./lib/db');
 const auth = require('./lib/auth');
+const files = require('./lib/files');
 
 const app = express();
 app.set('trust proxy', 1); // Render terminates TLS in front of us
-app.use(express.json({ limit: '1mb' }));
+// Everything except the file upload gets JSON body parsing. The upload route
+// needs the raw request stream, and a text/csv or application/json file would
+// otherwise be swallowed by the parser before it reached disk.
+const parseJson = express.json({ limit: '1mb' });
+app.use((req, res, next) => (req.path === '/api/files' ? next() : parseJson(req, res, next)));
 
 // This is a private staff tool. Keep it out of search results and out of frames.
 app.use((req, res, next) => {
@@ -86,6 +92,47 @@ app.get('/api/data', auth.requireApi, async (req, res, next) => {
   }
 });
 
+// --- documents -----------------------------------------------------------
+// Upload is a raw PUT rather than a multipart form: the browser can send a File
+// object straight as the body, so there's no parser dependency and nothing is
+// buffered in memory on the way to disk.
+app.put('/api/files', auth.requireApi, async (req, res, next) => {
+  try {
+    const filename = String(req.get('x-filename') || '').slice(0, 255);
+    if (!filename) return res.status(400).json({ error: 'missing_filename' });
+    if (!files.isAllowed(filename)) {
+      return res.status(415).json({ error: 'file_type_not_accepted' });
+    }
+    // Refuse on the declared size first. Reading the body only to abort it
+    // mid-flight resets the connection, and the browser reports that as a
+    // generic network failure rather than something the person can act on.
+    const declared = Number(req.get('content-length') || 0);
+    if (declared > files.MAX_BYTES) {
+      return res.status(413).json({ error: 'file_too_large' });
+    }
+    const saved = await files.receive(req, filename);
+    res.json({ fileId: saved.id, name: filename, size: saved.size });
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ error: err.message });
+    next(err);
+  }
+});
+
+app.get('/api/files/:id', auth.requireApi, (req, res) => {
+  const p = files.pathFor(req.params.id);
+  if (!p || !fs.existsSync(p)) return res.status(404).json({ error: 'not_found' });
+  const name = String(req.query.name || req.params.id).replace(/[^\w .()\-]/g, '_');
+  // inline so a PDF opens in the browser; the filename is still offered on save
+  res.setHeader('Content-Type', files.contentType(name));
+  res.setHeader('Content-Disposition', 'inline; filename="' + name + '"');
+  fs.createReadStream(p).pipe(res);
+});
+
+app.delete('/api/files/:id', auth.requireApi, (req, res) => {
+  files.remove(req.params.id);
+  res.json({ ok: true });
+});
+
 app.put('/api/:collection/:id', auth.requireApi, async (req, res, next) => {
   try {
     const { collection, id } = req.params;
@@ -104,6 +151,10 @@ app.delete('/api/:collection/:id', auth.requireApi, async (req, res, next) => {
   try {
     const { collection, id } = req.params;
     const existing = await db.get(collection, id);
+    // A deleted document shouldn't leave its file orphaned on the disk.
+    if (collection === 'docs' && existing && existing.file && existing.file.fileId) {
+      files.remove(existing.file.fileId);
+    }
     await db.remove(collection, id);
     db.logActivity(req.user.email, 'delete', collection, id, existing ? labelFor(collection, existing) : id);
     res.json({ ok: true });
@@ -137,6 +188,8 @@ app.use((err, req, res, _next) => {
 
 // --- boot --------------------------------------------------------------
 const port = process.env.PORT || 3000;
+
+files.ready();
 
 db.init()
   .then(() => {

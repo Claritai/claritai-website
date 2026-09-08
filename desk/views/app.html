@@ -319,6 +319,18 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .issue.crit .b{background:var(--crit)}
 .site .foot{display:flex;gap:6px;margin-top:auto;padding-top:4px}
 
+/* ---------- attached file ---------- */
+.filecard{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);
+}
+.filecard .fname{font-weight:600;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filecard .fsize{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);flex:none}
+input[type=file]{
+  width:100%;padding:7px 10px;border-radius:var(--r-sm);
+  border:1px dashed var(--line-strong);background:var(--surface);font-size:13px;
+}
+
 /* ---------- lead demo toggle ---------- */
 .demotoggle{
   display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;flex:none;
@@ -471,6 +483,7 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
     <button class="navbtn" data-view="leads"><span class="ic">◇</span>Leads<span class="tag" data-tag="leads"></span></button>
     <button class="navbtn" data-view="pipeline"><span class="ic">▤</span>Pipeline<span class="tag" data-tag="pipeline"></span></button>
     <button class="navbtn" data-view="clients"><span class="ic">◆</span>Customers<span class="tag" data-tag="clients"></span></button>
+    <button class="navbtn" data-view="docs"><span class="ic">▦</span>Documents<span class="tag" data-tag="docs"></span></button>
     <button class="navbtn" data-view="tasks"><span class="ic">✓</span>To-dos<span class="tag" data-tag="tasks"></span></button>
     <button class="navbtn" data-view="meetings"><span class="ic">◷</span>Meetings<span class="tag" data-tag="meetings"></span></button>
     <hr>
@@ -529,7 +542,18 @@ const SOCIAL_STATUS = {
   paused:{label:"Paused",cls:""}, setup:{label:"Setting up",cls:"accent"}
 };
 const CHANNELS = ["Instagram","Facebook","LinkedIn","TikTok","X","YouTube","Google Business","Newsletter"];
-const COLLS = ["leads","clients","deals","tasks","meetings","sites","social"];
+const COLLS = ["leads","clients","deals","docs","tasks","meetings","sites","social"];
+const DOC_KIND = {
+  proposal:"Proposal", quote:"Quote", contract:"Contract",
+  brief:"Brief", report:"Report", handover:"Handover", other:"Other"
+};
+const DOC_STATUS = {
+  draft:{label:"Draft",cls:""}, sent:{label:"Sent",cls:"accent"},
+  accepted:{label:"Accepted",cls:"ok"}, signed:{label:"Signed",cls:"ok"},
+  declined:{label:"Declined",cls:"crit"}, superseded:{label:"Superseded",cls:""}
+};
+// Only these two kinds represent an offer that can be waiting on an answer.
+const DECIDABLE = ["proposal","quote"];
 const LEAD_STATUS = {
   new:{label:"To research",cls:""}, researching:{label:"Researching",cls:"accent"},
   contacted:{label:"Contacted",cls:"warn"}, promoted:{label:"In pipeline",cls:"ok"},
@@ -543,7 +567,7 @@ const CLIENT_STATUS = {
 const CADENCE = {monthly:"per month", yearly:"per year", once:"one-off"};
 
 /* ============ state ============ */
-const data = {leads:[],clients:[],deals:[],tasks:[],meetings:[],sites:[],social:[]};
+const data = {leads:[],clients:[],deals:[],docs:[],tasks:[],meetings:[],sites:[],social:[]};
 let team = [];              // staff who have signed in, from the server
 let view = "overview";
 let me = "";                // display name of the signed-in user
@@ -684,6 +708,32 @@ function promotedThisYear(){
     new Date(l.promotedAt).getFullYear()===y);
 }
 
+/* ---- documents ---- */
+const awaitingDecision = ()=> data.docs.filter(d=>DECIDABLE.indexOf(d.kind)>=0 && d.status==="sent");
+function signedThisYear(){
+  const y = new Date().getFullYear();
+  return data.docs.filter(d=>(d.status==="signed"||d.status==="accepted") && d.decidedAt &&
+    new Date(d.decidedAt).getFullYear()===y);
+}
+// A document belongs to whichever record it was filed against.
+function docOwnerName(d){
+  const c = clientById(d.clientId); if(c) return c.name;
+  const deal = d.dealId && byId("deals",d.dealId); if(deal) return deal.company;
+  const lead = d.leadId && byId("leads",d.leadId); if(lead) return lead.name;
+  return "";
+}
+const docsForClient = id => data.docs.filter(d=>d.clientId===id);
+const docsForDeal   = id => data.docs.filter(d=>d.dealId===id);
+function fmtBytes(n){
+  n = Number(n)||0;
+  if(n < 1024) return n+" B";
+  if(n < 1024*1024) return Math.round(n/1024)+" KB";
+  return (n/1048576).toFixed(1)+" MB";
+}
+function fileHref(f){
+  return "/api/files/"+encodeURIComponent(f.fileId)+"?name="+encodeURIComponent(f.name||"document");
+}
+
 /* ---- customers ---- */
 function clientById(id){ return id ? data.clients.find(c=>c.id===id) : null; }
 // Records made before Customers existed carry a typed name; fall back to it so
@@ -747,6 +797,7 @@ function render(){
   setTag("leads", openLeads().length);
   setTag("pipeline", openDeals().length);
   setTag("clients", activeClients().length, renewalsDue().length>0);
+  setTag("docs", data.docs.length, awaitingDecision().length>0);
   setTag("tasks", openTasks().length, dueTasks().length>0);
   setTag("meetings", upcoming().length);
   setTag("sites", siteAlerts().length || data.sites.length, siteAlerts().length>0);
@@ -1244,6 +1295,216 @@ function clientCard(c){
     '</div></article>';
 }
 
+/* ---------- DOCUMENTS ---------- */
+VIEWS.docs = {
+  title:"Documents",
+  lede:"Proposals, contracts and the working documents a job accumulates — filed against the customer or deal they belong to.",
+  actions:()=>'<button class="btn primary" data-act="new-doc">New document</button>',
+  meta(){
+    const waiting = awaitingDecision();
+    const out = sumValue(waiting), outMo = sumMonthly(waiting);
+    const drafts = data.docs.filter(d=>d.status==="draft").length;
+    return m([
+      ["Documents", data.docs.length, ""],
+      ["Out for decision", waiting.length, waiting.length?"warn":""],
+      ["Value awaiting", moneyPair(out,outMo), out||outMo?"warn":""],
+      ["Agreed this year", signedThisYear().length, signedThisYear().length?"ok":""],
+      ["Drafts", drafts, ""]
+    ]);
+  },
+  body(){
+    if(!data.docs.length){
+      return '<div class="empty" style="padding:44px 0">No documents yet.<br><br>'+
+        'Add one here, or from a customer or deal — it gets filed against them automatically.</div>';
+    }
+    const groups = [
+      {k:"Waiting on an answer", f:d=>DECIDABLE.indexOf(d.kind)>=0 && d.status==="sent"},
+      {k:"Drafts",               f:d=>d.status==="draft"},
+      {k:"Agreed",               f:d=>d.status==="accepted"||d.status==="signed"},
+      {k:"Sent",                 f:d=>d.status==="sent" && DECIDABLE.indexOf(d.kind)<0},
+      {k:"Closed out",           f:d=>d.status==="declined"||d.status==="superseded"}
+    ];
+    let out = "";
+    groups.forEach(g=>{
+      const list = data.docs.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
+      if(!list.length) return;
+      out += '<div class="grouphead">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
+             '<div class="rows">'+list.map(docRow).join("")+'</div>';
+    });
+    return out;
+  }
+};
+function docRow(d){
+  const st = DOC_STATUS[d.status||"draft"] || DOC_STATUS.draft;
+  const who = docOwnerName(d);
+  const late = d.status==="sent" && d.sentAt && dayDiff(d.sentAt) < -14;
+  return '<div class="row" data-doc="'+esc(d.id)+'">'+
+    '<span class="grow"><span class="t">'+esc(d.title||"Untitled")+'</span><span class="s">'+
+      '<span>'+esc(DOC_KIND[d.kind]||"Document")+'</span>'+
+      (who?'<span>'+esc(who)+'</span>':'<span style="color:var(--warn)">Not filed against anyone</span>')+
+      ((d.value||d.monthlyValue)?'<span style="font-weight:600;color:var(--ink-2)">'+esc(moneyPair(d.value,d.monthlyValue))+'</span>':'')+
+      (d.sentAt?'<span'+(late?' style="color:var(--warn);font-weight:600"':'')+'>Sent '+fmtDate(d.sentAt)+(late?' · '+esc(ago(d.sentAt)):'')+'</span>':'')+
+      (d.file&&d.file.name?'<span class="mono">'+esc(d.file.name)+' · '+fmtBytes(d.file.size)+'</span>':'<span style="color:var(--ink-3)">No file attached</span>')+
+    '</span></span>'+
+    '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
+    (d.file&&d.file.fileId?'<a class="btn sm" href="'+esc(fileHref(d.file))+'" target="_blank" rel="noopener">Open</a>':'')+
+    '<button class="btn ghost sm" data-act="doc-edit">Edit</button>'+
+  '</div>';
+}
+
+// Where to go back to when a document was opened from a customer or a deal.
+let docReturn = null;
+
+function openDoc(id, preset){
+  const d = id ? byId("docs",id) : null;
+  const x = d || Object.assign({
+    id:uid(), title:"", kind:"proposal", status:"draft",
+    clientId:"", dealId:"", leadId:"", value:0, monthlyValue:0,
+    sentAt:"", decidedAt:"", notes:"", file:null,
+    addedBy:me||"", addedAt:new Date().toISOString()
+  }, preset||{});
+
+  const f = x.file;
+  const fileBlock = f && f.fileId
+    ? '<div class="filecard"><span class="fname">'+esc(f.name||"file")+'</span>'+
+      '<span class="fsize">'+fmtBytes(f.size)+'</span>'+
+      '<a class="btn sm" href="'+esc(fileHref(f))+'" target="_blank" rel="noopener">Open</a>'+
+      '<button class="btn ghost sm" data-act="doc-file-clear" type="button">Remove</button></div>'+
+      '<label class="f"><span>Replace it</span><input type="file" id="dcFile"></label>'
+    : '<label class="f"><span>Attach a file</span><input type="file" id="dcFile"></label>'+
+      '<p style="font-size:11.5px;color:var(--ink-3);margin:0">PDF, Word, Excel, PowerPoint, images or zip. Up to 25 MB.</p>';
+
+  drawer(d ? (x.title||"Document") : "New document",
+    '<input type="hidden" id="dcId" value="'+esc(x.id)+'">'+
+    '<input type="hidden" id="dcFileId" value="'+esc(f&&f.fileId||"")+'">'+
+    '<input type="hidden" id="dcFileName" value="'+esc(f&&f.name||"")+'">'+
+    '<input type="hidden" id="dcFileSize" value="'+esc(f&&f.size||"")+'">'+
+    '<label class="f"><span>What is it</span><input type="text" id="dcTitle" value="'+esc(x.title)+'" placeholder="Website proposal — RM Cleary"></label>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Kind</span><select id="dcKind">'+
+        Object.entries(DOC_KIND).map(([k,v])=>'<option value="'+k+'"'+(k===x.kind?" selected":"")+'>'+esc(v)+'</option>').join("")+
+      '</select></label>'+
+      '<label class="f"><span>Status</span><select id="dcStatus">'+selOpts(DOC_STATUS,x.status)+'</select></label>'+
+    '</div>'+
+
+    '<div class="subhead">Who it belongs to</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Customer</span><select id="dcClient">'+clientOptions(x.clientId)+'</select></label>'+
+      '<label class="f"><span>Deal</span><select id="dcDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '</div>'+
+    '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Either, or both. A proposal usually belongs to a deal; a signed contract to the customer.</p>'+
+
+    '<div class="subhead">What it is worth</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>One-off (EUR)</span><input type="number" id="dcValue" value="'+esc(x.value||"")+'" min="0" step="100"></label>'+
+      '<label class="f"><span>Monthly (EUR)</span><input type="number" id="dcMonthly" value="'+esc(x.monthlyValue||"")+'" min="0" step="10"></label>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<label class="f"><span>Sent on</span><input type="date" id="dcSent" value="'+esc(x.sentAt||"")+'"></label>'+
+      '<label class="f"><span>Answered on</span><input type="date" id="dcDecided" value="'+esc(x.decidedAt||"")+'"></label>'+
+    '</div>'+
+
+    '<div class="subhead">File</div>'+ fileBlock +
+    '<div class="subhead">Notes</div>'+
+    '<label class="f"><span style="display:none">Notes</span><textarea id="dcNotes">'+esc(x.notes||"")+'</textarea></label>'+
+    (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
+      (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : ''),
+
+    (d?'<button class="btn danger" data-act="doc-delete">Delete</button>':'')+
+    '<button class="btn primary" data-act="doc-save" style="margin-left:auto">'+(d?"Save":"Add document")+'</button>');
+}
+
+async function uploadFile(file){
+  const res = await fetch("/api/files", {
+    method:"PUT",
+    headers:{"x-filename": file.name, "content-type": file.type || "application/octet-stream"},
+    body: file,
+    credentials:"same-origin"
+  });
+  if(res.status===401){ location.href="/login"; throw new Error("signed out"); }
+  if(!res.ok){
+    let msg = "HTTP "+res.status;
+    try{ const j = await res.json(); msg = j.error || msg; }catch(e){}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+async function saveDoc(){
+  const id = val("#dcId"); const prev = byId("docs",id);
+  const input = overlay.querySelector("#dcFile");
+  const chosen = input && input.files && input.files[0];
+  const btn = overlay.querySelector('[data-act="doc-save"]');
+
+  let file = null;
+  const keptId = val("#dcFileId");
+  if(keptId) file = {fileId:keptId, name:val("#dcFileName"), size:Number(val("#dcFileSize"))||0};
+
+  if(chosen && chosen.size > 25*1024*1024){
+    toast("“"+chosen.name+"” is "+fmtBytes(chosen.size)+" — the limit is 25 MB");
+    return;
+  }
+  if(chosen){
+    if(btn){ btn.disabled = true; btn.textContent = "Uploading…"; }
+    try{
+      const up = await uploadFile(chosen);
+      file = {fileId:up.fileId, name:up.name, size:up.size};
+    }catch(err){
+      if(btn){ btn.disabled = false; btn.textContent = prev?"Save":"Add document"; }
+      const m2 = {file_type_not_accepted:"That file type isn't accepted.",
+                  "That file is larger than 25 MB":"That file is over the 25 MB limit."};
+      toast(m2[err.message] || ("Upload failed — "+err.message));
+      return;
+    }
+  }
+
+  // Whatever the old file was, if it is no longer the one on the record it has
+  // to come off the disk — replaced or removed, same cleanup.
+  const prevFileId = prev && prev.file && prev.file.fileId;
+  if(prevFileId && (!file || file.fileId !== prevFileId)){
+    fetch("/api/files/"+encodeURIComponent(prevFileId),{method:"DELETE",credentials:"same-origin"}).catch(()=>{});
+  }
+
+  save("docs",{
+    id,
+    title: val("#dcTitle")||"Untitled",
+    kind: val("#dcKind"), status: val("#dcStatus"),
+    clientId: val("#dcClient"), dealId: val("#dcDeal"),
+    leadId: (prev && prev.leadId) || "",
+    value: Number(val("#dcValue"))||0,
+    monthlyValue: Number(val("#dcMonthly"))||0,
+    sentAt: val("#dcSent"), decidedAt: val("#dcDecided"),
+    notes: val("#dcNotes"), file,
+    addedBy: (prev&&prev.addedBy)||me||"",
+    addedAt: (prev&&prev.addedAt)||new Date().toISOString()
+  });
+  closeOverlay();
+  const back = docReturn; docReturn = null;
+  if(back && back.type==="client") openClient(back.id);
+  else if(back && back.type==="deal") openDeal(back.id);
+  else toast(prev?"Document saved":"Document added");
+}
+
+function deleteDoc(id){
+  const d = byId("docs",id);
+  if(d && d.file && d.file.fileId){
+    fetch("/api/files/"+encodeURIComponent(d.file.fileId),{method:"DELETE",credentials:"same-origin"}).catch(()=>{});
+  }
+  remove("docs", id);
+}
+
+// Compact list of documents shown inside a customer or deal drawer.
+function docsBlock(list, addAct){
+  const rows = list.length ? list.map(d=>{
+    const st = DOC_STATUS[d.status||"draft"] || DOC_STATUS.draft;
+    return '<div class="li"><span>▦ '+esc(d.title||"Untitled")+'</span>'+
+      (d.file&&d.file.fileId?'<a class="demolink" href="'+esc(fileHref(d.file))+'" target="_blank" rel="noopener">Open</a>':'')+
+      '<small>'+esc(DOC_KIND[d.kind]||"")+' · '+st.label+'</small></div>';
+  }).join("") : '<div class="empty" style="padding:10px 0">Nothing filed yet.</div>';
+  return '<div class="linked">'+rows+'</div>'+
+    '<button class="addrow" data-act="'+addAct+'" type="button">+ Add document</button>';
+}
+
 /* ---------- TASKS ---------- */
 VIEWS.tasks = {
   title:"To-dos",
@@ -1651,6 +1912,7 @@ function openClient(id){
     '<button class="addrow" data-act="add-link" type="button">+ Add link</button>'+
     '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Addresses only — don\'t keep passwords here.</p>'+
 
+    (c ? '<div class="subhead">Documents</div>'+docsBlock(docsForClient(x.id),"add-doc-client") : '')+
     '<div class="subhead">Notes</div>'+
     '<label class="f"><span style="display:none">Notes</span><textarea id="cNotes">'+esc(x.notes||"")+'</textarea></label>'+
     '<label class="f"><span>Add to the history</span><textarea id="cNote" placeholder="Renewed for another year at €400/month"></textarea></label>'+
@@ -1741,6 +2003,7 @@ function openDeal(id){
     '<label class="f"><span>Existing customer</span><select id="dClient">'+clientOptions(x.clientId)+'</select>'+
       '<span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11.5px;color:var(--ink-3);margin-top:4px;display:block">'+
       'Leave unset for a new prospect — winning the deal offers to create the customer.</span></label>'+
+    (d ? '<div class="subhead">Documents</div>'+docsBlock(docsForDeal(x.id),"add-doc-deal") : '')+
     '<label class="f"><span>Add a note</span><textarea id="dNote" placeholder="What happened on the call?"></textarea></label>'+
     '<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:4px">Activity</div>'+
       '<div class="notes">'+notes+'</div></div>',
@@ -2021,9 +2284,30 @@ document.addEventListener("click",e=>{
   const b = e.target.closest("[data-act]");
   if(!b) return;
   const act = b.dataset.act;
-  const row = b.closest("[data-lead],[data-task],[data-meeting],[data-site],[data-social]");
+  const row = b.closest("[data-lead],[data-doc],[data-task],[data-meeting],[data-site],[data-social]");
 
   if(act==="settings") return openTeam();
+
+  if(act==="new-doc"){ docReturn=null; return openDoc(null); }
+  if(act==="doc-edit"){ docReturn=null; return openDoc(row.dataset.doc); }
+  if(act==="doc-save") return saveDoc();
+  if(act==="doc-delete"){ const id=val("#dcId"); closeOverlay(); return deleteDoc(id); }
+  if(act==="doc-file-clear"){
+    overlay.querySelector("#dcFileId").value="";
+    overlay.querySelector("#dcFileName").value="";
+    overlay.querySelector("#dcFileSize").value="";
+    const card = b.closest(".filecard"); if(card) card.remove();
+    return toast("File comes off when you save");
+  }
+  if(act==="add-doc-client"){
+    const cid = val("#cId"); docReturn = {type:"client", id:cid};
+    return openDoc(null, {clientId:cid, kind:"contract"});
+  }
+  if(act==="add-doc-deal"){
+    const did = val("#dId"); docReturn = {type:"deal", id:did};
+    return openDoc(null, {dealId:did, clientId:val("#dClient")||"", kind:"proposal",
+                          title:(val("#dCompany")?val("#dCompany")+" — proposal":"")});
+  }
 
   if(act==="new-lead") return openLead(null);
   if(act==="lead-save") return saveLead();
