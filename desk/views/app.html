@@ -710,11 +710,7 @@ function promotedThisYear(){
 
 /* ---- documents ---- */
 const awaitingDecision = ()=> data.docs.filter(d=>DECIDABLE.indexOf(d.kind)>=0 && d.status==="sent");
-function signedThisYear(){
-  const y = new Date().getFullYear();
-  return data.docs.filter(d=>(d.status==="signed"||d.status==="accepted") && d.decidedAt &&
-    new Date(d.decidedAt).getFullYear()===y);
-}
+const agreedDocs = ()=> data.docs.filter(d=>d.status==="signed"||d.status==="accepted");
 // A document belongs to whichever record it was filed against.
 function docOwnerName(d){
   const c = clientById(d.clientId); if(c) return c.name;
@@ -1302,14 +1298,15 @@ VIEWS.docs = {
   actions:()=>'<button class="btn primary" data-act="new-doc">New document</button>',
   meta(){
     const waiting = awaitingDecision();
-    const out = sumValue(waiting), outMo = sumMonthly(waiting);
     const drafts = data.docs.filter(d=>d.status==="draft").length;
+    const agreed = agreedDocs().length;
+    const unfiled = data.docs.filter(d=>!d.clientId && !d.dealId && !d.leadId).length;
     return m([
       ["Documents", data.docs.length, ""],
       ["Out for decision", waiting.length, waiting.length?"warn":""],
-      ["Value awaiting", moneyPair(out,outMo), out||outMo?"warn":""],
-      ["Agreed this year", signedThisYear().length, signedThisYear().length?"ok":""],
-      ["Drafts", drafts, ""]
+      ["Agreed", agreed, agreed?"ok":""],
+      ["Drafts", drafts, ""],
+      ["Not filed against anyone", unfiled, unfiled?"warn":""]
     ]);
   },
   body(){
@@ -1337,13 +1334,10 @@ VIEWS.docs = {
 function docRow(d){
   const st = DOC_STATUS[d.status||"draft"] || DOC_STATUS.draft;
   const who = docOwnerName(d);
-  const late = d.status==="sent" && d.sentAt && dayDiff(d.sentAt) < -14;
   return '<div class="row" data-doc="'+esc(d.id)+'">'+
     '<span class="grow"><span class="t">'+esc(d.title||"Untitled")+'</span><span class="s">'+
       '<span>'+esc(DOC_KIND[d.kind]||"Document")+'</span>'+
       (who?'<span>'+esc(who)+'</span>':'<span style="color:var(--warn)">Not filed against anyone</span>')+
-      ((d.value||d.monthlyValue)?'<span style="font-weight:600;color:var(--ink-2)">'+esc(moneyPair(d.value,d.monthlyValue))+'</span>':'')+
-      (d.sentAt?'<span'+(late?' style="color:var(--warn);font-weight:600"':'')+'>Sent '+fmtDate(d.sentAt)+(late?' · '+esc(ago(d.sentAt)):'')+'</span>':'')+
       (d.file&&d.file.name?'<span class="mono">'+esc(d.file.name)+' · '+fmtBytes(d.file.size)+'</span>':'<span style="color:var(--ink-3)">No file attached</span>')+
     '</span></span>'+
     '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
@@ -1393,16 +1387,6 @@ function openDoc(id, preset){
       '<label class="f"><span>Deal</span><select id="dcDeal">'+dealOptions(x.dealId)+'</select></label>'+
     '</div>'+
     '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Either, or both. A proposal usually belongs to a deal; a signed contract to the customer.</p>'+
-
-    '<div class="subhead">What it is worth</div>'+
-    '<div class="grid2">'+
-      '<label class="f"><span>One-off (EUR)</span><input type="number" id="dcValue" value="'+esc(x.value||"")+'" min="0" step="100"></label>'+
-      '<label class="f"><span>Monthly (EUR)</span><input type="number" id="dcMonthly" value="'+esc(x.monthlyValue||"")+'" min="0" step="10"></label>'+
-    '</div>'+
-    '<div class="grid2">'+
-      '<label class="f"><span>Sent on</span><input type="date" id="dcSent" value="'+esc(x.sentAt||"")+'"></label>'+
-      '<label class="f"><span>Answered on</span><input type="date" id="dcDecided" value="'+esc(x.decidedAt||"")+'"></label>'+
-    '</div>'+
 
     '<div class="subhead">File</div>'+ fileBlock +
     '<div class="subhead">Notes</div>'+
@@ -1471,9 +1455,6 @@ async function saveDoc(){
     kind: val("#dcKind"), status: val("#dcStatus"),
     clientId: val("#dcClient"), dealId: val("#dcDeal"),
     leadId: (prev && prev.leadId) || "",
-    value: Number(val("#dcValue"))||0,
-    monthlyValue: Number(val("#dcMonthly"))||0,
-    sentAt: val("#dcSent"), decidedAt: val("#dcDecided"),
     notes: val("#dcNotes"), file,
     addedBy: (prev&&prev.addedBy)||me||"",
     addedAt: (prev&&prev.addedAt)||new Date().toISOString()
