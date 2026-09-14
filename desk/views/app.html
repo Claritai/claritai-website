@@ -455,7 +455,19 @@ input[type=file]{
 .notes{display:flex;flex-direction:column;gap:0}
 .note{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
 .note:last-child{border-bottom:0}
-.note .nm{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);margin-bottom:2px}
+.note .nm{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.noteacts{margin-left:auto;display:flex;gap:2px;opacity:.4;transition:opacity .12s}
+.note:hover .noteacts,.noteacts:focus-within{opacity:1}
+.noteic{
+  border:0;background:transparent;cursor:pointer;padding:1px 5px;line-height:1;
+  font-size:13px;color:var(--ink-3);border-radius:4px;
+}
+.noteic:hover{color:var(--accent);background:var(--surface-2)}
+.noteic.del{font-size:15px}
+.noteic.del:hover{color:var(--crit)}
+.note.editing{padding:10px 0 4px}
+.noteedit{width:100%;margin:2px 0 8px}
+.histact{display:flex;justify-content:flex-end;gap:8px;margin:-4px 0 12px}
 .banner{
   display:flex;align-items:center;gap:11px;padding:10px 14px;margin-bottom:16px;
   border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r-md);
@@ -759,11 +771,19 @@ function docText(d){
     docOwnerName(d), (d.file||{}).name, d.notes].join(" ");
 }
 // A running log of dated entries, newest first. Used by leads, deals,
-// customers and social so history reads the same everywhere.
-function activityLog(list){
-  const rows = (list||[]).slice().reverse().map(n=>
-    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>'
-  ).join("");
+// customers and social so history reads the same everywhere. `live` is on
+// once the record exists, which is when a note can be deleted on its own.
+function activityLog(list, live){
+  const rows = (list||[]).map((n,i)=>({n,i})).reverse().map(({n,i})=>{
+    const ref = ' data-idx="'+i+'" data-at="'+esc(n.at||"")+'"';
+    return '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+
+      (n.editedAt?' · edited':'')+
+      (live?'<span class="noteacts">'+
+        '<button class="noteic" type="button" data-act="note-edit"'+ref+' title="Edit this note" aria-label="Edit this note">✎</button>'+
+        '<button class="noteic del" type="button" data-act="note-delete"'+ref+' title="Delete this note" aria-label="Delete this note">×</button>'+
+      '</span>':'')+
+    '</div>'+esc(n.text)+'</div>';
+  }).join("");
   return rows ? '<div class="notes">'+rows+'</div>'
               : '<div class="empty" style="padding:10px 0">Nothing logged yet.</div>';
 }
@@ -774,6 +794,93 @@ function appendNote(list, text){
 function noteCount(list){
   const n = (list||[]).length;
   return n ? n+" note"+(n===1?"":"s") : "";
+}
+
+// The whole History section for a record. Once the record exists, "Add note"
+// writes straight to it and redraws the list in place — no need to save the
+// rest of the form, and nothing else typed into the drawer is touched.
+function historyBlock(coll, id, key, inputId, placeholder){
+  const rec = byId(coll, id);
+  const list = rec ? (rec[key]||[]) : [];
+  return '<div class="subhead">History</div>'+
+    '<div class="hist" data-hist data-coll="'+esc(coll)+'" data-rec="'+esc(id)+'" data-key="'+esc(key)+'" data-input="'+esc(inputId)+'">'+
+      '<label class="f"><span>Add a note</span><textarea id="'+esc(inputId)+'" placeholder="'+esc(placeholder)+'"></textarea></label>'+
+      (rec ? '<div class="histact"><button class="btn sm" type="button" data-act="note-add" '+
+        'title="Add note (Ctrl or ⌘ + Enter)">Add note</button></div>' : '')+
+      '<div data-notes>'+activityLog(list, !!rec)+'</div>'+
+    '</div>';
+}
+function histCtx(btn){
+  const h = btn.closest("[data-hist]");
+  if(!h) return null;
+  const rec = byId(h.dataset.coll, h.dataset.rec);
+  return rec ? {h, rec, coll:h.dataset.coll, key:h.dataset.key} : null;
+}
+function redrawHistory(c){
+  const box = c.h.querySelector("[data-notes]");
+  if(box) box.innerHTML = activityLog(c.rec[c.key]||[], true);
+}
+// The box you type a new note into, as opposed to an open edit box.
+function addBox(c){ return c.h.querySelector("label.f textarea"); }
+// The list can have been refreshed by a poll since it was drawn, so fall back
+// to matching on the timestamp rather than touching the wrong line.
+function noteIdx(c, btn){
+  const list = c.rec[c.key]||[];
+  const i = Number(btn.dataset.idx);
+  if(list[i] && String(list[i].at||"") === btn.dataset.at) return i;
+  return list.findIndex(n=>String(n.at||"") === btn.dataset.at);
+}
+function writeNotes(c, list, msg){
+  const copy = Object.assign({}, c.rec);
+  copy[c.key] = list;
+  save(c.coll, copy);
+  c.rec = copy;
+  redrawHistory(c);
+  if(msg) toast(msg);
+}
+function addNoteNow(btn){
+  const c = histCtx(btn); if(!c) return;
+  const ta = addBox(c);
+  const text = (ta && ta.value || "").trim();
+  if(!text){ ta && ta.focus(); return; }
+  writeNotes(c, appendNote(c.rec[c.key], text), "Note added");
+  ta.value = ""; ta.focus();
+}
+function deleteNoteNow(btn){
+  const c = histCtx(btn); if(!c) return;
+  const i = noteIdx(c, btn); if(i < 0) return;
+  const list = (c.rec[c.key]||[]).slice();
+  list.splice(i,1);
+  writeNotes(c, list, "Note deleted");
+}
+// Editing swaps the one line for a box, so the rest of the history stays
+// readable and nothing else in the drawer is disturbed.
+function editNoteNow(btn){
+  const c = histCtx(btn); if(!c) return;
+  const i = noteIdx(c, btn); if(i < 0) return;
+  const n = c.rec[c.key][i];
+  const el = btn.closest(".note"); if(!el) return;
+  el.classList.add("editing");
+  el.innerHTML = '<div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+
+    '<textarea class="noteedit">'+esc(n.text)+'</textarea>'+
+    '<div class="histact">'+
+      '<button class="btn ghost sm" type="button" data-act="note-edit-cancel">Cancel</button>'+
+      '<button class="btn sm" type="button" data-act="note-edit-save" data-idx="'+i+
+        '" data-at="'+esc(n.at||"")+'" title="Save note (Ctrl or ⌘ + Enter)">Save note</button>'+
+    '</div>';
+  const ta = el.querySelector("textarea");
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+function saveNoteEdit(btn){
+  const c = histCtx(btn); if(!c) return;
+  const i = noteIdx(c, btn); if(i < 0) return redrawHistory(c);
+  const ta = btn.closest(".note").querySelector("textarea");
+  const text = (ta && ta.value || "").trim();
+  if(!text){ ta && ta.focus(); return; }
+  const list = (c.rec[c.key]||[]).slice();
+  if(text === list[i].text) return redrawHistory(c);
+  list[i] = Object.assign({}, list[i], {text, editedAt:new Date().toISOString(), editedBy:me||""});
+  writeNotes(c, list, "Note updated");
 }
 
 function searchBox(placeholder){
@@ -1300,9 +1407,7 @@ function openLead(id){
       (x.demoSentAt?' · sent '+fmtDate(x.demoSentAt):'')+'</p>' : '')+
     '<div class="subhead">About them</div>'+
     '<label class="f"><span style="display:none">About them</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
-    '<div class="subhead">History</div>'+
-    '<label class="f"><span>Add a note</span><textarea id="lNote" placeholder="Rang, spoke to Paul — asked me to call back next week"></textarea></label>'+
-    activityLog(x.activity)+
+    historyBlock("leads", x.id, "activity", "lNote", "Rang, spoke to Paul — asked me to call back next week")+
     (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
       (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : '')+
     (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : ''),
@@ -1878,6 +1983,17 @@ function closeOverlay(){
   document.removeEventListener("keydown",escClose);
 }
 function escClose(e){ if(e.key==="Escape") closeOverlay(); }
+// Ctrl/⌘ + Enter files whatever note box you're in — a new one or an edit.
+document.addEventListener("keydown", e=>{
+  if(e.key!=="Enter" || !(e.metaKey||e.ctrlKey)) return;
+  const ta = e.target && e.target.closest && e.target.closest("[data-hist] textarea");
+  if(!ta) return;
+  const scope = ta.closest(".note") || ta.closest("[data-hist]");
+  const btn = scope.querySelector('[data-act="note-edit-save"],[data-act="note-add"]');
+  if(!btn) return;
+  e.preventDefault();
+  return btn.dataset.act === "note-add" ? addNoteNow(btn) : saveNoteEdit(btn);
+});
 function shell(kind,inner){
   closeOverlay();
   const wrap = document.createElement("div");
@@ -1992,7 +2108,6 @@ function openClient(id){
       ? '<div class="empty" style="padding:10px 0">Nothing linked yet. Pick this customer on a site or social account and it shows up here.</div>' : '')+
     '</div>';
 
-  const activity = activityLog(x.activity);
 
   drawer(c ? (x.name||"Customer") : "New customer",
     '<input type="hidden" id="cId" value="'+esc(x.id)+'">'+
@@ -2039,8 +2154,7 @@ function openClient(id){
     (c ? '<div class="subhead">Documents</div>'+docsBlock(docsForClient(x.id),"add-doc-client") : '')+
     '<div class="subhead">Notes</div>'+
     '<label class="f"><span style="display:none">Notes</span><textarea id="cNotes">'+esc(x.notes||"")+'</textarea></label>'+
-    '<label class="f"><span>Add to the history</span><textarea id="cNote" placeholder="Renewed for another year at €400/month"></textarea></label>'+
-    activity+
+    historyBlock("clients", x.id, "activity", "cNote", "Renewed for another year at €400/month")+
     linkedBlock,
 
     (c?'<button class="btn danger" data-act="client-delete">Delete</button>':'')+
@@ -2099,7 +2213,6 @@ function deleteClient(id){
 function openDeal(id){
   const d = id? byId("deals",id) : null;
   const x = d || {id:uid(),company:"",contact:"",email:"",phone:"",value:0,stage:"lead",owner:me,source:"",nextStep:"",nextStepDate:"",notes:[],createdAt:new Date().toISOString()};
-  const notes = activityLog(x.notes);
 
   drawer(d? x.company||"Deal" : "New deal",
     '<input type="hidden" id="dId" value="'+esc(x.id)+'">'+
@@ -2126,8 +2239,7 @@ function openDeal(id){
       '<span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11.5px;color:var(--ink-3);margin-top:4px;display:block">'+
       'Leave unset for a new prospect — winning the deal offers to create the customer.</span></label>'+
     (d ? '<div class="subhead">Documents</div>'+docsBlock(docsForDeal(x.id),"add-doc-deal") : '')+
-    '<label class="f"><span>Add a note</span><textarea id="dNote" placeholder="What happened on the call?"></textarea></label>'+
-    '<div class="subhead">History</div>'+ notes,
+    historyBlock("deals", x.id, "notes", "dNote", "What happened on the call?"),
     (d?'<button class="btn danger" data-act="deal-delete">Delete</button>':'')+
     '<button class="btn primary" data-act="deal-save" style="margin-left:auto">'+(d?"Save changes":"Create deal")+'</button>');
 }
@@ -2306,9 +2418,7 @@ function openSocial(id){
       '<label class="f"><span>Owner</span><select id="oOwner">'+ownerOptions(x.owner)+'</select></label>'+
     '</div>'+
     '<label class="f"><span>Notes</span><textarea id="oNotes">'+esc(x.notes||"")+'</textarea></label>'+
-    '<div class="subhead">History</div>'+
-    '<label class="f"><span>Add a note</span><textarea id="oNote" placeholder="Client sent new photos — scheduled three posts"></textarea></label>'+
-    activityLog(x.activity),
+    historyBlock("social", x.id, "activity", "oNote", "Client sent new photos — scheduled three posts"),
     (s?'<button class="btn danger" data-act="social-delete" style="margin-right:auto">Delete</button>':'')+
     '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="social-save">Save</button>');
 }
@@ -2418,6 +2528,12 @@ document.addEventListener("click",e=>{
     return;
   }
   if(act==="settings") return openTeam();
+
+  if(act==="note-add") return addNoteNow(b);
+  if(act==="note-delete") return deleteNoteNow(b);
+  if(act==="note-edit") return editNoteNow(b);
+  if(act==="note-edit-save") return saveNoteEdit(b);
+  if(act==="note-edit-cancel"){ const c = histCtx(b); return c && redrawHistory(c); }
 
   if(act==="new-doc"){ docReturn=null; return openDoc(null); }
   if(act==="doc-edit"){ docReturn=null; return openDoc(row.dataset.doc); }
