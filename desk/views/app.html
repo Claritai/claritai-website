@@ -739,12 +739,31 @@ function clientText(c){
 }
 function leadText(l){
   return [l.name, l.website, l.source, l.contact, l.email, l.phone, l.notes,
-    (LEAD_STATUS[l.status||"new"]||{}).label, FIT[l.fit||""], l.demoUrl].join(" ");
+    (LEAD_STATUS[l.status||"new"]||{}).label, FIT[l.fit||""], l.demoUrl,
+    (l.activity||[]).map(n=>n.text).join(" ")].join(" ");
 }
 function docText(d){
   return [d.title, DOC_KIND[d.kind], (DOC_STATUS[d.status||"draft"]||{}).label,
     docOwnerName(d), (d.file||{}).name, d.notes].join(" ");
 }
+// A running log of dated entries, newest first. Used by leads, deals,
+// customers and social so history reads the same everywhere.
+function activityLog(list){
+  const rows = (list||[]).slice().reverse().map(n=>
+    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>'
+  ).join("");
+  return rows ? '<div class="notes">'+rows+'</div>'
+              : '<div class="empty" style="padding:10px 0">Nothing logged yet.</div>';
+}
+function appendNote(list, text){
+  const t = (text||"").trim();
+  return t ? (list||[]).concat([{by:me||"Someone", at:new Date().toISOString(), text:t}]) : (list||[]);
+}
+function noteCount(list){
+  const n = (list||[]).length;
+  return n ? n+" note"+(n===1?"":"s") : "";
+}
+
 function searchBox(placeholder){
   return '<input type="search" class="searchbox" id="searchBox" autocomplete="off" '+
     'placeholder="'+esc(placeholder)+'" value="'+esc(query)+'">';
@@ -1160,6 +1179,7 @@ function leadRow(l){
       (l.contact?'<span>'+esc(l.contact)+'</span>':'')+
       (l.fit?'<span>'+esc(FIT[l.fit]||l.fit)+'</span>':'')+
       ((l.value||l.monthlyValue)?'<span style="font-weight:600;color:var(--ink-2)">'+esc(moneyPair(l.value,l.monthlyValue))+'</span>':'')+
+      ((l.activity||[]).length?'<span>'+esc(noteCount(l.activity))+'</span>':'')+
     '</span></span>'+
     // One click marks a demo built; a second marks it sent. Both are undone by
     // a third, so the whole state lives in one control.
@@ -1191,7 +1211,7 @@ function addQuickLead(){
   if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
   save("leads",{id:uid(),name,website:site,source:($("#laSource").value||"").trim(),
     contact:"",email:"",phone:"",fit:"",status:"new",notes:"",
-    demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,
+    demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,activity:[],
     addedBy:me||"",addedAt:new Date().toISOString()});
   leadDraft=""; $("#laText").value=""; $("#laSite").value="";
   setTimeout(()=>{ const t=$("#laText"); t && t.focus(); },0);
@@ -1222,7 +1242,7 @@ function addPastedLeads(){
     let site = (bits[1]||"").trim();
     if(site && !/^https?:\/\//i.test(site)) site = "https://"+site;
     save("leads",{id:uid(),name,website:site,source,contact:"",email:"",phone:"",
-      fit:"",status:"new",notes:"",demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,
+      fit:"",status:"new",notes:"",demoBuilt:false,demoSent:false,demoUrl:"",value:0,monthlyValue:0,activity:[],
       addedBy:me||"",addedAt:new Date().toISOString()});
     added++;
   });
@@ -1266,8 +1286,11 @@ function openLead(id){
     (x.demoBuiltAt||x.demoSentAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">'+
       (x.demoBuiltAt?'Built '+fmtDate(x.demoBuiltAt):'')+
       (x.demoSentAt?' · sent '+fmtDate(x.demoSentAt):'')+'</p>' : '')+
-    '<div class="subhead">Notes</div>'+
-    '<label class="f"><span style="display:none">Notes</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
+    '<div class="subhead">About them</div>'+
+    '<label class="f"><span style="display:none">About them</span><textarea id="lNotes" placeholder="What do they currently have? Anything obviously broken?">'+esc(x.notes||"")+'</textarea></label>'+
+    '<div class="subhead">History</div>'+
+    '<label class="f"><span>Add a note</span><textarea id="lNote" placeholder="Rang, spoke to Paul — asked me to call back next week"></textarea></label>'+
+    activityLog(x.activity)+
     (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
       (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : '')+
     (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : ''),
@@ -1284,6 +1307,7 @@ function saveLead(){
     contact:val("#lContact"),email:val("#lEmail"),phone:val("#lPhone"),
     fit:val("#lFit"),status:val("#lStatus"),notes:val("#lNotes"),
     value:Number(val("#lValue"))||0, monthlyValue:Number(val("#lMonthly"))||0,
+    activity: appendNote(prev && prev.activity, val("#lNote")),
     demoBuilt: overlay.querySelector("#lDemoBuilt").checked,
     demoSent: overlay.querySelector("#lDemoBuilt").checked && overlay.querySelector("#lDemoSent").checked,
     demoUrl: (function(u){ return u && !/^https?:\/\//i.test(u) ? "https://"+u : u; })(val("#lDemoUrl")),
@@ -1303,10 +1327,11 @@ function promoteLead(id){
     value: Number(l.value)||0, monthlyValue: Number(l.monthlyValue)||0, stage: "lead", owner: me||"",
     nextStep: "First contact", nextStepDate: "",
     source: l.source||"", clientId: "",
-    notes: [{by:me||"Someone", at:new Date().toISOString(),
+    // Keep what was logged while they were a lead, dates and authors intact.
+    notes: (l.activity||[]).concat([{by:me||"Someone", at:new Date().toISOString(),
              text:"Promoted from Leads"+(l.source?" — found via "+l.source:"")+
                   (l.demoBuilt?". Demo site built"+(l.demoSent?" and sent":" (not sent yet)")+(l.demoUrl?": "+l.demoUrl:""):"")+
-                  (l.notes?". "+l.notes:"")}],
+                  (l.notes?". "+l.notes:"")}]),
     createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), wonAt:""
   };
   save("deals", deal);
@@ -1936,8 +1961,7 @@ function openClient(id){
       ? '<div class="empty" style="padding:10px 0">Nothing linked yet. Pick this customer on a site or social account and it shows up here.</div>' : '')+
     '</div>';
 
-  const activity = (x.activity||[]).slice().reverse().map(n=>
-    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>').join("");
+  const activity = activityLog(x.activity);
 
   drawer(c ? (x.name||"Customer") : "New customer",
     '<input type="hidden" id="cId" value="'+esc(x.id)+'">'+
@@ -1985,7 +2009,7 @@ function openClient(id){
     '<div class="subhead">Notes</div>'+
     '<label class="f"><span style="display:none">Notes</span><textarea id="cNotes">'+esc(x.notes||"")+'</textarea></label>'+
     '<label class="f"><span>Add to the history</span><textarea id="cNote" placeholder="Renewed for another year at €400/month"></textarea></label>'+
-    (activity?'<div class="notes">'+activity+'</div>':'')+
+    activity+
     linkedBlock,
 
     (c?'<button class="btn danger" data-act="client-delete">Delete</button>':'')+
@@ -2044,9 +2068,7 @@ function deleteClient(id){
 function openDeal(id){
   const d = id? byId("deals",id) : null;
   const x = d || {id:uid(),company:"",contact:"",email:"",phone:"",value:0,stage:"lead",owner:me,source:"",nextStep:"",nextStepDate:"",notes:[],createdAt:new Date().toISOString()};
-  const notes = (x.notes||[]).slice().reverse().map(n=>
-    '<div class="note"><div class="nm">'+esc(n.by||"—")+' · '+esc(fmtWhen(n.at))+'</div>'+esc(n.text)+'</div>').join("")
-    || '<div class="empty" style="padding:10px 0">No activity yet.</div>';
+  const notes = activityLog(x.notes);
 
   drawer(d? x.company||"Deal" : "New deal",
     '<input type="hidden" id="dId" value="'+esc(x.id)+'">'+
@@ -2074,8 +2096,7 @@ function openDeal(id){
       'Leave unset for a new prospect — winning the deal offers to create the customer.</span></label>'+
     (d ? '<div class="subhead">Documents</div>'+docsBlock(docsForDeal(x.id),"add-doc-deal") : '')+
     '<label class="f"><span>Add a note</span><textarea id="dNote" placeholder="What happened on the call?"></textarea></label>'+
-    '<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:600;margin-bottom:4px">Activity</div>'+
-      '<div class="notes">'+notes+'</div></div>',
+    '<div class="subhead">History</div>'+ notes,
     (d?'<button class="btn danger" data-act="deal-delete">Delete</button>':'')+
     '<button class="btn primary" data-act="deal-save" style="margin-left:auto">'+(d?"Save changes":"Create deal")+'</button>');
 }
@@ -2253,7 +2274,10 @@ function openSocial(id){
       '<label class="f"><span>Status</span><select id="oStatus">'+selOpts(SOCIAL_STATUS,x.status)+'</select></label>'+
       '<label class="f"><span>Owner</span><select id="oOwner">'+ownerOptions(x.owner)+'</select></label>'+
     '</div>'+
-    '<label class="f"><span>Notes</span><textarea id="oNotes">'+esc(x.notes||"")+'</textarea></label>',
+    '<label class="f"><span>Notes</span><textarea id="oNotes">'+esc(x.notes||"")+'</textarea></label>'+
+    '<div class="subhead">History</div>'+
+    '<label class="f"><span>Add a note</span><textarea id="oNote" placeholder="Client sent new photos — scheduled three posts"></textarea></label>'+
+    activityLog(x.activity),
     (s?'<button class="btn danger" data-act="social-delete" style="margin-right:auto">Delete</button>':'')+
     '<button class="btn" data-close>Cancel</button><button class="btn primary" data-act="social-save">Save</button>');
 }
@@ -2263,7 +2287,9 @@ function saveSocial(){
   save("social",{id,clientId:oClientId, client: oClientId ? "" : ((prev && prev.client) || ""),
     channel:val("#oChannel"),handle:val("#oHandle"),
     cadence:val("#oCadence"),lastPost:val("#oLast"),nextPost:val("#oNext"),status:val("#oStatus"),
-    owner:val("#oOwner"),notes:val("#oNotes"), sample: prev?!!prev.sample:false});
+    owner:val("#oOwner"),notes:val("#oNotes"),
+    activity: appendNote(prev && prev.activity, val("#oNote")),
+    sample: prev?!!prev.sample:false});
   closeOverlay();
 }
 
