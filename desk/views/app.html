@@ -275,6 +275,9 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .grouphead .n{color:var(--ink-3);font-weight:600;letter-spacing:0}
 .grouphead .rule{flex:1;height:1px;background:var(--line)}
 .grouphead.crit{color:var(--crit)}
+.grouphead .btn{text-transform:none;letter-spacing:0;font-weight:500;margin-left:2px}
+.row.done{background:var(--surface-2)}
+.row.done .s{color:var(--ink-3)}
 .rows{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
 .row{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
@@ -707,6 +710,15 @@ function byId(coll,id){ return data[coll].find(x=>x.id===id); }
 /* ============ derived ============ */
 const openDeals   = ()=> data.deals.filter(d=>d.stage!=="won" && d.stage!=="lost");
 const openTasks   = ()=> data.tasks.filter(t=>!t.done);
+// Completed to-dos, most recently ticked first. Anything finished before we
+// started stamping doneAt sorts to the bottom rather than disappearing.
+const doneTasks   = ()=> data.tasks.filter(t=>t.done)
+  .sort((a,b)=>String(b.doneAt||"").localeCompare(String(a.doneAt||"")));
+function withinDays(iso, days){
+  if(!iso) return false;
+  const d = new Date(iso); if(isNaN(d)) return false;
+  return (Date.now() - d.getTime()) <= days*864e5;
+}
 const dueTasks    = ()=> openTasks().filter(t=>t.due && dayDiff(t.due)<=0);
 const upcoming    = ()=> data.meetings.filter(m=>m.start && new Date(m.start)>=new Date(Date.now()-36e5)).sort((a,b)=>a.start.localeCompare(b.start));
 const siteAlerts  = ()=> data.sites.filter(s=>s.status==="warn"||s.status==="crit");
@@ -1612,7 +1624,8 @@ VIEWS.tasks = {
       ["Open", openTasks().length, ""],
       ["Overdue", od, od?"crit":"ok"],
       ["Due today", td, td?"warn":""],
-      ["Assigned to you", mine, ""]
+      ["Assigned to you", mine, ""],
+      ["Done this week", doneTasks().filter(t=>withinDays(t.doneAt,7)).length, "ok"]
     ]);
   },
   body(){
@@ -1629,7 +1642,6 @@ VIEWS.tasks = {
       {k:"Later",cls:"",f:t=>!t.done&&t.due&&dayDiff(t.due)>7},
       {k:"No date",cls:"",f:t=>!t.done&&!t.due}
     ];
-    if(showDone) groups.push({k:"Done",cls:"",f:t=>t.done});
     let out = q;
     let any = false;
     groups.forEach(g=>{
@@ -1639,6 +1651,20 @@ VIEWS.tasks = {
       out += '<div class="grouphead '+g.cls+'">'+esc(g.k)+'<span class="n">'+list.length+'</span><span class="rule"></span></div>'+
         '<div class="rows">'+list.map(taskRow).join("")+'</div>';
     });
+
+    // Completed work stays on the page — most recently ticked first — so it's
+    // obvious what got done, and nothing has to be dug out of a hidden list.
+    const done = doneTasks();
+    if(showDone && done.length){
+      any = true;
+      const shown = allDone ? done : done.slice(0, DONE_PREVIEW);
+      out += '<div class="grouphead">Done<span class="n">'+done.length+'</span><span class="rule"></span>'+
+        (done.length>DONE_PREVIEW
+          ? '<button class="btn ghost sm" data-act="toggle-all-done">'+
+            (allDone ? "Show recent only" : "Show all "+done.length)+'</button>'
+          : '')+
+        '</div><div class="rows">'+shown.map(taskRow).join("")+'</div>';
+    }
     if(!any) out += '<div class="empty" style="padding:44px 0">No to-dos yet. Add the first one above.</div>';
     return out;
   },
@@ -1651,16 +1677,21 @@ VIEWS.tasks = {
     }
   }
 };
-let showDone = false, qaDraft = "";
+let showDone = true, allDone = false, qaDraft = "";
+const DONE_PREVIEW = 10;
 function taskRow(t){
   const late = !t.done && t.due && dayDiff(t.due)<0;
   const link = t.dealId && byId("deals",t.dealId);
+  const sub = t.done
+    ? '<span>'+(t.doneAt ? "Done "+esc(fmtWhen(t.doneAt)) : "Done")+'</span>'+
+      (t.doneBy?'<span>'+esc(t.doneBy)+'</span>':'')
+    : (t.owner?'<span>'+esc(t.owner)+'</span>':'<span>Unassigned</span>')+
+      (t.due?'<span'+(late?' style="color:var(--crit);font-weight:600"':'')+'>'+fmtDate(t.due)+' · '+esc(relDay(t.due))+'</span>':'');
   return '<div class="row'+(t.done?" done":"")+'" data-task="'+esc(t.id)+'">'+
-    '<button class="check" aria-pressed="'+(t.done?"true":"false")+'" data-act="task-toggle" aria-label="Mark done">'+
+    '<button class="check" aria-pressed="'+(t.done?"true":"false")+'" data-act="task-toggle" aria-label="'+(t.done?"Mark not done":"Mark done")+'">'+
       '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6.2 4.6 9 10 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
     '<span class="grow"><span class="t">'+esc(t.title)+'</span><span class="s">'+
-      (t.owner?'<span>'+esc(t.owner)+'</span>':'<span>Unassigned</span>')+
-      (t.due?'<span'+(late?' style="color:var(--crit);font-weight:600"':'')+'>'+fmtDate(t.due)+' · '+esc(relDay(t.due))+'</span>':'')+
+      sub+
       (link?'<span>'+esc(link.company)+'</span>':'')+
     '</span></span>'+
     '<button class="btn ghost sm" data-act="task-edit">Edit</button>'+
@@ -2441,7 +2472,8 @@ document.addEventListener("click",e=>{
   if(act==="export-pipeline") return exportPipeline();
 
   if(act==="qa-add") return addQuickTask();
-  if(act==="toggle-done"){ showDone=!showDone; return render(); }
+  if(act==="toggle-done"){ showDone=!showDone; if(!showDone) allDone=false; return render(); }
+  if(act==="toggle-all-done"){ allDone=!allDone; return render(); }
   if(act==="task-toggle"){
     const t = byId("tasks",row.dataset.task); if(!t) return;
     t.done = !t.done; t.doneAt = t.done? new Date().toISOString() : null; t.doneBy = t.done? (me||"") : "";
