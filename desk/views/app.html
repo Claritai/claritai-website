@@ -188,6 +188,15 @@ main{overflow:auto;display:flex;flex-direction:column;min-width:0}
 .btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
 .btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
 .btn.sm{padding:4px 9px;font-size:12px}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.segb{
+  border:0;border-right:1px solid var(--line);background:transparent;cursor:pointer;
+  font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-2);padding:7px 12px;white-space:nowrap;
+}
+.segb:last-child{border-right:0}
+.segb:hover{background:var(--surface-2);color:var(--ink)}
+.segb.on{background:var(--accent);border-right-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.segb.on:hover{background:var(--accent-hover)}
 .btn.danger{color:var(--crit);border-color:var(--line)}
 .btn.danger:hover{background:var(--crit-soft)}
 input[type=text],input[type=number],input[type=date],input[type=datetime-local],input[type=url],input[type=email],select,textarea{
@@ -582,6 +591,13 @@ const DOC_STATUS = {
 };
 // Only these two kinds represent an offer that can be waiting on an answer.
 const DECIDABLE = ["proposal","quote"];
+// Our own paperwork — campaign plans, insurance, templates — as opposed to
+// anything filed against a customer or a deal.
+const COMPANY_AREA = {
+  social:"Social media", marketing:"Marketing", finance:"Finance & accounts",
+  legal:"Legal & insurance", hr:"People & HR", brand:"Brand & assets",
+  templates:"Templates", admin:"Admin", other:"Other"
+};
 const LEAD_STATUS = {
   new:{label:"To research",cls:""}, researching:{label:"Researching",cls:"accent"},
   contacted:{label:"Contacted",cls:"warn"}, promoted:{label:"In pipeline",cls:"ok"},
@@ -883,6 +899,12 @@ function saveNoteEdit(btn){
   writeNotes(c, list, "Note updated");
 }
 
+function segmented(act, cur, opts){
+  return '<div class="seg" role="group">'+opts.map(([v,l])=>
+    '<button class="segb'+(v===cur?" on":"")+'" type="button" data-act="'+esc(act)+'" data-val="'+esc(v)+'"'+
+    (v===cur?' aria-pressed="true"':' aria-pressed="false"')+'>'+esc(l)+'</button>').join("")+'</div>';
+}
+
 function searchBox(placeholder){
   return '<input type="search" class="searchbox" id="searchBox" autocomplete="off" '+
     'placeholder="'+esc(placeholder)+'" value="'+esc(query)+'">';
@@ -902,6 +924,7 @@ const awaitingDecision = ()=> data.docs.filter(d=>DECIDABLE.indexOf(d.kind)>=0 &
 const agreedDocs = ()=> data.docs.filter(d=>d.status==="signed"||d.status==="accepted");
 // A document belongs to whichever record it was filed against.
 function docOwnerName(d){
+  if(d.company) return "Claritai"+(COMPANY_AREA[d.area] ? " · "+COMPANY_AREA[d.area] : "");
   const c = clientById(d.clientId); if(c) return c.name;
   const deal = d.dealId && byId("deals",d.dealId); if(deal) return deal.company;
   const lead = d.leadId && byId("leads",d.leadId); if(lead) return lead.name;
@@ -1518,21 +1541,31 @@ function clientCard(c){
 }
 
 /* ---------- DOCUMENTS ---------- */
+// Client work or our own — the same shelf, two drawers.
+let docFilter = "all";
+const ourDocs    = ()=> data.docs.filter(d=>!!d.company);
+const clientDocs = ()=> data.docs.filter(d=>!d.company);
+function scopedDocs(){
+  return docFilter==="company" ? ourDocs() : docFilter==="client" ? clientDocs() : data.docs;
+}
 VIEWS.docs = {
   title:"Documents",
-  lede:"Proposals, contracts and the working documents a job accumulates — filed against the customer or deal they belong to.",
-  actions:()=>searchBox("Search documents…")+
+  lede:"Proposals, contracts and the working documents a job accumulates — filed against the customer or deal they belong to, or under Claritai when they're our own.",
+  actions:()=>segmented("doc-filter", docFilter, [["all","All"],["client","Client work"],["company","Claritai"]])+
+    searchBox("Search documents…")+
     '<button class="btn primary" data-act="new-doc">New document</button>',
   meta(){
     const waiting = awaitingDecision();
     const drafts = data.docs.filter(d=>d.status==="draft").length;
     const agreed = agreedDocs().length;
-    const unfiled = data.docs.filter(d=>!d.clientId && !d.dealId && !d.leadId).length;
+    const ours = ourDocs().length;
+    const unfiled = data.docs.filter(d=>!d.company && !d.clientId && !d.dealId && !d.leadId).length;
     return m([
       ["Documents", data.docs.length, ""],
       ["Out for decision", waiting.length, waiting.length?"warn":""],
       ["Agreed", agreed, agreed?"ok":""],
       ["Drafts", drafts, ""],
+      ["Ours", ours, ""],
       ["Not filed against anyone", unfiled, unfiled?"warn":""]
     ]);
   },
@@ -1541,6 +1574,13 @@ VIEWS.docs = {
       return '<div class="empty" style="padding:44px 0">No documents yet.<br><br>'+
         'Add one here, or from a customer or deal — it gets filed against them automatically.</div>';
     }
+    const scope = scopedDocs();
+    if(!scope.length){
+      return '<div class="empty" style="padding:44px 0">'+
+        (docFilter==="company"
+          ? 'Nothing filed under Claritai yet.<br><br>Campaign plans, insurance, templates — anything that\'s ours rather than a customer\'s. Add one and set <b>Filed under</b> to Claritai.'
+          : 'No client documents yet.')+'</div>';
+    }
     const groups = [
       {k:"Waiting on an answer", f:d=>DECIDABLE.indexOf(d.kind)>=0 && d.status==="sent"},
       {k:"Drafts",               f:d=>d.status==="draft"},
@@ -1548,8 +1588,8 @@ VIEWS.docs = {
       {k:"Sent",                 f:d=>d.status==="sent" && DECIDABLE.indexOf(d.kind)<0},
       {k:"Closed out",           f:d=>d.status==="declined"||d.status==="superseded"}
     ];
-    const hits = data.docs.filter(d=>matches(docText(d), query));
-    let out = countLine(hits.length, data.docs.length, "documents"), any = false;
+    const hits = scope.filter(d=>matches(docText(d), query));
+    let out = countLine(hits.length, scope.length, "documents"), any = false;
     groups.forEach(g=>{
       const list = hits.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
       if(!list.length) return;
@@ -1583,7 +1623,7 @@ function openDoc(id, preset){
   const d = id ? byId("docs",id) : null;
   const x = d || Object.assign({
     id:uid(), title:"", kind:"proposal", status:"draft",
-    clientId:"", dealId:"", leadId:"", value:0, monthlyValue:0,
+    clientId:"", dealId:"", leadId:"", company:false, area:"", value:0, monthlyValue:0,
     sentAt:"", decidedAt:"", notes:"", file:null,
     addedBy:me||"", addedAt:new Date().toISOString()
   }, preset||{});
@@ -1612,11 +1652,23 @@ function openDoc(id, preset){
     '</div>'+
 
     '<div class="subhead">Who it belongs to</div>'+
-    '<div class="grid2">'+
-      '<label class="f"><span>Customer</span><select id="dcClient">'+clientOptions(x.clientId)+'</select></label>'+
-      '<label class="f"><span>Deal</span><select id="dcDeal">'+dealOptions(x.dealId)+'</select></label>'+
+    '<label class="f"><span>Filed under</span><select id="dcFiled">'+
+      '<option value="client"'+(x.company?"":" selected")+'>A customer or deal</option>'+
+      '<option value="company"'+(x.company?" selected":"")+'>Claritai — our own</option>'+
+    '</select></label>'+
+    '<div id="dcClientWrap"'+(x.company?' hidden':'')+'>'+
+      '<div class="grid2">'+
+        '<label class="f"><span>Customer</span><select id="dcClient">'+clientOptions(x.clientId)+'</select></label>'+
+        '<label class="f"><span>Deal</span><select id="dcDeal">'+dealOptions(x.dealId)+'</select></label>'+
+      '</div>'+
+      '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Either, or both. A proposal usually belongs to a deal; a signed contract to the customer.</p>'+
     '</div>'+
-    '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Either, or both. A proposal usually belongs to a deal; a signed contract to the customer.</p>'+
+    '<div id="dcCompanyWrap"'+(x.company?'':' hidden')+'>'+
+      '<label class="f"><span>What part of the business</span><select id="dcArea">'+
+        Object.entries(COMPANY_AREA).map(([k,v])=>'<option value="'+k+'"'+(k===(x.area||"social")?" selected":"")+'>'+esc(v)+'</option>').join("")+
+      '</select></label>'+
+      '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Our own paperwork — campaign plans, insurance, templates, anything that isn\'t a customer\'s.</p>'+
+    '</div>'+
 
     '<div class="subhead">File</div>'+ fileBlock +
     '<div class="subhead">Notes</div>'+
@@ -1679,12 +1731,18 @@ async function saveDoc(){
     fetch("/api/files/"+encodeURIComponent(prevFileId),{method:"DELETE",credentials:"same-origin"}).catch(()=>{});
   }
 
+  // One or the other: filing it under Claritai clears any customer or deal it
+  // used to sit against, so it can't show up in two places at once.
+  const company = val("#dcFiled") === "company";
   save("docs",{
     id,
     title: val("#dcTitle")||"Untitled",
     kind: val("#dcKind"), status: val("#dcStatus"),
-    clientId: val("#dcClient"), dealId: val("#dcDeal"),
-    leadId: (prev && prev.leadId) || "",
+    company,
+    area: company ? (val("#dcArea")||"other") : "",
+    clientId: company ? "" : val("#dcClient"),
+    dealId:   company ? "" : val("#dcDeal"),
+    leadId:   company ? "" : ((prev && prev.leadId) || ""),
     notes: val("#dcNotes"), file,
     addedBy: (prev&&prev.addedBy)||me||"",
     addedAt: (prev&&prev.addedAt)||new Date().toISOString()
@@ -1932,12 +1990,19 @@ VIEWS.social = {
     ]);
   },
   body(){
-    if(!data.social.length) return '<div class="empty" style="padding:44px 0">No accounts yet. Add the first channel you manage.</div>';
+    // Our own campaign material lives in Documents under Claritai · Social
+    // media; this is the same shelf, reachable from where you'd look for it.
+    const ours = data.docs.filter(d=>d.company && d.area==="social")
+      .sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
+    const oursBlock = '<div class="grouphead">Our own campaign material<span class="n">'+ours.length+
+      '</span><span class="rule"></span></div>'+docsBlock(ours,"add-doc-social");
+    if(!data.social.length)
+      return '<div class="empty" style="padding:44px 0">No accounts yet. Add the first channel you manage.</div>'+oursBlock;
     const clients = [...new Set(data.social.map(s=>clientNameOf(s)||"Unassigned"))].sort();
     return '<div class="socgrid">'+clients.map(c=>{
       const rows = data.social.filter(s=>(clientNameOf(s)||"Unassigned")===c);
       return '<section class="panel"><h3>'+esc(c)+'</h3><div class="pbody">'+rows.map(socialRow).join("")+'</div></section>';
-    }).join("")+'</div>';
+    }).join("")+'</div>'+oursBlock;
   }
 };
 function socialRow(s){
@@ -1983,6 +2048,14 @@ function closeOverlay(){
   document.removeEventListener("keydown",escClose);
 }
 function escClose(e){ if(e.key==="Escape") closeOverlay(); }
+// Swapping a document between client work and our own shows the right fields.
+document.addEventListener("change", e=>{
+  if(!e.target || e.target.id !== "dcFiled" || !overlay) return;
+  const own = e.target.value === "company";
+  const cw = overlay.querySelector("#dcClientWrap"), ow = overlay.querySelector("#dcCompanyWrap");
+  if(cw) cw.hidden = own;
+  if(ow) ow.hidden = !own;
+});
 // Ctrl/⌘ + Enter files whatever note box you're in — a new one or an edit.
 document.addEventListener("keydown", e=>{
   if(e.key!=="Enter" || !(e.metaKey||e.ctrlKey)) return;
@@ -2535,6 +2608,7 @@ document.addEventListener("click",e=>{
   if(act==="note-edit-save") return saveNoteEdit(b);
   if(act==="note-edit-cancel"){ const c = histCtx(b); return c && redrawHistory(c); }
 
+  if(act==="doc-filter"){ docFilter = b.dataset.val || "all"; return render(); }
   if(act==="new-doc"){ docReturn=null; return openDoc(null); }
   if(act==="doc-edit"){ docReturn=null; return openDoc(row.dataset.doc); }
   if(act==="doc-save") return saveDoc();
@@ -2545,6 +2619,10 @@ document.addEventListener("click",e=>{
     overlay.querySelector("#dcFileSize").value="";
     const card = b.closest(".filecard"); if(card) card.remove();
     return toast("File comes off when you save");
+  }
+  if(act==="add-doc-social"){
+    docReturn = null;
+    return openDoc(null, {company:true, area:"social", kind:"brief"});
   }
   if(act==="add-doc-client"){
     const cid = val("#cId"); docReturn = {type:"client", id:cid};
