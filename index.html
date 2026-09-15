@@ -1321,6 +1321,20 @@ footer {
 .gd-note{font-size:12px;color:var(--text-muted);margin-top:16px;}
 .gd-note a{color:var(--accent-blue);}
 @media (max-width:640px){ .gd-fund{grid-template-columns:1fr;} .gd-lead{grid-template-columns:1fr;} }
+
+/* ─── Pricing teaser band ─── */
+.price-band {
+  padding: 80px 24px; background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);
+}
+.price-band-inner {
+  max-width: 1140px; margin: 0 auto; display: flex; gap: 48px;
+  align-items: center; justify-content: space-between; flex-wrap: wrap;
+}
+@media (max-width: 860px) {
+  .price-band-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+}
+
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Claritai","description":"AI consultancy and digital solutions for Irish SMEs \u2014 AI strategy, website development, SEO and social media.","url":"https://claritai.ie","logo":"https://claritai.ie/favicon.svg","image":"https://claritai.ie/favicon.svg","areaServed":"IE","email":"info@claritai.ie","address":{"@type":"PostalAddress","addressCountry":"IE"},"sameAs":["https://www.linkedin.com/company/claritai-ireland/","https://www.facebook.com/share/1cN5rfc6AW/","https://www.instagram.com/claritai.ie"]}</script>
 </head>
@@ -1335,6 +1349,7 @@ footer {
     <li><a href="#platform">Platform</a></li>
     <li><a href="#testimonials">Results</a></li>
     <li><a href="audit.html">Free Audit</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
 <!-- Hidden 15 Sep 2026 — Products nav / Cargo Command section. To restore, delete this comment wrapper (the opening line and the closing arrow).
     <li>
       <div class="nav-dropdown" id="productsDropdown">
@@ -1382,6 +1397,7 @@ footer {
     <div></div><div></div><div></div>
   </button>
   <div class="mob-overlay" id="mobOverlay">
+    <a href="pricing.html" onclick="closeMob()"><span class="ico">€</span> Packages &amp; Pricing</a>
     <a href="audit.html" onclick="closeMob()"><span class="ico">✦</span> Free AI Audit</a>
 <!-- Hidden 15 Sep 2026 — Products nav / Cargo Command section. To restore, delete this comment wrapper (the opening line and the closing arrow).
     <a href="cargo-command.html" onclick="closeMob()"><span class="ico">🚚</span> Cargo Command</a>
@@ -1570,6 +1586,20 @@ footer {
 </section>
 -->
 
+
+<!-- ─── Pricing teaser ─── -->
+<section class="price-band">
+  <div class="price-band-inner">
+    <div style="max-width:52ch;">
+      <div class="section-label fade-up" style="margin-bottom:12px;">Packages &amp; Pricing</div>
+      <h2 class="section-title fade-up-d1" style="font-size:clamp(24px,3vw,34px);margin-bottom:12px;">A proper website, from <span class="gradient-text">&euro;499 + &euro;79/month</span>.</h2>
+      <p class="section-desc fade-up-d2" style="margin:0;">Website, business email and hosting, set up for you and looked after by us. Optional extras priced openly &mdash; no surprises, no long contract.</p>
+    </div>
+    <div class="fade-up-d3" style="display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="pricing.html" class="btn-primary">See packages &amp; pricing</a>
+    </div>
+  </div>
+</section>
 
 <!-- ─── Grow Digital Voucher (home) ─── -->
 <section id="voucher" style="padding:90px 24px;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);">
@@ -1760,6 +1790,7 @@ function gdLead(eligible){
     </div>
     <div class="footer-col">
       <h4>Services</h4>
+      <a href="pricing.html">Packages &amp; Pricing</a>
       <a href="ai-consultancy.html">AI Consultancy</a>
       <a href="website-development.html">Web Development</a>
       <a href="seo-optimisation.html">SEO Optimisation</a>
