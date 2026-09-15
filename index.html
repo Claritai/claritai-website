@@ -427,14 +427,23 @@ nav {
   justify-content: center;
   gap: 48px;
   flex-wrap: wrap;
-  opacity: 0.35;
 }
+/* The fade sits on each name rather than the row, so hovering one can lift
+   it on its own — a child can never be more opaque than its parent. */
 .trusted-logo {
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--text-secondary);
+  opacity: 0.35;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+a.trusted-logo:hover,
+a.trusted-logo:focus-visible {
+  opacity: 1;
+  color: var(--text-primary);
 }
 
 /* ─── Section Styles ─── */
@@ -1409,8 +1418,8 @@ footer {
 <div class="trusted fade-up-d4">
   <p>Working with</p>
   <div class="trusted-logos">
-    <span class="trusted-logo">MYBIANCA</span>
-    <span class="trusted-logo">RM CLEARY TARMACADAM</span>
+    <a class="trusted-logo" href="https://www.mybianca.com/" target="_blank" rel="noopener">MYBIANCA</a>
+    <a class="trusted-logo" href="https://rmclearytarmacadam.ie/" target="_blank" rel="noopener">RM CLEARY TARMACADAM</a>
   </div>
 </div>
 
