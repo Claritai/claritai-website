@@ -1854,6 +1854,10 @@ function closeMob(){
         <label for="c-message">What do you need help with? *</label>
         <textarea id="c-message" placeholder="Tell us about your project or what challenges you're facing..."></textarea>
       </div>
+      <div class="consult-field" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+        <label for="c-website-url">Leave this empty</label>
+        <input type="text" id="c-website-url" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
       <button class="consult-submit" onclick="submitConsult()">Send Enquiry</button>
     </div>
     <div class="consult-thanks" id="consultThanks">
@@ -1864,7 +1868,7 @@ function closeMob(){
   </div>
 </div>
 <script>
-function openConsult(){
+function openConsult(){consultOpenedAt=Date.now();
   document.getElementById('consultOverlay').classList.add('on');
   document.body.style.overflow='hidden';
 }
@@ -1878,6 +1882,10 @@ function closeConsult(){
     document.querySelectorAll('#consultForm input, #consultForm textarea').forEach(function(el){el.value='';});
   }, 300);
 }
+// When the enquiry form was opened, so the Desk endpoint can tell a person
+// from a bot that submits instantly.
+var consultOpenedAt = Date.now();
+
 function submitConsult(){
   var name=document.getElementById('c-name').value;
   var email=document.getElementById('c-email').value;
@@ -1885,6 +1893,26 @@ function submitConsult(){
   var company=document.getElementById('c-company').value;
   var msg=document.getElementById('c-message').value;
   if(!name||!email||!msg){alert('Please fill in all required fields.');return;}
+
+  var hp=document.getElementById('c-website-url');
+  var pkg=(window.claritaiPackage&&window.claritaiPackage())||null;
+
+  // Desk is the CRM; Formspree is the safety net. They are deliberately
+  // independent — the enquiry still reaches us by email if Desk is unreachable,
+  // and the visitor is never shown a Desk failure.
+  fetch('https://desk.claritai.ie/api/public/enquiry',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      name:name,email:email,phone:phone,company:company,message:msg,
+      website_url:hp?hp.value:'',
+      elapsed:Date.now()-consultOpenedAt,
+      packageText:pkg?pkg.text:'',
+      setupTotal:pkg?pkg.setup:0,
+      monthlyTotal:pkg?pkg.monthly:0
+    })
+  }).catch(function(){});
+
   fetch('https://formspree.io/f/mqeowkly',{
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},

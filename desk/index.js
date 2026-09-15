@@ -26,6 +26,8 @@ const fs = require('fs');
 const db = require('./lib/db');
 const auth = require('./lib/auth');
 const files = require('./lib/files');
+const mail = require('./lib/mail');
+const enquiry = require('./lib/enquiry');
 
 const app = express();
 app.set('trust proxy', 1); // Render terminates TLS in front of us
@@ -58,6 +60,87 @@ app.get('/auth/logout', auth.logout);
 app.post('/auth/logout', auth.logout);
 
 app.get('/robots.txt', (req, res) => res.type('text/plain').send('User-agent: *\nDisallow: /\n'));
+
+// --- website enquiries -------------------------------------------------
+// The only route in this app that a stranger can reach. See lib/enquiry.js for
+// the reasoning behind each guard. It answers 200 for both success and silent
+// rejection: a bot should learn nothing about why it failed, and the website
+// always has its own fallback, so an error here must never surface to a visitor.
+function enquiryCors(req, res) {
+  const origin = req.get('origin');
+  if (!enquiry.originAllowed(origin)) return false;
+  res.set('Access-Control-Allow-Origin', origin);
+  res.set('Vary', 'Origin');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.set('Access-Control-Max-Age', '86400');
+  return true;
+}
+
+app.options('/api/public/enquiry', (req, res) => {
+  if (!enquiryCors(req, res)) return res.status(403).end();
+  res.status(204).end();
+});
+
+app.post('/api/public/enquiry', async (req, res) => {
+  if (!enquiryCors(req, res)) return res.status(403).json({ ok: false });
+
+  const ip = enquiry.clientIp(req);
+  if (enquiry.rateLimited(ip)) {
+    console.warn('[enquiry] rate limited ' + ip);
+    return res.json({ ok: true });
+  }
+
+  const out = enquiry.toLead(req.body, { ip });
+  if (out.error) {
+    console.warn('[enquiry] refused (' + out.error + ') from ' + ip);
+    // 200 for the silent refusals so a bot cannot tell what tripped it;
+    // a genuine mistake by our own form is worth a real status code.
+    return res.status(out.error === 'missing_fields' ? 422 : 200).json({ ok: false });
+  }
+
+  try {
+    await db.put('leads', out.lead.id, out.lead, 'website');
+    db.logActivity('website', 'create', 'leads', out.lead.id,
+      out.lead.name + ' — enquiry from the website');
+    console.log('[enquiry] lead created: ' + out.lead.name + ' <' + out.lead.email + '>');
+    notifyEnquiry(out).catch(() => {});
+    res.json({ ok: true });
+  } catch (err) {
+    // The website also posts to its own form service, so the enquiry is not
+    // lost — but we want to know this happened.
+    console.error('[enquiry] could not save:', err);
+    res.status(500).json({ ok: false });
+  }
+});
+
+function notifyEnquiry(out) {
+  const l = out.lead, m = out.meta;
+  const lines = [
+    'New enquiry from claritai.ie',
+    '',
+    'Name:    ' + m.name,
+    'Email:   ' + m.email,
+    m.phone ? 'Phone:   ' + m.phone : null,
+    m.company ? 'Company: ' + m.company : null,
+    '',
+    m.message,
+    m.pkg ? '\nPackage they built:\n' + m.pkg : null,
+    '',
+    l.value || l.monthlyValue
+      ? 'Estimated value: €' + l.value + ' setup' +
+        (l.monthlyValue ? ' + €' + l.monthlyValue + '/mo' : '')
+      : null,
+    '',
+    'It is already in Desk under Leads: ' +
+      (process.env.BASE_URL || 'https://desk.claritai.ie'),
+  ].filter((x) => x !== null);
+
+  return mail.send({
+    subject: 'Enquiry: ' + m.name + (m.company ? ' — ' + m.company : ''),
+    text: lines.join('\n'),
+  });
+}
 
 // Public assets only. The app itself lives in views/ so it can never be served
 // by the static middleware without passing through the auth gate below.
