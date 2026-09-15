@@ -1677,6 +1677,109 @@ footer {
 .pkg-total { font-size:14px; color:var(--text-secondary); margin-top:22px; }
 .pkg-total b { color:var(--text-primary); font-family:var(--font-display); }
 .vat-note { font-size:12.5px; color:var(--text-muted); margin-top:18px; }
+/* ─── Hero showcase ─── */
+.hero-stage { position:relative; min-height:438px; }
+.hero-stage .shot {
+  position:absolute; border-radius:14px; overflow:hidden; background:#fff;
+  border:1px solid rgba(91,163,230,0.28); box-shadow:0 18px 50px rgba(30,70,110,0.18);
+}
+.shot-site { width:80%; left:0; top:6px; transform:rotate(-2.2deg); }
+.shot-site .bar { display:flex; align-items:center; gap:5px; padding:8px 10px; background:#f4f8fc; border-bottom:1px solid rgba(91,163,230,0.18); }
+.shot-site .bar i { width:7px; height:7px; border-radius:50%; background:#cfe2f3; display:block; }
+.shot-site .bar .url {
+  margin-left:6px; font-family:var(--font-mono,monospace); font-size:9.5px; color:#6f96bb;
+  background:#fff; border:1px solid rgba(91,163,230,0.2); border-radius:20px; padding:2px 10px;
+}
+.shot-site .pic { position:relative; line-height:0; background:#123a63; }
+.shot-site .pic img { width:100%; height:auto; display:block; }
+.shot-site .foot { padding:9px 14px; font-size:10px; color:var(--text-muted); border-top:1px solid rgba(91,163,230,0.14); }
+.shot-dash { width:52%; right:0; top:34px; padding:14px 16px; transform:rotate(1.6deg); }
+.shot-dash .lbl { font-size:9px; letter-spacing:1.3px; text-transform:uppercase; color:var(--text-muted); font-weight:600; }
+.shot-dash .big { font-family:var(--font-display); font-size:23px; font-weight:700; color:var(--text-primary); margin-top:6px; }
+.shot-dash .up { font-size:10px; font-weight:600; color:#2f855a; background:rgba(47,133,90,0.10); border-radius:20px; padding:2px 7px; margin-left:6px; }
+.shot-dash svg { display:block; width:100%; height:38px; margin-top:8px; }
+.shot-local { width:60%; left:0; bottom:8px; padding:11px 14px; display:flex; gap:10px; align-items:center; transform:rotate(-0.8deg); }
+.shot-local .mag {
+  width:26px; height:26px; border-radius:50%; flex:none; background:var(--accent-gradient);
+  color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px;
+}
+.shot-local b { font-size:12px; display:block; }
+.shot-local small { font-size:10.5px; color:var(--text-muted); }
+.hero-cap { position:absolute; right:2px; bottom:-24px; font-size:11px; color:var(--text-muted); }
+.hero-ticks { display:flex; gap:20px; flex-wrap:wrap; margin-top:18px; font-size:12.5px; color:var(--text-secondary); }
+.hero-ticks span { display:flex; gap:7px; align-items:center; }
+@media (max-width:960px) {
+  .hero-stage { min-height:0; display:flex; flex-direction:column; gap:14px; }
+  .hero-stage .shot { position:static; width:100%; transform:none; }
+  .hero-cap { position:static; margin-top:2px; }
+}
+
+/* ─── Package builder ─── */
+.build-layout { display:grid; grid-template-columns:1fr 330px; gap:28px; align-items:start; margin-top:30px; }
+.build-summary { position:sticky; top:96px; }
+.base-strip {
+  display:flex; gap:13px; align-items:flex-start; background:var(--accent-gradient-subtle);
+  border:1px solid var(--border-accent); border-radius:14px; padding:16px 18px; margin-bottom:18px;
+}
+.base-strip b { font-size:14.5px; display:block; }
+.base-strip small { font-size:12.5px; color:var(--text-muted); }
+.addon-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.addon-tag { margin-bottom:0 !important; }
+.addon-toggle {
+  display:inline-flex; align-items:center; gap:7px; border:1px solid var(--border-accent);
+  background:var(--bg-card); border-radius:100px; padding:5px 12px 5px 6px; cursor:pointer;
+  font-family:var(--font-body); font-size:12.5px; font-weight:600; color:var(--text-secondary);
+  transition:background .2s, border-color .2s, color .2s;
+}
+.addon-toggle .box {
+  width:18px; height:18px; border-radius:6px; border:1.5px solid var(--border-accent);
+  display:inline-flex; align-items:center; justify-content:center; font-size:11px;
+  color:transparent; background:var(--bg-primary); transition:background .2s, color .2s, border-color .2s;
+}
+.addon-toggle:hover { border-color:var(--accent-blue); color:var(--text-primary); }
+.addon-card.on { border-color:var(--accent-blue); box-shadow:0 6px 24px rgba(91,163,230,0.14); }
+.addon-card.on .addon-toggle { background:var(--accent-blue); border-color:var(--accent-blue); color:#fff; }
+.addon-card.on .addon-toggle .box { background:#fff; border-color:#fff; color:var(--accent-blue); }
+.addon-toggle:focus-visible { outline:2px solid var(--accent-blue); outline-offset:2px; }
+.addon-qty {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:12.5px; color:var(--text-secondary); padding:10px 0 4px; border-top:1px solid var(--border-subtle);
+}
+.addon-qty select {
+  font-family:var(--font-body); font-size:13px; padding:5px 8px; border-radius:8px;
+  border:1px solid var(--border-accent); background:var(--bg-card); color:var(--text-primary);
+}
+.bs-card { background:var(--bg-card); border:1px solid var(--border-accent); border-radius:18px; padding:24px 22px; box-shadow:0 12px 44px rgba(91,163,230,0.12); }
+.bs-card h3 { font-family:var(--font-display); font-size:19px; font-weight:600; line-height:1.25; margin-bottom:16px; }
+.bs-items { max-height:220px; overflow-y:auto; }
+.bs-item { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border-subtle); }
+.bs-item .nm { font-size:13.5px; font-weight:500; }
+.bs-item .pr { font-size:12px; color:var(--text-muted); display:block; margin-top:2px; }
+.bs-item button { border:0; background:transparent; color:var(--text-muted); cursor:pointer; font-size:17px; line-height:1; padding:0 2px; }
+.bs-item button:hover { color:var(--crit,#c0392b); }
+.bs-empty { font-size:13px; color:var(--text-muted); line-height:1.6; padding:10px 0 4px; }
+.bs-totals { margin-top:16px; padding-top:14px; border-top:1px solid var(--border-subtle); }
+.bs-row { display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:7px 0; font-size:13.5px; color:var(--text-secondary); }
+.bs-row b { font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--text-primary); }
+.bs-row b small { font-size:12px; font-weight:500; color:var(--text-muted); }
+.bs-year { border-top:1px dashed var(--border-subtle); margin-top:8px; padding-top:12px; }
+.bs-year b { font-size:17px; }
+.bs-note, .bs-fine { font-size:11.5px; color:var(--text-muted); line-height:1.6; margin-top:10px; }
+.bs-meta { font-size:12px; color:var(--text-secondary); background:rgba(253,203,110,0.14); border:1px solid rgba(253,203,110,0.45); border-radius:10px; padding:10px 12px; margin-top:12px; line-height:1.55; }
+.build-bar { display:none; }
+@media (max-width:960px) {
+  .build-layout { grid-template-columns:1fr; }
+  .build-summary { position:static; }
+  .build-bar {
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60; align-items:center;
+    justify-content:space-between; gap:12px; padding:11px 16px; background:var(--bg-card);
+    border-top:1px solid var(--border-accent); box-shadow:0 -6px 24px rgba(91,163,230,0.14);
+  }
+  .build-bar .amt { font-family:var(--font-display); font-size:15px; font-weight:700; color:var(--text-primary); }
+  .build-bar .sub { font-size:11px; color:var(--text-muted); }
+  .build-bar .btn-primary { padding:10px 18px; font-size:13.5px; }
+}
+
 /* home-page teaser band */
 .price-band { padding:80px 24px; background:var(--bg-secondary); border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle); }
 .price-band-inner {
@@ -1790,17 +1893,35 @@ footer {
       <a href="#" class="btn-primary" onclick="event.preventDefault();openConsult()">Talk to us about your website</a>
       <a href="#included" class="btn-secondary">See what’s included</a>
     </div>
+    <div class="hero-ticks fade-up-d4">
+      <span><span class="check">✓</span>Complete starter package</span>
+      <span><span class="check">✓</span>Extras only if you want them</span>
+    </div>
    </div>
-   <aside class="hero-card fade-up-d3">
-     <h2>What’s included</h2>
-     <ul>
-       <li><span class="check">✓</span>A professional 3-page website</li>
-       <li><span class="check">✓</span>Your own domain &amp; two business mailboxes</li>
-       <li><span class="check">✓</span>Hosting, SSL, security &amp; daily backups</li>
-       <li><span class="check">✓</span>Someone to look after it every month</li>
-     </ul>
-     <div class="foot"><b>€1,447 for the first 12 months.</b><br>€499 + 12 × €79, excluding VAT.</div>
-   </aside>
+   <div class="hero-stage fade-up-d3">
+     <div class="shot shot-site">
+       <div class="bar"><i></i><i></i><i></i><span class="url">rmclearytarmacadam.ie</span></div>
+       <div class="pic">
+         <img src="assets/rmcleary-site.jpg" width="940" height="565" loading="lazy" decoding="async"
+              alt="The RM Cleary Tarmacadam website, built by Claritai">
+       </div>
+       <div class="foot">Asphalt &middot; Groundworks &middot; Kerbing &middot; Line painting &middot; Ratoath, Co. Meath</div>
+     </div>
+     <div class="shot shot-dash">
+       <div class="lbl">Optional dashboard</div>
+       <div class="big">1,284<span class="up">&nearr; 18.4%</span></div>
+       <div class="lbl" style="letter-spacing:0;text-transform:none;font-weight:400;">Visits this month</div>
+       <svg viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+         <polyline points="0,32 34,27 68,29 102,18 136,20 170,9 200,5" fill="none"
+           stroke="#3d8ed1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+       </svg>
+     </div>
+     <div class="shot shot-local">
+       <span class="mag" aria-hidden="true">&#9906;</span>
+       <span><b>Optional local search setup</b><small>Your Google profile, ready to be found</small></span>
+     </div>
+     <span class="hero-cap">Illustrative &mdash; a real Claritai site, with optional extras.</span>
+   </div>
   </div>
 </section>
 <!-- ─── The starter package ─── -->
@@ -1814,14 +1935,40 @@ footer {
     <div class="scope-panel fade-up"><details class="faq"><summary>What you supply</summary><div class="a">Your logo, business details, photos and draft text. We tidy and format up to 1,200 words across the three pages. We can publish up to two supplied legal-policy pages at no extra charge; legal drafting is not included.</div></details><details class="faq"><summary>What the setup includes</summary><div class="a">A spam-protected enquiry form delivered to your inbox, mobile layout, page titles, descriptions, sitemap, domain connection and two new mailboxes. We help connect email on two devices. The included email service is standard business email; paid Microsoft 365 or Google Workspace subscriptions and old-mailbox migration are separate.</div></details><details class="faq"><summary>What the ongoing care includes</summary><div class="a">Hosting, SSL, daily site backups retained for 30 days, routine security maintenance, email support and 20 minutes of text or image changes per month. Unused update time does not roll over. New pages and new features are optional extras.</div></details><details class="faq"><summary>About the domain</summary><div class="a">One available, standard-price .ie or .com, registered in your name, subject to eligibility. We can connect an existing domain. Premium names, buying a domain from its owner and restoring expired domains are outside this package.</div></details><details class="faq"><summary>Best fit</summary><div class="a">A brochure website for one business in one language. Online shops, member portals, custom integrations, photography and full copywriting need a separate fixed scope. We agree any extra cost before starting.</div></details></div>
   </div>
 </section>
-<!-- ─── Add-ons ─── -->
-<section style="padding:90px 24px;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);">
+<!-- ─── Build your package ─── -->
+<section id="extras" style="padding:90px 24px;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);">
   <div class="section-container">
     <div class="section-label fade-up">02 / Make it yours</div>
-    <h2 class="section-title fade-up-d1">A little extra.<br>Only if it helps.</h2>
-    <p class="section-desc fade-up-d2" style="max-width:62ch;">Your starter is already included. Pick an extra, or keep things simple. All prices exclude VAT.</p>
-    <div class="addon-grid"><div class="addon-card fade-up"><span class="addon-tag">One-off</span><h3>Get found locally</h3><p class="blurb">Help nearby customers find the right details about your business.</p><div class="addon-price">€149 once</div><ul><li><span class="check">✓</span>One eligible location: setup or tidy-up</li><li><span class="check">✓</span>Categories, services, contact details &amp; website link</li><li><span class="check">✓</span>Verification guidance and handover</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Google Business Profile itself is free. You pay us for setup work. Verification and rankings are controlled by Google.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Save admin time</span><h3>Take bookings online</h3><p class="blurb">Let customers choose a time without the back-and-forth.</p><div class="addon-price">€149 once + €9/mo</div><ul><li><span class="check">✓</span>One calendar, one appointment type</li><li><span class="check">✓</span>Booking page embedded on your website</li><li><span class="check">✓</span>Connection checks &amp; booking support</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Uses a free scheduling plan; the €9 covers our support. Multi-staff booking, payments and SMS are excluded. Paid tools only by agreement.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">One-off</span><h3>Make reviews easier</h3><p class="blurb">Give happy customers a simple way to leave an honest review.</p><div class="addon-price">€99 once</div><ul><li><span class="check">✓</span>Your Google review link &amp; website button</li><li><span class="check">✓</span>Print-ready QR card design</li><li><span class="check">✓</span>Two reusable review-request templates</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">You send the requests. Printing and automated sending are excluded. No review incentives or filtering.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">One-off</span><h3>Tell them a little more</h3><p class="blurb">Give an extra service, location or your story its own page.</p><div class="addon-price">€99 once</div><ul><li><span class="check">✓</span>One page within your agreed website design</li><li><span class="check">✓</span>Up to 500 words of text supplied by you</li><li><span class="check">✓</span>Mobile layout &amp; search basics</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Price is per page. Includes one revision round; custom tools and full copywriting are excluded.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Per mailbox</span><h3>Give your team an email</h3><p class="blurb">Another proper business inbox for another member of your team.</p><div class="addon-price">€5/mo</div><ul><li><span class="check">✓</span>5 GB mailbox on your existing domain</li><li><span class="check">✓</span>Account setup &amp; routine support</li><li><span class="check">✓</span>Works with your included email service</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Two mailboxes are already included in the starter. This adds more. Microsoft 365 and Google Workspace licences are excluded.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Monthly service</span><h3>Keep improving local search</h3><p class="blurb">Keep your existing website and local profile useful and up to date.</p><div class="addon-price">€149/mo</div><ul><li><span class="check">✓</span>Improve one existing page each month</li><li><span class="check">✓</span>One Google Business Profile update</li><li><span class="check">✓</span>Monthly search report &amp; next actions</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Requires an existing verified profile; if you need one, add the €149 setup. New pages cost extra. No ranking or lead guarantees.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Monthly service</span><h3>Keep showing up on social</h3><p class="blurb">Stay visible without finding time to create every post yourself.</p><div class="addon-price">€199/mo</div><ul><li><span class="check">✓</span>Four original static posts per month</li><li><span class="check">✓</span>Captions &amp; scheduling on Facebook + Instagram</li><li><span class="check">✓</span>One feedback round; approval before publishing</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Four pieces of content, adapted across two channels. You supply photos and offers. Reels, shoots, DMs and paid ads are excluded.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Build your list</span><h3>Stay in touch by email</h3><p class="blurb">Start a permission-based mailing list you can grow over time.</p><div class="addon-price">€149 once + €29/mo</div><ul><li><span class="check">✓</span>Signup form, branded template &amp; welcome email</li><li><span class="check">✓</span>500 active subscribers; 5,000 sends/mo; tool included</li><li><span class="check">✓</span>Connection checks &amp; routine support</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">You write and send campaigns. Larger lists, campaign management and store automations are priced separately before upgrading.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Ad spend separate</span><h3>Run a focused Meta campaign</h3><p class="blurb">Get help planning and managing one clear advertising offer.</p><div class="addon-price">€199 once + €199/mo</div><ul><li><span class="check">✓</span>One campaign on your own Meta ad account</li><li><span class="check">✓</span>Two static ad creatives; weekly checks</li><li><span class="check">✓</span>Monthly report; manage up to €1,500 ad spend</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Advertising budget is paid directly to Meta and is NOT in the package total. You choose it separately before starting. No sales guarantees.</div></details></div><div class="addon-card fade-up"><span class="addon-tag">Optional reporting</span><h3>See your website performance</h3><p class="blurb">Make sense of the visits and enquiries your website receives.</p><div class="addon-price">€299 once + €39/mo</div><ul><li><span class="check">✓</span>One Google Analytics connection</li><li><span class="check">✓</span>Up to six agreed website metrics</li><li><span class="check">✓</span>Dashboard maintenance &amp; connection checks</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Sales, stock, accounting, ad-platform connectors and custom reporting are excluded. Consent and access are agreed before setup.</div></details></div></div>
-    <p class="vat-note fade-up">Same add-on prices now or later. We’ll agree any future work and its price with you first — no automatic upgrades. Need an online shop, a custom system or a full brand identity? Ask for a separate fixed quote.</p>
+    <h2 class="section-title fade-up-d1">Build your package.</h2>
+    <p class="section-desc fade-up-d2" style="max-width:62ch;">Your starter is already included. Add an extra and the total updates as you go — or keep things simple and add nothing at all. All prices exclude VAT.</p>
+    <div class="build-layout">
+      <div>
+        <div class="base-strip fade-up">
+          <span class="check">✓</span>
+          <div><b>Website + 2 mailboxes + hosting &amp; care</b>
+          <small>Always included · €499 setup + €79/month</small></div>
+        </div>
+        <div class="addon-grid"><div class="addon-card fade-up" data-addon="local" data-setup="149" data-monthly="0" data-name="Get found locally"><div class="addon-head"><span class="addon-tag">One-off</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Get found locally</h3><p class="blurb">Help nearby customers find the right details about your business.</p><div class="addon-price">€149 once</div><ul><li><span class="check">✓</span>One eligible location: setup or tidy-up</li><li><span class="check">✓</span>Categories, services, contact details &amp; website link</li><li><span class="check">✓</span>Verification guidance and handover</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Google Business Profile itself is free. You pay us for setup work. Verification and rankings are controlled by Google.</div></details></div><div class="addon-card fade-up" data-addon="booking" data-setup="149" data-monthly="9" data-name="Take bookings online"><div class="addon-head"><span class="addon-tag">Save admin time</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Take bookings online</h3><p class="blurb">Let customers choose a time without the back-and-forth.</p><div class="addon-price">€149 once + €9/mo</div><ul><li><span class="check">✓</span>One calendar, one appointment type</li><li><span class="check">✓</span>Booking page embedded on your website</li><li><span class="check">✓</span>Connection checks &amp; booking support</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Uses a free scheduling plan; the €9 covers our support. Multi-staff booking, payments and SMS are excluded. Paid tools only by agreement.</div></details></div><div class="addon-card fade-up" data-addon="reviews" data-setup="99" data-monthly="0" data-name="Make reviews easier"><div class="addon-head"><span class="addon-tag">One-off</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Make reviews easier</h3><p class="blurb">Give happy customers a simple way to leave an honest review.</p><div class="addon-price">€99 once</div><ul><li><span class="check">✓</span>Your Google review link &amp; website button</li><li><span class="check">✓</span>Print-ready QR card design</li><li><span class="check">✓</span>Two reusable review-request templates</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">You send the requests. Printing and automated sending are excluded. No review incentives or filtering.</div></details></div><div class="addon-card fade-up" data-addon="page" data-setup="99" data-monthly="0" data-name="Tell them a little more"><div class="addon-head"><span class="addon-tag">One-off</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Tell them a little more</h3><p class="blurb">Give an extra service, location or your story its own page.</p><div class="addon-price">€99 once</div><ul><li><span class="check">✓</span>One page within your agreed website design</li><li><span class="check">✓</span>Up to 500 words of text supplied by you</li><li><span class="check">✓</span>Mobile layout &amp; search basics</li></ul><label class="addon-qty"><span>Number of pages</span><select data-qty aria-label="Number of pages"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Price is per page. Includes one revision round; custom tools and full copywriting are excluded.</div></details></div><div class="addon-card fade-up" data-addon="mailbox" data-setup="0" data-monthly="5" data-name="Give your team an email"><div class="addon-head"><span class="addon-tag">Per mailbox</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Give your team an email</h3><p class="blurb">Another proper business inbox for another member of your team.</p><div class="addon-price">€5/mo</div><ul><li><span class="check">✓</span>5 GB mailbox on your existing domain</li><li><span class="check">✓</span>Account setup &amp; routine support</li><li><span class="check">✓</span>Works with your included email service</li></ul><label class="addon-qty"><span>Number of mailboxes</span><select data-qty aria-label="Number of mailboxes"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select></label><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Two mailboxes are already included in the starter. This adds more. Microsoft 365 and Google Workspace licences are excluded.</div></details></div><div class="addon-card fade-up" data-addon="seo" data-setup="0" data-monthly="149" data-name="Keep improving local search"><div class="addon-head"><span class="addon-tag">Monthly service</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Keep improving local search</h3><p class="blurb">Keep your existing website and local profile useful and up to date.</p><div class="addon-price">€149/mo</div><ul><li><span class="check">✓</span>Improve one existing page each month</li><li><span class="check">✓</span>One Google Business Profile update</li><li><span class="check">✓</span>Monthly search report &amp; next actions</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Requires an existing verified profile; if you need one, add the €149 setup. New pages cost extra. No ranking or lead guarantees.</div></details></div><div class="addon-card fade-up" data-addon="social" data-setup="0" data-monthly="199" data-name="Keep showing up on social"><div class="addon-head"><span class="addon-tag">Monthly service</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Keep showing up on social</h3><p class="blurb">Stay visible without finding time to create every post yourself.</p><div class="addon-price">€199/mo</div><ul><li><span class="check">✓</span>Four original static posts per month</li><li><span class="check">✓</span>Captions &amp; scheduling on Facebook + Instagram</li><li><span class="check">✓</span>One feedback round; approval before publishing</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Four pieces of content, adapted across two channels. You supply photos and offers. Reels, shoots, DMs and paid ads are excluded.</div></details></div><div class="addon-card fade-up" data-addon="email" data-setup="149" data-monthly="29" data-name="Stay in touch by email"><div class="addon-head"><span class="addon-tag">Build your list</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Stay in touch by email</h3><p class="blurb">Start a permission-based mailing list you can grow over time.</p><div class="addon-price">€149 once + €29/mo</div><ul><li><span class="check">✓</span>Signup form, branded template &amp; welcome email</li><li><span class="check">✓</span>500 active subscribers; 5,000 sends/mo; tool included</li><li><span class="check">✓</span>Connection checks &amp; routine support</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">You write and send campaigns. Larger lists, campaign management and store automations are priced separately before upgrading.</div></details></div><div class="addon-card fade-up" data-addon="meta" data-setup="199" data-monthly="199" data-name="Run a focused Meta campaign"><div class="addon-head"><span class="addon-tag">Ad spend separate</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>Run a focused Meta campaign</h3><p class="blurb">Get help planning and managing one clear advertising offer.</p><div class="addon-price">€199 once + €199/mo</div><ul><li><span class="check">✓</span>One campaign on your own Meta ad account</li><li><span class="check">✓</span>Two static ad creatives; weekly checks</li><li><span class="check">✓</span>Monthly report; manage up to €1,500 ad spend</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Advertising budget is paid directly to Meta and is NOT in the package total. You choose it separately before starting. No sales guarantees.</div></details></div><div class="addon-card fade-up" data-addon="dash" data-setup="299" data-monthly="39" data-name="See your website performance"><div class="addon-head"><span class="addon-tag">Optional reporting</span><button type="button" class="addon-toggle" data-toggle aria-pressed="false"><span class="box" aria-hidden="true">✓</span><span class="lbl">Add</span></button></div><h3>See your website performance</h3><p class="blurb">Make sense of the visits and enquiries your website receives.</p><div class="addon-price">€299 once + €39/mo</div><ul><li><span class="check">✓</span>One Google Analytics connection</li><li><span class="check">✓</span>Up to six agreed website metrics</li><li><span class="check">✓</span>Dashboard maintenance &amp; connection checks</li></ul><details class="faq"><summary>Scope &amp; limits</summary><div class="a">Sales, stock, accounting, ad-platform connectors and custom reporting are excluded. Consent and access are agreed before setup.</div></details></div></div>
+        <p class="vat-note fade-up">Same add-on prices now or later. We’ll agree any future work and its price with you first — no automatic upgrades. Need an online shop, a custom system or a full brand identity? Ask for a separate fixed quote.</p>
+      </div>
+      <aside class="build-summary">
+        <div class="bs-card">
+          <div class="section-label" style="margin-bottom:8px;">Your package</div>
+          <h3>A clear price.<br>A comfortable start.</h3>
+          <div class="bs-items" id="bsItems"></div>
+          <p class="bs-empty" id="bsEmpty">No extras added yet. The starter on its own is a complete package.</p>
+          <div class="bs-totals">
+            <div class="bs-row"><span>One-time setup</span><b id="tSetup">€499</b></div>
+            <div class="bs-row"><span>Then each month</span><b id="tMonthly">€79<small>/mo</small></b></div>
+            <div class="bs-row bs-year"><span>First 12 months</span><b id="tYear">€1,447</b></div>
+          </div>
+          <p class="bs-note">Setup + 12 monthly payments, if you keep these services for a year. Excludes VAT.</p>
+          <p class="bs-meta" id="bsMeta" hidden><b>+ Your Meta advertising budget.</b> Paid directly to Meta and excluded from every figure here.</p>
+          <button type="button" class="btn-primary" id="bsSend" style="width:100%;margin-top:6px;">Send me this package</button>
+          <p class="bs-fine">No payment or subscription starts here. We confirm the final scope and price with you in writing first.</p>
+        </div>
+      </aside>
+    </div>
   </div>
 </section>
 <!-- ─── Example packages ─── -->
@@ -1830,7 +1977,7 @@ footer {
     <div class="section-label fade-up">Your budget, in real terms</div>
     <h2 class="section-title fade-up-d1">Three sensible<br>starting points.</h2>
     <p class="section-desc fade-up-d2" style="max-width:62ch;">Examples, not tiers. You can change or remove every extra.</p>
-    <div class="pricing-grid" style="margin-top:38px;"><div class="pricing-card fade-up"><div class="pricing-timeline">“I just need to look professional.”</div><h3>Get online</h3><p class="pricing-desc">Website, two business mailboxes, domain, hosting and care.</p><ul class="pricing-features"><li><span class="check">✓</span>€499 setup</li><li><span class="check">✓</span>+ €79/mo</li><li><span class="check">✓</span>€1,447 in year one · Excl. VAT</li></ul><a href="#" class="btn-secondary" onclick="event.preventDefault();openConsult()">Talk to us about this</a></div><div class="pricing-card featured fade-up"><span class="pricing-badge">Most chosen</span><div class="pricing-timeline">“Help local people find me.”</div><h3>Get found locally</h3><p class="pricing-desc">Your starter, plus Google Business Profile setup for one location.</p><ul class="pricing-features"><li><span class="check">✓</span>€648 setup</li><li><span class="check">✓</span>+ €79/mo</li><li><span class="check">✓</span>€1,596 in year one · Excl. VAT</li></ul><a href="#" class="btn-primary" onclick="event.preventDefault();openConsult()">Talk to us about this</a></div><div class="pricing-card fade-up"><div class="pricing-timeline">“I’d like fewer booking messages.”</div><h3>Start taking bookings</h3><p class="pricing-desc">Your starter, plus simple online booking for one calendar.</p><ul class="pricing-features"><li><span class="check">✓</span>€648 setup</li><li><span class="check">✓</span>+ €88/mo</li><li><span class="check">✓</span>€1,704 in year one · Excl. VAT</li></ul><a href="#" class="btn-secondary" onclick="event.preventDefault();openConsult()">Talk to us about this</a></div></div>
+    <div class="pricing-grid" style="margin-top:38px;"><div class="pricing-card fade-up"><div class="pricing-timeline">“I just need to look professional.”</div><h3>Get online</h3><p class="pricing-desc">Website, two business mailboxes, domain, hosting and care.</p><ul class="pricing-features"><li><span class="check">✓</span>€499 setup</li><li><span class="check">✓</span>+ €79/mo</li><li><span class="check">✓</span>€1,447 in year one · Excl. VAT</li></ul><button type="button" class="btn-secondary" data-build="">Build this example</button></div><div class="pricing-card featured fade-up"><span class="pricing-badge">Most chosen</span><div class="pricing-timeline">“Help local people find me.”</div><h3>Get found locally</h3><p class="pricing-desc">Your starter, plus Google Business Profile setup for one location.</p><ul class="pricing-features"><li><span class="check">✓</span>€648 setup</li><li><span class="check">✓</span>+ €79/mo</li><li><span class="check">✓</span>€1,596 in year one · Excl. VAT</li></ul><button type="button" class="btn-primary" data-build="local">Build this example</button></div><div class="pricing-card fade-up"><div class="pricing-timeline">“I’d like fewer booking messages.”</div><h3>Start taking bookings</h3><p class="pricing-desc">Your starter, plus simple online booking for one calendar.</p><ul class="pricing-features"><li><span class="check">✓</span>€648 setup</li><li><span class="check">✓</span>+ €88/mo</li><li><span class="check">✓</span>€1,704 in year one · Excl. VAT</li></ul><button type="button" class="btn-secondary" data-build="booking">Build this example</button></div></div>
     <p class="vat-note fade-up">Year-one examples assume 12 months of the selected services. No annual payment is required.</p>
   </div>
 </section>
@@ -1879,6 +2026,136 @@ footer {
     </div>
   </div>
 </section>
+<div class="build-bar" id="buildBar" hidden>
+  <div><span class="amt" id="barAmt">€499 + €79/mo</span><br><span class="sub">Your package so far</span></div>
+  <button type="button" class="btn-primary" id="barBtn">Review</button>
+</div>
+
+<script>
+(function(){
+  var BASE_SETUP = 499, BASE_MONTHLY = 79;
+  var cards = [].slice.call(document.querySelectorAll('[data-addon]'));
+  if (!cards.length) return;
+
+  function euro(n){ return '€' + n.toLocaleString('en-IE'); }
+
+  function state(){
+    return cards.filter(function(c){ return c.classList.contains('on'); }).map(function(c){
+      var sel = c.querySelector('[data-qty]');
+      var q = sel ? parseInt(sel.value, 10) || 1 : 1;
+      return { el:c, id:c.dataset.addon, name:c.dataset.name,
+               setup:parseInt(c.dataset.setup,10)*q, monthly:parseInt(c.dataset.monthly,10)*q, qty:q,
+               hasQty: !!sel };
+    });
+  }
+
+  function render(){
+    var picked = state();
+    var setup = BASE_SETUP, monthly = BASE_MONTHLY;
+    picked.forEach(function(p){ setup += p.setup; monthly += p.monthly; });
+    var year = setup + monthly * 12;
+
+    document.getElementById('tSetup').textContent = euro(setup);
+    document.getElementById('tMonthly').innerHTML = euro(monthly) + '<small>/mo</small>';
+    document.getElementById('tYear').textContent = euro(year);
+
+    var box = document.getElementById('bsItems'), empty = document.getElementById('bsEmpty');
+    box.innerHTML = picked.map(function(p){
+      var bits = [];
+      if (p.setup) bits.push(euro(p.setup) + ' setup');
+      bits.push(p.monthly ? euro(p.monthly) + '/mo' : 'No monthly fee');
+      return '<div class="bs-item"><span><span class="nm">' + p.name +
+             (p.hasQty && p.qty > 1 ? ' × ' + p.qty : '') + '</span>' +
+             '<span class="pr">' + bits.join(' · ') + '</span></span>' +
+             '<button type="button" data-drop="' + p.id + '" aria-label="Remove ' + p.name + '">×</button></div>';
+    }).join('');
+    empty.hidden = picked.length > 0;
+
+    document.getElementById('bsMeta').hidden = !picked.some(function(p){ return p.id === 'meta'; });
+
+    var bar = document.getElementById('buildBar');
+    bar.hidden = picked.length === 0;
+    document.getElementById('barAmt').textContent = euro(setup) + ' + ' + euro(monthly) + '/mo';
+  }
+
+  function setOn(card, on){
+    card.classList.toggle('on', on);
+    var t = card.querySelector('[data-toggle]');
+    t.setAttribute('aria-pressed', on ? 'true' : 'false');
+    t.querySelector('.lbl').textContent = on ? 'Added' : 'Add';
+  }
+
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-toggle]');
+    if (t) { var c = t.closest('[data-addon]'); setOn(c, !c.classList.contains('on')); return render(); }
+
+    var drop = e.target.closest('[data-drop]');
+    if (drop) {
+      var card = document.querySelector('[data-addon="' + drop.dataset.drop + '"]');
+      if (card) setOn(card, false);
+      return render();
+    }
+
+    var build = e.target.closest('[data-build]');
+    if (build) {
+      var want = (build.dataset.build || '').split(',').filter(Boolean);
+      cards.forEach(function(c){ setOn(c, want.indexOf(c.dataset.addon) >= 0); });
+      render();
+      document.getElementById('extras').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+
+  document.addEventListener('change', function(e){
+    if (e.target.matches('[data-qty]')) {
+      var c = e.target.closest('[data-addon]');
+      if (!c.classList.contains('on')) setOn(c, true);
+      render();
+    }
+  });
+
+  function summary(){
+    var picked = state();
+    var setup = BASE_SETUP, monthly = BASE_MONTHLY;
+    picked.forEach(function(p){ setup += p.setup; monthly += p.monthly; });
+    var lines = ['Package built on the website:', '',
+                 'Starter package — €499 setup + €79/month'];
+    if (picked.length) {
+      lines.push('', 'Extras:');
+      picked.forEach(function(p){
+        var bits = [];
+        if (p.setup) bits.push(euro(p.setup) + ' setup');
+        if (p.monthly) bits.push(euro(p.monthly) + '/mo');
+        lines.push('  · ' + p.name + (p.hasQty && p.qty > 1 ? ' × ' + p.qty : '') +
+                   ' — ' + bits.join(' + '));
+      });
+    } else {
+      lines.push('', 'No extras — starter package only.');
+    }
+    lines.push('', 'One-time setup: ' + euro(setup),
+               'Then each month: ' + euro(monthly) + '/mo',
+               'First 12 months: ' + euro(setup + monthly * 12),
+               '', 'All figures exclude VAT.');
+    if (picked.some(function(p){ return p.id === 'meta'; }))
+      lines.push('Meta advertising budget is paid directly to Meta and is not included above.');
+    return lines.join('\n');
+  }
+
+  function send(){
+    if (typeof openConsult === 'function') openConsult();
+    var fill = function(){
+      var m = document.getElementById('c-message');
+      if (m) { m.value = summary(); m.dispatchEvent(new Event('input', {bubbles:true})); }
+    };
+    fill(); setTimeout(fill, 80);
+  }
+  document.getElementById('bsSend').addEventListener('click', send);
+  document.getElementById('barBtn').addEventListener('click', function(){
+    document.querySelector('.build-summary').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+
+  render();
+})();
+</script>
 
 <!-- ─── Footer ─── -->
 <footer>
