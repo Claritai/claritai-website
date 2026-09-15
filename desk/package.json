@@ -11,7 +11,8 @@
     "start": "node index.js",
     "dev": "node index.js",
     "check-sites": "node cron/check-sites.js",
-    "test": "node test/app.test.js && node test/monitor.test.js"
+    "test-alert": "node cron/check-sites.js --test-alert",
+    "test": "node test/app.test.js && node test/monitor.test.js && node test/alerts.test.js"
   },
   "dependencies": {
     "express": "^4.19.2",

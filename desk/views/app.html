@@ -245,6 +245,17 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .tline .what{min-width:0;flex:1}
 .tline .what b{font-weight:600;font-size:13px;display:block}
 .tline .what small{color:var(--ink-3);font-size:11.5px}
+.panel>h3{display:flex;align-items:center;gap:8px}
+.panel>h3 .btn{text-transform:none;letter-spacing:0;font-weight:500}
+
+/* ---------- what's changed ---------- */
+.feedline .what small .ok{color:var(--ok);font-weight:600}
+.feedline .what small .crit{color:var(--crit);font-weight:600}
+.feedline .what small .accent{color:var(--accent);font-weight:600}
+.feedline.go{cursor:pointer;border-radius:var(--r-sm)}
+.feedline.go:hover{background:var(--surface-2);box-shadow:0 0 0 6px var(--surface-2)}
+.feedline.go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.trailscroll{max-height:56vh;overflow-y:auto;margin:6px 0 2px}
 
 /* ---------- pipeline board ---------- */
 .board{display:flex;gap:12px;overflow-x:auto;padding-bottom:14px;align-items:flex-start}
@@ -612,6 +623,8 @@ const CADENCE = {monthly:"per month", yearly:"per year", once:"one-off"};
 
 /* ============ state ============ */
 const data = {leads:[],clients:[],deals:[],docs:[],tasks:[],meetings:[],sites:[],social:[]};
+// The audit trail, newest first. Read-only here — the server writes it.
+let activity = [];
 let team = [];              // staff who have signed in, from the server
 let view = "overview";
 let me = "";                // display name of the signed-in user
@@ -899,6 +912,57 @@ function saveNoteEdit(btn){
   writeNotes(c, list, "Note updated");
 }
 
+/* ---------- what's changed ---------- */
+// Which drawer a trail entry points at. Anything not listed simply isn't
+// clickable, which is the right answer for a record that no longer exists.
+const OPENERS = {
+  leads:openLead, deals:openDeal, clients:openClient, docs:openDoc,
+  tasks:openTask, meetings:openMeeting, sites:openSite, social:openSocial
+};
+const ACTION_WORD = {
+  create:"added", update:"updated", delete:"deleted",
+  check:"site check", aborted:"monitoring problem"
+};
+const ACTION_CLS = { create:"ok", delete:"crit", aborted:"crit", check:"accent" };
+
+function actorName(a){
+  const n = (a.actor_name || a.actor || "").trim();
+  if(!n || n === "monitor") return "Monitor";
+  return n;
+}
+// A trail entry only opens if the record is still there — the alternative is a
+// click that silently creates a blank one.
+function trailTarget(a){
+  return a.record_id && OPENERS[a.collection] && byId(a.collection, a.record_id) ? a.collection : "";
+}
+function trailLine(a){
+  const live = trailTarget(a);
+  const word = ACTION_WORD[a.action] || a.action || "changed";
+  const cls = ACTION_CLS[a.action] || "";
+  return '<div class="tline feedline'+(live?" go":"")+'"'+
+      (live?' data-act="trail-open" data-coll="'+esc(a.collection)+'" data-rec="'+esc(a.record_id)+'" tabindex="0" role="button"':'')+'>'+
+    '<span class="when">'+esc(agoTime(a.at))+'</span>'+
+    '<span class="what"><b>'+esc(a.summary || "(no detail)")+'</b>'+
+      '<small><span class="'+esc(cls)+'">'+esc(word)+'</span> · '+esc(actorName(a))+'</small></span>'+
+  '</div>';
+}
+function trailPanel(){
+  const rows = activity.slice(0,8).map(trailLine).join("");
+  return '<section class="panel"><h3>What\'s changed'+
+      (activity.length>8?'<button class="btn ghost sm" data-act="trail-all" style="margin-left:auto">See all</button>':'')+
+    '</h3><div class="pbody">'+
+    (rows || '<div class="empty">Nothing recorded yet. Every save, from either of you or from the monitor, shows up here.</div>')+
+    '</div></section>';
+}
+function openTrail(){
+  const rows = activity.map(trailLine).join("");
+  modal("What's changed",
+    '<p style="margin:0 0 4px;font-size:12.5px;color:var(--ink-3)">'+
+      'The last '+activity.length+' changes, newest first — yours, your team\'s and the site monitor\'s.</p>'+
+    '<div class="trailscroll">'+(rows || '<div class="empty">Nothing recorded yet.</div>')+'</div>',
+    '<button class="btn" data-close>Close</button>');
+}
+
 function segmented(act, cur, opts){
   return '<div class="seg" role="group">'+opts.map(([v,l])=>
     '<button class="segb'+(v===cur?" on":"")+'" type="button" data-act="'+esc(act)+'" data-val="'+esc(v)+'"'+
@@ -1168,6 +1232,7 @@ VIEWS.overview = {
       '</div>'+
       '<div class="stack">'+
         '<section class="panel"><h3>Wants attention</h3><div class="pbody">'+attHtml+'</div></section>'+
+        trailPanel()+
         '<section class="panel"><h3>Sites at a glance</h3><div class="pbody">'+
           (data.sites.length? data.sites.map(s=>
             '<div class="tline"><span class="what"><b>'+esc(s.name)+'</b><small>'+esc(clientNameOf(s)||"—")+' · checked '+fmtDate(s.lastChecked)+'</small></span>'+
@@ -2056,6 +2121,15 @@ document.addEventListener("change", e=>{
   if(cw) cw.hidden = own;
   if(ow) ow.hidden = !own;
 });
+// Feed lines are buttons, so they should answer to the keyboard like buttons.
+document.addEventListener("keydown", e=>{
+  if(e.key !== "Enter" && e.key !== " ") return;
+  const line = e.target && e.target.closest && e.target.closest('.feedline.go');
+  if(!line) return;
+  e.preventDefault();
+  const open = OPENERS[line.dataset.coll];
+  if(open){ closeOverlay(); open(line.dataset.rec); }
+});
 // Ctrl/⌘ + Enter files whatever note box you're in — a new one or an edit.
 document.addEventListener("keydown", e=>{
   if(e.key!=="Enter" || !(e.metaKey||e.ctrlKey)) return;
@@ -2608,6 +2682,13 @@ document.addEventListener("click",e=>{
   if(act==="note-edit-save") return saveNoteEdit(b);
   if(act==="note-edit-cancel"){ const c = histCtx(b); return c && redrawHistory(c); }
 
+  if(act==="trail-all") return openTrail();
+  if(act==="trail-open"){
+    const open = OPENERS[b.dataset.coll];
+    if(!open) return;
+    closeOverlay();
+    return open(b.dataset.rec);
+  }
   if(act==="doc-filter"){ docFilter = b.dataset.val || "all"; return render(); }
   if(act==="new-doc"){ docReturn=null; return openDoc(null); }
   if(act==="doc-edit"){ docReturn=null; return openDoc(row.dataset.doc); }
@@ -2728,9 +2809,14 @@ render();
 async function refresh(){
   // Don't stomp on a record that is mid-save.
   if(dirty > 0) return;
-  const payload = await api("GET", "/api/data");
+  const [payload, trail] = await Promise.all([
+    api("GET", "/api/data"),
+    // The feed is a nicety — a failure here must not cost us the records.
+    api("GET", "/api/activity?limit=120").catch(()=>null)
+  ]);
   COLLS.forEach(c=>{ data[c] = payload[c] || []; });
   team = payload.team || [];
+  if(trail) activity = trail;
   render();
 }
 

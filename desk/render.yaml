@@ -60,3 +60,13 @@ services:
         fromDatabase:
           name: claritai-desk-db
           property: connectionString
+      # Alert email. Without RESEND_API_KEY the monitor still runs and still
+      # records everything — it just logs the alert instead of sending it.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_FROM
+        value: Claritai Desk <desk@claritai.ie>
+      - key: BASE_URL
+        value: https://desk.claritai.ie
+      # ALERT_EMAILS is optional: leave it unset and alerts go to everyone who
+      # has signed in to Desk. Set it (comma-separated) to override.

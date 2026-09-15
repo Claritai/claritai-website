@@ -10,6 +10,7 @@ const tls = require('tls');
 const { URL } = require('url');
 
 const db = require('../lib/db');
+const mail = require('../lib/mail');
 
 const TIMEOUT_MS = 15000;
 const MAX_REDIRECTS = 5;
@@ -219,6 +220,31 @@ function applyVerdict(site, check, nowIso) {
 }
 
 async function main() {
+  // `node cron/check-sites.js --test-alert` sends one sample email and stops.
+  // Real alerts only fire on a change of state, so without this there's no way
+  // to prove the mail setup works short of waiting for a client site to break.
+  if (process.argv.includes('--test-alert')) {
+    if (!mail.isConfigured()) {
+      console.error('[monitor] RESEND_API_KEY is not set on this service — nothing would be sent.');
+      process.exitCode = 1;
+      return;
+    }
+    await db.init();
+    const to = await mail.recipients();
+    console.log('[monitor] test alert going to: ' + (to.join(', ') || '(nobody — check ALERT_EMAILS)'));
+    const res = await mail.sendSiteAlert([{
+      name: 'Test — this is not a real outage',
+      url: 'https://desk.claritai.ie',
+      from: 'ok', to: 'crit',
+      note: 'Sample alert, sent by hand to check the mail setup. Nothing is wrong.',
+      httpStatus: 500, responseMs: 0,
+    }]);
+    console.log(res.sent ? '[monitor] test alert sent.' : '[monitor] test alert FAILED: ' + res.reason);
+    await db.pool.end();
+    process.exitCode = res.sent ? 0 : 1;
+    return;
+  }
+
   await db.init();
   const sites = await db.list('sites');
   const due = sites.filter((s) => s.url && s.monitor !== false && s.status !== 'paused');
@@ -256,6 +282,11 @@ async function main() {
     );
     await db.logActivity('monitor', 'aborted', 'sites', null,
       `All ${due.length} checks failed at the network level — no results recorded`);
+    await mail.sendMonitorBroken(
+      `All ${due.length} checks failed at the network level (${results[0].check.note}), ` +
+      `which almost always means the monitor has no route out rather than every client ` +
+      `site failing at once.`
+    );
     await db.pool.end();
     process.exitCode = 1;
     return;
@@ -268,18 +299,41 @@ async function main() {
     const before = site.autoStatus || '';
     const line = `${site.name}: ${check.verdict}${check.note ? ' — ' + check.note : ''} (HTTP ${check.httpStatus}, ${check.responseMs}ms)`;
     console.log('[monitor] ' + line);
+    // Only a change of state is news. A site that has been down for six hours
+    // must not generate six emails, or the seventh gets ignored.
     if (before !== check.verdict) {
-      changes.push(line);
+      changes.push({
+        name: site.name || site.url,
+        url: site.url,
+        from: before,
+        to: check.verdict,
+        note: check.note,
+        httpStatus: check.httpStatus,
+        responseMs: check.responseMs,
+      });
       await db.logActivity('monitor', 'check', 'sites', site.id, line);
     }
   }
 
   console.log(
     changes.length
-      ? `[monitor] checked ${due.length} site(s); ${changes.length} changed state:\n  ` + changes.join('\n  ')
+      ? `[monitor] checked ${due.length} site(s); ${changes.length} changed state:\n  ` +
+        changes.map(describe).join('\n  ')
       : `[monitor] checked ${due.length} site(s); nothing changed`
   );
+
+  // A first run has no previous state to compare against, so everything looks
+  // like a change. Mailing the whole estate as "news" the first time the
+  // monitor sees it would be noise, not an alert.
+  const worthSending = changes.filter((c) => c.from !== '');
+  if (worthSending.length) await mail.sendSiteAlert(worthSending);
+  else if (changes.length) console.log('[monitor] first run for these sites — recorded, not emailed');
+
   await db.pool.end();
+}
+
+function describe(c) {
+  return `${c.name}: ${c.from || 'unknown'} → ${c.to}${c.note ? ' — ' + c.note : ''}`;
 }
 
 main().catch((err) => {

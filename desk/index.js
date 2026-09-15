@@ -139,8 +139,17 @@ app.put('/api/:collection/:id', auth.requireApi, async (req, res, next) => {
     if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
       return res.status(400).json({ error: 'body_must_be_object' });
     }
+    // Read before writing so the trail can say what actually changed. One extra
+    // query per save, on a dataset of hundreds of records — worth it for a feed
+    // that reads "Sean moved Ferndale to Proposal" instead of "Sean saved".
+    const before = await db.get(collection, id);
     const saved = await db.put(collection, id, req.body, req.user.email);
-    db.logActivity(req.user.email, 'save', collection, id, labelFor(collection, req.body));
+    db.logActivity(
+      req.user.email,
+      before ? 'update' : 'create',
+      collection, id,
+      summarise(collection, before, req.body)
+    );
     res.json(saved);
   } catch (err) {
     next(err);
@@ -165,8 +174,18 @@ app.delete('/api/:collection/:id', auth.requireApi, async (req, res, next) => {
 
 app.get('/api/activity', auth.requireApi, async (req, res, next) => {
   try {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 300);
+    // Join the roster so the feed can say "Kevin Laffey" rather than an address.
+    // Falls back to the part before the @ for anyone not in the roster yet, and
+    // leaves 'monitor' (which has no @) as itself.
     const { rows } = await db.pool.query(
-      'SELECT at, actor, action, collection, record_id, summary FROM activity ORDER BY at DESC LIMIT 100'
+      `SELECT a.at, a.actor, a.action, a.collection, a.record_id, a.summary,
+              COALESCE(NULLIF(u.name, ''), split_part(a.actor, '@', 1)) AS actor_name
+         FROM activity a
+         LEFT JOIN users u ON u.email = a.actor
+        ORDER BY a.at DESC
+        LIMIT $1`,
+      [limit]
     );
     res.json(rows);
   } catch (err) {
@@ -175,7 +194,83 @@ app.get('/api/activity', auth.requireApi, async (req, res, next) => {
 });
 
 function labelFor(collection, rec) {
-  return rec.company || rec.name || rec.title || (rec.client ? rec.client + ' · ' + (rec.channel || '') : '') || '';
+  if (!rec) return '';
+  if (collection === 'social') {
+    return [rec.channel, rec.handle].filter(Boolean).join(' ') || 'Social account';
+  }
+  return rec.company || rec.name || rec.title || '';
+}
+
+// Human labels for the coded fields, mirroring the maps in views/app.html.
+// Only used for the activity trail, so a label that drifts makes an old line
+// read oddly — it never affects the records themselves.
+const LABELS = {
+  stage: {
+    lead: 'Lead', contacted: 'Contacted', qualified: 'Qualified', proposal: 'Proposal',
+    negotiation: 'Negotiation', won: 'Won', lost: 'Lost',
+  },
+  leadStatus: {
+    new: 'Not looked at yet', researching: 'Researching', contacted: 'Contacted',
+    promoted: 'Promoted', unfit: 'Not a fit',
+  },
+  docStatus: {
+    draft: 'Draft', sent: 'Sent', accepted: 'Accepted', signed: 'Signed',
+    declined: 'Declined', superseded: 'Superseded',
+  },
+  siteStatus: { ok: 'All good', warn: 'Needs a look', crit: 'Broken', paused: 'Paused' },
+  clientStatus: { active: 'Active', paused: 'Paused', former: 'Former', setup: 'Setting up' },
+  socialStatus: { active: 'On schedule', behind: 'Behind', paused: 'Paused' },
+};
+
+function label(map, v) {
+  return (LABELS[map] && LABELS[map][v]) || v || '';
+}
+
+// A one-line answer to "what did they actually do?". Falls back to the record's
+// name when nothing notable moved, which is the honest answer for a typo fix.
+function summarise(collection, before, after) {
+  const name = labelFor(collection, after) || labelFor(collection, before);
+  if (!before) return name;
+
+  const moved = (field) => before[field] !== after[field];
+  const parts = [];
+
+  if (collection === 'deals' && moved('stage')) {
+    parts.push(`moved to ${label('stage', after.stage)}`);
+  }
+  if (collection === 'leads') {
+    if (moved('status')) parts.push(`marked ${label('leadStatus', after.status)}`);
+    if (!before.demoBuilt && after.demoBuilt) parts.push('demo built');
+    if (!before.demoSent && after.demoSent) parts.push('demo sent');
+  }
+  if (collection === 'tasks') {
+    if (!before.done && after.done) parts.push('ticked off');
+    else if (before.done && !after.done) parts.push('reopened');
+    else if (moved('owner')) parts.push(`assigned to ${after.owner || 'nobody'}`);
+    else if (moved('due')) parts.push(after.due ? `due ${after.due}` : 'due date cleared');
+  }
+  if (collection === 'docs' && moved('status')) {
+    parts.push(`marked ${label('docStatus', after.status)}`);
+  }
+  if (collection === 'sites' && moved('status')) {
+    parts.push(`marked ${label('siteStatus', after.status)}`);
+  }
+  if (collection === 'clients' && moved('status')) {
+    parts.push(`marked ${label('clientStatus', after.status)}`);
+  }
+  if (collection === 'social' && moved('status')) {
+    parts.push(`marked ${label('socialStatus', after.status)}`);
+  }
+
+  // A note added through the drawer is the most common single change and the
+  // one people most want to see in the feed.
+  const key = collection === 'deals' ? 'notes' : 'activity';
+  const nBefore = Array.isArray(before[key]) ? before[key].length : 0;
+  const nAfter = Array.isArray(after[key]) ? after[key].length : 0;
+  if (nAfter > nBefore) parts.push('note added');
+  else if (nAfter < nBefore) parts.push('note deleted');
+
+  return parts.length ? `${name} — ${parts.join(', ')}` : name;
 }
 
 // --- errors ------------------------------------------------------------
