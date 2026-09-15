@@ -199,6 +199,12 @@ main{overflow:auto;display:flex;flex-direction:column;min-width:0}
 .segb.on:hover{background:var(--accent-hover)}
 .btn.danger{color:var(--crit);border-color:var(--line)}
 .btn.danger:hover{background:var(--crit-soft)}
+.btn.danger.solid{background:var(--crit);border-color:var(--crit);color:#fff;font-weight:600}
+.btn.danger.solid:hover{filter:brightness(1.08)}
+.drawer footer.confirming{background:var(--crit-soft);border-top-color:var(--crit)}
+.confirm{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1px}
+.confirm b{font-size:13px;color:var(--crit);line-height:1.3}
+.confirm small{font-size:11.5px;color:var(--ink-2);line-height:1.4}
 input[type=text],input[type=number],input[type=date],input[type=datetime-local],input[type=url],input[type=email],select,textarea{
   width:100%;padding:7px 10px;border-radius:var(--r-sm);border:1px solid var(--line-strong);
   background:var(--surface);color:var(--ink);
@@ -2166,6 +2172,38 @@ function modal(title,body,footer){
 }
 function val(sel){ const e=overlay.querySelector(sel); return e?e.value.trim():""; }
 
+// Deleting asks first. The confirmation replaces the drawer's footer rather than
+// opening a modal, because modal() closes whatever is already open — which would
+// take the drawer and any unsaved edits with it, and leave Cancel with nothing
+// to go back to.
+function askDelete(btn, opts){
+  const foot = btn.closest("footer");
+  if(!foot) return opts.go();          // nothing to swap; don't block the action
+  if(foot.dataset.confirming) return;  // already asking
+  const keep = foot.innerHTML;
+  foot.dataset.confirming = "1";
+  foot.classList.add("confirming");
+  foot.innerHTML =
+    '<div class="confirm"><b>'+esc(opts.title)+'</b>'+
+      (opts.detail ? '<small>'+esc(opts.detail)+'</small>' : '')+'</div>'+
+    '<button class="btn" type="button" data-confirm="no">Cancel</button>'+
+    '<button class="btn danger solid" type="button" data-confirm="yes">'+esc(opts.label||"Delete")+'</button>';
+  foot.querySelector('[data-confirm="no"]').addEventListener("click", ()=>{
+    foot.classList.remove("confirming");
+    delete foot.dataset.confirming;
+    foot.innerHTML = keep;
+  });
+  const yes = foot.querySelector('[data-confirm="yes"]');
+  yes.addEventListener("click", opts.go);
+  yes.focus();
+}
+// The name we show in the prompt, so nobody confirms the wrong record.
+function nameOf(coll, id, fallback){
+  const r = byId(coll, id);
+  if(!r) return fallback;
+  return r.name || r.company || r.title || r.channel || fallback;
+}
+
 /* ----- who's here ----- */
 function openTeam(){
   const rows = team.length
@@ -2693,7 +2731,15 @@ document.addEventListener("click",e=>{
   if(act==="new-doc"){ docReturn=null; return openDoc(null); }
   if(act==="doc-edit"){ docReturn=null; return openDoc(row.dataset.doc); }
   if(act==="doc-save") return saveDoc();
-  if(act==="doc-delete"){ const id=val("#dcId"); closeOverlay(); return deleteDoc(id); }
+  if(act==="doc-delete"){
+    const id=val("#dcId");
+    const d=byId("docs",id);
+    return askDelete(b,{
+      title:"Delete "+nameOf("docs",id,"this document")+"?",
+      detail:(d&&d.file&&d.file.fileId ? "The uploaded file is deleted from the server too. " : "")+"This can't be undone.",
+      label:"Delete document",
+      go:()=>{ closeOverlay(); deleteDoc(id); }});
+  }
   if(act==="doc-file-clear"){
     overlay.querySelector("#dcFileId").value="";
     overlay.querySelector("#dcFileName").value="";
@@ -2721,7 +2767,14 @@ document.addEventListener("click",e=>{
   if(act==="lead-promote") return promoteLead(row.dataset.lead);
   if(act==="lead-demo") return cycleDemo(row.dataset.lead);
   if(act==="lead-promote-drawer") return promoteLead(val("#lId"));
-  if(act==="lead-delete"){ const id=val("#lId"); closeOverlay(); return remove("leads",id); }
+  if(act==="lead-delete"){
+    const id=val("#lId");
+    return askDelete(b,{
+      title:"Delete "+nameOf("leads",id,"this lead")+"?",
+      detail:"The lead and everything logged against it goes. This can't be undone.",
+      label:"Delete lead",
+      go:()=>{ closeOverlay(); remove("leads",id); }});
+  }
   if(act==="la-add") return addQuickLead();
   if(act==="paste-leads") return openPasteLeads();
   if(act==="pl-add") return addPastedLeads();
@@ -2729,7 +2782,14 @@ document.addEventListener("click",e=>{
 
   if(act==="new-client") return openClient(null);
   if(act==="client-save") return saveClient();
-  if(act==="client-delete"){ const id=val("#cId"); closeOverlay(); return deleteClient(id); }
+  if(act==="client-delete"){
+    const id=val("#cId");
+    return askDelete(b,{
+      title:"Delete "+nameOf("clients",id,"this customer")+"?",
+      detail:"Their sites, social accounts, deals, to-dos and meetings are kept, but unlinked from any customer. This can't be undone.",
+      label:"Delete customer",
+      go:()=>{ closeOverlay(); deleteClient(id); }});
+  }
   if(act==="export-clients") return exportClients();
   if(act==="add-contact"){ overlay.querySelector("#cContacts").insertAdjacentHTML("beforeend", contactRow({})); return; }
   if(act==="add-service"){ overlay.querySelector("#cServices").insertAdjacentHTML("beforeend", serviceRow({})); return; }
@@ -2743,7 +2803,14 @@ document.addEventListener("click",e=>{
 
   if(act==="new-deal") return openDeal(null);
   if(act==="deal-save") return saveDeal();
-  if(act==="deal-delete"){ const id=val("#dId"); closeOverlay(); return remove("deals",id); }
+  if(act==="deal-delete"){
+    const id=val("#dId");
+    return askDelete(b,{
+      title:"Delete "+nameOf("deals",id,"this deal")+"?",
+      detail:"Its value, stage history and notes go with it. This can't be undone.",
+      label:"Delete deal",
+      go:()=>{ closeOverlay(); remove("deals",id); }});
+  }
   if(act==="export-pipeline") return exportPipeline();
 
   if(act==="qa-add") return addQuickTask();
@@ -2761,12 +2828,26 @@ document.addEventListener("click",e=>{
   if(act==="new-meeting") return openMeeting(null);
   if(act==="meeting-edit") return openMeeting(row.dataset.meeting);
   if(act==="meeting-save") return saveMeeting();
-  if(act==="meeting-delete"){ const id=val("#mId"); closeOverlay(); return remove("meetings",id); }
+  if(act==="meeting-delete"){
+    const id=val("#mId");
+    return askDelete(b,{
+      title:"Delete "+nameOf("meetings",id,"this meeting")+"?",
+      detail:"The agenda and any notes on it go too. This can't be undone.",
+      label:"Delete meeting",
+      go:()=>{ closeOverlay(); remove("meetings",id); }});
+  }
 
   if(act==="new-site") return openSite(null);
   if(act==="site-edit") return openSite(row.dataset.site);
   if(act==="site-save") return saveSite();
-  if(act==="site-delete"){ const id=val("#sId"); closeOverlay(); return remove("sites",id); }
+  if(act==="site-delete"){
+    const id=val("#sId");
+    return askDelete(b,{
+      title:"Stop tracking "+nameOf("sites",id,"this site")+"?",
+      detail:"Its check history and logged issues go, and the monitor stops watching it. This can't be undone.",
+      label:"Delete site",
+      go:()=>{ closeOverlay(); remove("sites",id); }});
+  }
   if(act==="site-check") return logCheck(row.dataset.site);
   if(act==="check-save"){
     const s = byId("sites",val("#cId")); if(!s) return closeOverlay();
@@ -2789,7 +2870,14 @@ document.addEventListener("click",e=>{
   if(act==="new-social") return openSocial(null);
   if(act==="social-edit") return openSocial(row.dataset.social);
   if(act==="social-save") return saveSocial();
-  if(act==="social-delete"){ const id=val("#oId"); closeOverlay(); return remove("social",id); }
+  if(act==="social-delete"){
+    const id=val("#oId");
+    return askDelete(b,{
+      title:"Delete "+nameOf("social",id,"this account")+"?",
+      detail:"Its posting history and notes go with it. This can't be undone.",
+      label:"Delete account",
+      go:()=>{ closeOverlay(); remove("social",id); }});
+  }
 
   if(act==="clear-sample"){
     COLLS.forEach(c=>{ data[c].filter(r=>r.sample).forEach(r=>remove(c,r.id)); });

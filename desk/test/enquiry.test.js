@@ -116,6 +116,29 @@ check('a burst from one IP gets cut off', blocked === 3, blocked + ' blocked');
 check('a different IP is unaffected', !enquiry.rateLimited('1.1.1.1'));
 enquiry._hits.clear();
 
+// ---------- the shipped default origin list ----------
+(function(){
+  // index.js already holds a reference to the loaded module, so the original
+  // must go back into the cache afterwards — otherwise the server and these
+  // tests end up with separate rate-limiter state.
+  const key = require.resolve('../lib/enquiry');
+  const original = require.cache[key];
+  const saveEnv = process.env.ENQUIRY_ORIGINS;
+  delete process.env.ENQUIRY_ORIGINS;
+  delete require.cache[key];
+  const fresh = require('../lib/enquiry');
+  check('defaults allow the live domain', fresh.originAllowed('https://claritai.ie'));
+  check('defaults allow www', fresh.originAllowed('https://www.claritai.ie'));
+  check('defaults allow the site\'s own Render URL',
+    fresh.originAllowed('https://claritai-8sgi.onrender.com'));
+  check('defaults do NOT allow any other Render site',
+    !fresh.originAllowed('https://someone-else.onrender.com'));
+  check('defaults do NOT allow a Render lookalike',
+    !fresh.originAllowed('https://claritai-8sgi.onrender.com.evil.com'));
+  process.env.ENQUIRY_ORIGINS = saveEnv;
+  require.cache[key] = original;
+})();
+
 // ---------- over real HTTP ----------
 // index.js starts its own listener (same approach as app.test.js).
 const PORT = 4119;
