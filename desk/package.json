@@ -12,7 +12,9 @@
     "dev": "node index.js",
     "check-sites": "node cron/check-sites.js",
     "test-alert": "node cron/check-sites.js --test-alert",
-    "test": "node test/app.test.js && node test/monitor.test.js && node test/alerts.test.js && node test/enquiry.test.js"
+    "rules": "node cron/run-rules.js",
+    "rules-preview": "node cron/run-rules.js --dry-run",
+    "test": "node test/app.test.js && node test/monitor.test.js && node test/alerts.test.js && node test/enquiry.test.js && node test/rules.test.js && node test/rules-cron.test.js"
   },
   "dependencies": {
     "express": "^4.19.2",

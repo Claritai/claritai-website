@@ -70,3 +70,23 @@ services:
         value: https://desk.claritai.ie
       # ALERT_EMAILS is optional: leave it unset and alerts go to everyone who
       # has signed in to Desk. Set it (comma-separated) to override.
+
+  # Raises the to-dos nobody got round to writing: leads gone quiet, deals that
+  # have stopped moving, proposals with no answer, renewals coming up.
+  # Once a day rather than hourly — a to-do list does not get more useful for
+  # being rewritten every hour, and a morning list is one you actually read.
+  # Render schedules in UTC, so this lands at 08:00 Irish time in summer and
+  # 07:00 in winter. It sends nothing; it only writes to-dos.
+  - type: cron
+    name: claritai-desk-rules
+    runtime: node
+    rootDir: desk
+    plan: starter
+    schedule: "0 7 * * *"
+    buildCommand: npm install
+    startCommand: node cron/run-rules.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: claritai-desk-db
+          property: connectionString

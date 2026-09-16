@@ -335,6 +335,9 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .row .grow{flex:1;min-width:0}
 .row .t{font-weight:500;font-size:13.5px}
 .row .s{font-size:11.5px;color:var(--ink-3);display:flex;gap:8px;flex-wrap:wrap;margin-top:1px}
+/* Marks a to-do Desk raised by itself, so it is never mistaken for one you wrote. */
+.row .s .auto{color:var(--accent);font-weight:600;letter-spacing:.01em}
+.row .s .auto::before{content:"◆ ";font-size:9px;vertical-align:1px}
 .row.done .t{text-decoration:line-through;color:var(--ink-3);font-weight:400}
 .check{
   width:17px;height:17px;flex:none;border-radius:5px;border:1.5px solid var(--line-strong);
@@ -650,6 +653,15 @@ const CLIENT_STATUS = {
   paused:{label:"Paused",cls:"warn"}, former:{label:"Former",cls:""}
 };
 const CADENCE = {monthly:"per month", yearly:"per year", once:"one-off"};
+// To-dos Desk raised by itself overnight. The label says which rule noticed, so
+// a to-do you did not write never looks like one that appeared from nowhere —
+// and the full reason is in the to-do's notes.
+const AUTO_RULE = {
+  "lead-cold":"Lead gone quiet", "deal-stalled":"Deal not moving",
+  "next-step-due":"Next step due", "doc-awaiting-answer":"Awaiting an answer",
+  "renewal-due":"Renewal coming up", "site-down":"Site down",
+  "meeting-write-up":"Needs a write-up"
+};
 
 /* ============ state ============ */
 const data = {leads:[],clients:[],deals:[],docs:[],tasks:[],meetings:[],sites:[],social:[]};
@@ -840,6 +852,30 @@ function parkLead(id, why){
     activity: appendNote(l.activity, why || "Parked.")
   });
   save("leads", copy);
+}
+
+
+// A lead that is already a customer did convert \u2014 it just never went through
+// the button. Marking it promoted is the truthful close, and it is what makes
+// "promoted this year" count it. Parking is for leads that went nowhere.
+function linkPromoted(id){
+  const l = byId("leads", id); if(!l) return;
+  const dup = leadAlreadyOn(l);
+  let dealId = l.dealId || "";
+  if(!dealId && dup){
+    const d = dup.kind === "deal"
+      ? byId("deals", dup.id)
+      : data.deals.find(x=>x.clientId === dup.id) ||
+        data.deals.find(x=>normName(x.company) === normName(l.name));
+    if(d) dealId = d.id;
+  }
+  save("leads", Object.assign({}, l, {
+    status: "promoted",
+    promotedAt: l.promotedAt || new Date().toISOString(),
+    dealId: dealId,
+    activity: appendNote(l.activity, "Marked as promoted \u2014 already " +
+      (dup && dup.kind === "customer" ? "a customer" : "in the pipeline") + ".")
+  }));
 }
 
 /* ---- search ---- */
@@ -1421,7 +1457,7 @@ VIEWS.leads = {
       ? '<div class="leadbanner"><span class="what"><b>'+dupes.length+' lead'+(dupes.length===1?"":"s")+
         ' already on the books.</b> '+esc(dupes.map(l=>l.name).join(", "))+
         ' — already a customer or in the pipeline, so still counted as someone to chase.</span>'+
-        '<button class="btn sm" data-act="park-dupes">Park '+(dupes.length===1?"it":"them")+'</button></div>'
+        '<button class="btn sm" data-act="link-dupes">Mark '+(dupes.length===1?"it":"them")+' promoted</button></div>'
       : '';
     const hits = data.leads.filter(l=>matches(leadText(l), query));
     let out = q + banner + countLine(hits.length, data.leads.length, "leads"), any = false;
@@ -1475,7 +1511,7 @@ function leadRow(l){
     '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
     // Promoting a lead that is already a customer would just make a second
     // deal, so that button becomes the thing you actually want instead.
-    (dup ? '<button class="btn sm" data-act="lead-park">Park</button>'
+    (dup ? '<button class="btn sm" data-act="lead-link">Mark promoted</button>'
          : l.status==="promoted" ? ''
          : '<button class="btn sm" data-act="lead-promote">Promote</button>')+
     '<button class="btn ghost sm" data-act="lead-edit">Open</button>'+
@@ -1585,12 +1621,13 @@ function openLead(id){
       if(!dup) return '';
       return '<div class="dupnote"><div><b>'+esc(dup.name)+' is already '+
         (dup.kind==="customer"?'a customer':'in the pipeline')+'.</b>'+
-        '<small>This lead is separate from that record, so it still counts as someone to chase. '+
-        'Park it to take it off the list \u2014 the history stays.</small></div>'+
+        '<small>This lead is a separate record, so it still counts as someone to chase. '+
+        'Marking it promoted closes it off properly and counts it for the year \u2014 nothing is deleted.</small></div>'+
         '<div class="dupnote-acts">'+
           '<button class="btn sm" type="button" data-act="dup-open" data-kind="'+esc(dup.kind)+'" data-id="'+esc(dup.id)+'">Open '+
             (dup.kind==="customer"?'customer':'deal')+'</button>'+
-          '<button class="btn sm" type="button" data-act="dup-park" data-id="'+esc(x.id)+'" data-kind="'+esc(dup.kind)+'">Park this lead</button>'+
+          '<button class="btn sm" type="button" data-act="dup-link" data-id="'+esc(x.id)+'">Mark as promoted</button>'+
+          '<button class="btn ghost sm" type="button" data-act="dup-park" data-id="'+esc(x.id)+'" data-kind="'+esc(dup.kind)+'">Park instead</button>'+
         '</div></div>';
     })(),
 
@@ -2008,7 +2045,9 @@ function taskRow(t){
     ? '<span>'+(t.doneAt ? "Done "+esc(fmtWhen(t.doneAt)) : "Done")+'</span>'+
       (t.doneBy?'<span>'+esc(t.doneBy)+'</span>':'')
     : (t.owner?'<span>'+esc(t.owner)+'</span>':'<span>Unassigned</span>')+
-      (t.due?'<span'+(late?' style="color:var(--crit);font-weight:600"':'')+'>'+fmtDate(t.due)+' · '+esc(relDay(t.due))+'</span>':'');
+      (t.due?'<span'+(late?' style="color:var(--crit);font-weight:600"':'')+'>'+fmtDate(t.due)+' · '+esc(relDay(t.due))+'</span>':'')+
+      (t.autoRule?'<span class="auto" title="Raised by Desk — open it to see why">'+
+        esc(AUTO_RULE[t.autoRule]||"Raised by Desk")+'</span>':'');
   return '<div class="row'+(t.done?" done":"")+'" data-task="'+esc(t.id)+'">'+
     '<button class="check" aria-pressed="'+(t.done?"true":"false")+'" data-act="task-toggle" aria-label="'+(t.done?"Mark not done":"Mark done")+'">'+
       '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6.2 4.6 9 10 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
@@ -2472,7 +2511,9 @@ function saveClient(){
 }
 // Deleting a customer must not leave sites and channels pointing at nothing.
 function deleteClient(id){
-  ["sites","social","deals","tasks","meetings"].forEach(coll=>{
+  // docs belongs in this list: documents are filed by clientId, so leaving it
+  // out strands them pointing at a customer that no longer exists.
+  ["sites","social","deals","tasks","meetings","docs"].forEach(coll=>{
     data[coll].filter(r=>r.clientId===id).forEach(r=>{
       const copy = Object.assign({}, r); copy.clientId = "";
       save(coll, copy);
@@ -2568,7 +2609,10 @@ function saveTask(){
   const id = val("#tId"); const prev = byId("tasks",id);
   save("tasks",{id,title:val("#tTitle")||"Untitled",owner:val("#tOwner"),due:val("#tDue"),
     dealId:val("#tDeal"),clientId:val("#tClient"),notes:val("#tNotes"),done:prev?prev.done:false,
-    createdAt:(prev&&prev.createdAt)||new Date().toISOString(), sample: prev?!!prev.sample:false});
+    createdAt:(prev&&prev.createdAt)||new Date().toISOString(), sample: prev?!!prev.sample:false,
+    // Carry the automatic fields through an edit. Dropping them would make the
+    // overnight run think this to-do was never raised, and raise it again.
+    autoKey:(prev&&prev.autoKey)||"", autoRule:(prev&&prev.autoRule)||"", autoAt:(prev&&prev.autoAt)||""});
   closeOverlay();
 }
 
@@ -2852,6 +2896,20 @@ document.addEventListener("click",e=>{
   if(act==="new-lead") return openLead(null);
   if(act==="lead-save") return saveLead();
   if(act==="lead-edit") return openLead(row.dataset.lead);
+  if(act==="dup-link"){
+    linkPromoted(b.dataset.id);
+    closeOverlay();
+    return toast("Marked as promoted \u2014 it\u2019s counted for the year now");
+  }
+  if(act==="lead-link"){
+    linkPromoted(row.dataset.lead);
+    return toast("Marked as promoted \u2014 it\u2019s counted for the year now");
+  }
+  if(act==="link-dupes"){
+    const list = leadsAlreadyOn();
+    list.forEach(l=>linkPromoted(l.id));
+    return toast(list.length+" lead"+(list.length===1?"":"s")+" marked as promoted");
+  }
   if(act==="dup-open"){
     const k = b.dataset.kind, id = b.dataset.id;
     closeOverlay();
