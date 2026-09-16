@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G9CLS2YH11"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-G9CLS2YH11');
+</script>
+<meta charset="UTF-8">
+<meta name="description" content="Claritai helps Irish businesses grow with AI consultancy, website development, SEO optimisation, and social media management. Book a free consultation today.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Claritai — Clarity with AI | AI Consultancy for Irish SMEs">
+<meta property="og:description" content="Claritai helps Irish businesses grow with AI consultancy, website development, SEO optimisation, and social media management. Book a free consultation today.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://claritai.ie">
+<meta property="og:image" content="https://claritai.ie/favicon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claritai — Clarity with AI | AI Consultancy for Irish SMEs">
+<meta name="twitter:description" content="Claritai helps Irish businesses grow with AI consultancy, website development, SEO optimisation, and social media management. Book a free consultation today.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="canonical" href="https://claritai.ie">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[C] Claritai — Clarity with AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f8fc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fbff;
+  --accent-blue: #3d8ed1;
+  --accent-purple: #5ba3e6;
+  --accent-gradient: linear-gradient(135deg, #3d8ed1 0%, #5ba3e6 50%, #6db4e6 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(91,163,230,0.08) 0%, rgba(123,189,245,0.05) 100%);
+  --text-primary: #2e7cba;
+  --text-secondary: #4f9ed4;
+  --text-muted: #7bb4de;
+  --border-subtle: rgba(91,163,230,0.12);
+  --border-accent: rgba(91,163,230,0.25);
+  --glow-blue: rgba(91,163,230,0.15);
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Noise overlay ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.fade-up { animation: fadeUp 0.8s ease-out both; }
+.fade-up-d1 { animation: fadeUp 0.8s ease-out 0.1s both; }
+.fade-up-d2 { animation: fadeUp 0.8s ease-out 0.2s both; }
+.fade-up-d3 { animation: fadeUp 0.8s ease-out 0.3s both; }
+.fade-up-d4 { animation: fadeUp 0.8s ease-out 0.4s both; }
+.fade-up-d5 { animation: fadeUp 0.8s ease-out 0.5s both; }
+.fade-up-d6 { animation: fadeUp 0.8s ease-out 0.6s both; }
+
+/* ─── Service Dropdown ─── */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.nav-dropdown-toggle {
+  background: none;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  letter-spacing: 0.2px;
+}
+.nav-dropdown-toggle:hover {
+  background: var(--accent-gradient-subtle);
+  border-color: var(--accent-blue);
+}
+.nav-dropdown-toggle .chev {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translate(-2px,-2px);
+  transition: transform 0.25s ease;
+}
+.nav-dropdown.open .nav-dropdown-toggle .chev {
+  transform: rotate(-135deg) translate(-2px,-2px);
+}
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 340px;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(91,163,230,0.15), 0 4px 20px rgba(0,0,0,0.04);
+  padding: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.25s ease;
+  z-index: 1100;
+}
+.nav-dropdown.open .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.nav-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.nav-dropdown-menu a:hover {
+  background: var(--accent-gradient-subtle);
+}
+.nav-dropdown-menu a .ico {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-gradient-subtle);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.nav-dropdown-menu a .label-block { display: flex; flex-direction: column; }
+.nav-dropdown-menu a .sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* ─── Service card image (overview page) ─── */
+.service-card-image {
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.service-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(91,163,230,0.15), rgba(123,189,245,0.05));
+}
+.service-card a.service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: gap 0.2s;
+}
+.service-card a.service-link:hover { gap: 10px; }
+
+/* ─── Navigation ─── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  animation: fadeIn 0.6s ease-out both;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: #2e7cba;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.nav-logo .ai {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+  letter-spacing: 0.2px;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-cta {
+  padding: 10px 24px;
+  background: var(--accent-gradient);
+  color: #fff !important;
+  border-radius: 8px;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.3px;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 30px var(--glow-blue);
+}
+
+/* ─── Hero Section ─── */
+.hero {
+  min-height: min(100vh, 780px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 140px 24px 100px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: pulseGlow 6s ease-in-out infinite;
+}
+.hero-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(91,163,230,0.10), transparent 70%);
+  top: -100px; right: -150px;
+}
+.hero-orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(123,189,245,0.08), transparent 70%);
+  bottom: -50px; left: -100px;
+  animation-delay: 3s;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--accent-gradient-subtle);
+  border: 1px solid var(--border-accent);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-blue);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--accent-blue);
+  border-radius: 50%;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -2px;
+  max-width: 900px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 .gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 44px;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.btn-primary {
+  padding: 14px 32px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px var(--glow-blue);
+}
+.btn-secondary {
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  border-color: var(--border-accent);
+  background: rgba(91,163,230,0.06);
+}
+
+/* ─── Trusted By ─── */
+.trusted {
+  text-align: center;
+  padding: 20px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+.trusted p {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+.trusted-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+/* The fade sits on each name rather than the row, so hovering one can lift
+   it on its own — a child can never be more opaque than its parent. */
+.trusted-logo {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  opacity: 0.35;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+a.trusted-logo:hover,
+a.trusted-logo:focus-visible {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+/* ─── Section Styles ─── */
+section {
+  padding: 120px 24px;
+  position: relative;
+}
+.section-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent-blue);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 56px;
+}
+
+/* ─── Stats Bar ─── */
+.stats {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 64px 24px;
+}
+.stats-grid {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.stat-item {
+  text-align: center;
+}
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* ─── Services Grid ─── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.service-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 40px 36px;
+  transition: border-color 0.4s, background 0.4s, transform 0.3s, box-shadow 0.4s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(91,163,230,0.08);
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.service-card:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(91,163,230,0.12);
+}
+.service-card:hover::before { opacity: 1; }
+.service-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--accent-gradient-subtle);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 22px;
+}
+.service-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+.service-card p {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.service-tag {
+  padding: 5px 12px;
+  background: rgba(91,124,250,0.06);
+  border: 1px solid rgba(91,124,250,0.1);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--accent-blue);
+  letter-spacing: 0.3px;
+  font-weight: 500;
+}
+
+/* ─── How It Works ─── */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  counter-reset: step;
+}
+.process-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 40px 32px;
+  position: relative;
+  transition: border-color 0.4s, transform 0.3s;
+  counter-increment: step;
+}
+.process-step:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(91,163,230,0.12);
+}
+.step-number {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.3;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+.process-step h3 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+.step-duration {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(91,124,250,0.08);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--accent-blue);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+.process-step p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ─── Pricing / Packages ─── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 40px 32px;
+  transition: border-color 0.4s, transform 0.3s;
+  position: relative;
+}
+.pricing-card.featured {
+  border-color: var(--border-accent);
+  background: linear-gradient(180deg, rgba(91,163,230,0.06) 0%, #ffffff 100%);
+}
+.pricing-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+}
+.pricing-card:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(91,163,230,0.12);
+}
+.pricing-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--accent-gradient);
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.pricing-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+.pricing-timeline {
+  font-size: 13px;
+  color: var(--accent-blue);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.pricing-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.pricing-features {
+  list-style: none;
+  margin-bottom: 32px;
+}
+.pricing-features li {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pricing-features li:last-child { border-bottom: none; }
+.check {
+  color: var(--accent-blue);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.pricing-card .btn-primary,
+.pricing-card .btn-secondary {
+  width: 100%;
+  text-align: center;
+  display: block;
+}
+
+/* ─── SaaS Section ─── */
+.saas-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.saas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.saas-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.saas-visual::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(91,163,230,0.10), transparent 70%);
+  border-radius: 50%;
+}
+.saas-mockup-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.saas-mockup-bar span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.4;
+}
+.saas-mockup-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.saas-block {
+  border-radius: 8px;
+  height: 18px;
+  background: var(--accent-gradient-subtle);
+  border: 1px solid var(--border-accent);
+}
+.saas-block.w1 { width: 40%; }
+.saas-block.w2 { width: 25%; }
+.saas-block.w3 { width: 55%; }
+.saas-block.w4 { width: 30%; }
+.saas-block.w5 { width: 70%; }
+.saas-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 80px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.saas-bar {
+  flex: 1;
+  background: var(--accent-gradient);
+  border-radius: 4px 4px 0 0;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+.saas-bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+.saas-bar:nth-child(2) { height: 55%; animation-delay: 0.3s; }
+.saas-bar:nth-child(3) { height: 40%; animation-delay: 0.6s; }
+.saas-bar:nth-child(4) { height: 75%; animation-delay: 0.9s; }
+.saas-bar:nth-child(5) { height: 60%; animation-delay: 1.2s; }
+.saas-bar:nth-child(6) { height: 85%; animation-delay: 1.5s; }
+.saas-bar:nth-child(7) { height: 50%; animation-delay: 1.8s; }
+.saas-bar:nth-child(8) { height: 95%; animation-delay: 2.1s; }
+
+.saas-features {
+  list-style: none;
+}
+.saas-features li {
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.saas-features li:last-child { border-bottom: none; }
+.saas-feat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent-gradient-subtle);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.saas-feat-text h4 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.saas-feat-text p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ─── Testimonial ─── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.testimonial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 36px 30px;
+  transition: border-color 0.3s;
+}
+.testimonial-card:hover { border-color: var(--border-accent); }
+.testimonial-stars {
+  color: var(--accent-blue);
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+.testimonial-card blockquote {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-style: normal;
+  margin-bottom: 20px;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.testimonial-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-gradient-subtle);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-blue);
+}
+.testimonial-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.testimonial-role {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ─── CTA Section ─── */
+.cta-section {
+  text-align: center;
+  padding: 140px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(91,163,230,0.08) 0%, transparent 60%);
+  border-radius: 50%;
+}
+.cta-section .section-title {
+  max-width: 600px;
+  margin: 0 auto 16px;
+}
+.cta-section .section-desc {
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+.cta-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.cta-details span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Footer ─── */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 60px 24px;
+}
+.footer-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand .nav-logo { display: inline-block; margin-bottom: 14px; }
+.footer-brand p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-family: var(--font-display);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 0;
+  transition: color 0.3s;
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  max-width: 1140px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-bottom a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-bottom a:hover { color: var(--text-secondary); }
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .services-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr; }
+  .saas-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  .footer-container { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  section { padding: 80px 20px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 120px 20px 80px; }
+  .hero-actions { flex-direction: column; width: 100%; max-width: 300px; }
+  .footer-container { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .cta-details { flex-direction: column; gap: 12px; }
+}
+
+/* ─── Mobile Nav ─── */
+.mob-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px 10px;
+  z-index: 1300;
+  position: relative;
+}
+.mob-toggle div {
+  width: 20px;
+  height: 2px;
+  background: var(--text-primary);
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.mob-toggle.on div:nth-child(1) { transform: rotate(45deg) translate(4px,5px); }
+.mob-toggle.on div:nth-child(2) { opacity: 0; }
+.mob-toggle.on div:nth-child(3) { transform: rotate(-45deg) translate(4px,-5px); }
+.mob-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #ffffff;
+  z-index: 1100;
+  padding: 20px 28px;
+  padding-top: 64px;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0;
+}
+.mob-overlay.on { display: flex; }
+.mob-overlay a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 18px 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.mob-overlay a .ico {
+  font-size: 22px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-gradient-subtle);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.mob-overlay .mob-cta-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-bottom: none;
+}
+@media (max-width: 768px) {
+  .mob-toggle { display: block; }
+}
+
+
+/* ─── Consultation Form Overlay ─── */
+.consult-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.consult-overlay.on { display: flex; }
+.consult-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.consult-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.consult-box h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.consult-box .consult-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.consult-field {
+  margin-bottom: 16px;
+}
+.consult-field label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.consult-field input,
+.consult-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-primary);
+  background: #f8fbff;
+  transition: border-color 0.3s;
+  outline: none;
+  box-sizing: border-box;
+}
+.consult-field input:focus,
+.consult-field textarea:focus {
+  border-color: var(--accent-blue);
+  background: #fff;
+}
+.consult-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.consult-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+.consult-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--glow-blue);
+}
+.consult-thanks {
+  display: none;
+  text-align: center;
+  padding: 40px 20px;
+}
+.consult-thanks.on { display: block; }
+.consult-thanks .tick {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+.consult-thanks h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.consult-thanks p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.consult-form.hidden { display: none; }
+
+/* ─── Cookie Banner ─── */
+.cookie-banner {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  padding: 18px 24px;
+  z-index: 3000;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cookie-banner.show { display: flex; }
+.cookie-banner p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 200px;
+}
+.cookie-banner a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+.cookie-btns {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.cookie-accept {
+  padding: 8px 20px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.cookie-decline {
+  padding: 8px 20px;
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ─── Grow Digital Voucher (home) ─── */
+.gd-card{background:#fff;border:1px solid var(--border-subtle);border-radius:20px;padding:34px 32px;box-shadow:0 10px 40px rgba(91,163,230,.10);}
+.gd-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.gd-sub{font-size:14px;color:var(--text-secondary);margin-bottom:22px;}
+.gd-q{padding:15px 0;border-bottom:1px solid var(--border-subtle);}
+.gd-q h4{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:12px;}
+.gd-toggle{display:flex;gap:10px;}
+.gd-opt{padding:9px 22px;border:1px solid var(--border-subtle);background:#f8fbff;border-radius:9px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.gd-opt:hover{border-color:var(--accent-blue);}
+.gd-opt.sel{background:var(--accent-gradient);color:#fff;border-color:transparent;}
+.gd-hr{border:none;border-top:1px solid var(--border-subtle);margin:22px 0;}
+.gd-fund{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.gd-fund-col{border-radius:14px;padding:18px;border:1px solid var(--border-subtle);}
+.gd-fund-col.good{background:#f2f9f4;border-color:#d6ecdc;}
+.gd-fund-col.bad{background:#fdf6f6;border-color:#f0dcdc;}
+.gd-fund-col h5{font-family:var(--font-display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.gd-fund-col.good h5{color:#2f8f5b;} .gd-fund-col.bad h5{color:#b0554d;}
+.gd-fund-col p{font-size:12.5px;color:var(--text-secondary);line-height:1.6;}
+.gd-check-btn{width:100%;margin-top:22px;padding:15px;background:var(--accent-gradient);color:#fff;border:none;border-radius:12px;font-family:var(--font-display);font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .3s;}
+.gd-check-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--glow-blue);}
+.gd-err{background:#fdf0ef;border:1px solid #f3d2ce;color:#b0554d;font-size:13.5px;padding:11px 14px;border-radius:9px;margin-bottom:16px;display:none;}
+.gd-verdict{border-radius:20px;padding:32px 30px;border:1px solid var(--border-subtle);box-shadow:0 10px 40px rgba(91,163,230,.10);background:#fff;text-align:left;}
+.gd-badge2{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:14px;}
+.gd-badge2.good{background:#e6f4ec;color:#2f8f5b;} .gd-badge2.bad{background:#fdece9;color:#b0554d;}
+.gd-verdict h3{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:12px;line-height:1.2;}
+.gd-verdict p{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;}
+.gd-verdict ul{margin:0 0 16px;padding-left:20px;}
+.gd-verdict li{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:6px;}
+.gd-lead{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.gd-lead input{padding:12px 14px;border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-body);font-size:15px;color:var(--text-primary);background:#f8fbff;outline:none;box-sizing:border-box;}
+.gd-lead input:focus{border-color:var(--accent-blue);background:#fff;}
+.gd-lead .full{grid-column:1 / -1;}
+.gd-lead button{grid-column:1 / -1;padding:14px;background:var(--accent-gradient);color:#fff;border:none;border-radius:11px;font-family:var(--font-display);font-size:15px;font-weight:600;cursor:pointer;}
+.gd-note{font-size:12px;color:var(--text-muted);margin-top:16px;}
+.gd-note a{color:var(--accent-blue);}
+@media (max-width:640px){ .gd-fund{grid-template-columns:1fr;} .gd-lead{grid-template-columns:1fr;} }
+
+/* ─── Pricing teaser band ─── */
+.price-band {
+  padding: 80px 24px; background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);
+}
+.price-band-inner {
+  max-width: 1140px; margin: 0 auto; display: flex; gap: 48px;
+  align-items: center; justify-content: space-between; flex-wrap: wrap;
+}
+@media (max-width: 860px) {
+  .price-band-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+}
+
+
+/* ─── Slim packages strip (demo C) ─── */
+.pkgstrip {
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.pkgstrip-inner {
+  max-width: 1140px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px 32px; flex-wrap: wrap;
+}
+.pkgstrip .tag {
+  font-size: 10.5px; letter-spacing: 2.4px; text-transform: uppercase;
+  font-weight: 600; color: var(--accent-blue); display: block; margin-bottom: 5px;
+}
+.pkgstrip .amt {
+  font-family: var(--font-display); font-size: clamp(19px, 2.4vw, 25px);
+  font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary);
+}
+.pkgstrip .amt .sep { color: var(--text-muted); font-weight: 400; margin: 0 8px; }
+.pkgstrip .what { font-size: 14px; color: var(--text-secondary); font-family: var(--font-body); font-weight: 400; }
+.pkgstrip .vat { font-size: 12px; color: var(--text-muted); }
+.pkgstrip .btn-primary { padding: 11px 24px; font-size: 14.5px; white-space: nowrap; }
+@media (max-width: 880px) {
+  .pkgstrip .amt .sep { display: none; }
+  .pkgstrip .what { display: block; margin-top: 4px; }
+}
+@media (max-width: 700px) {
+  .pkgstrip-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .pkgstrip .btn-primary { width: 100%; text-align: center; }
+}
+
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Claritai","description":"AI consultancy and digital solutions for Irish SMEs \u2014 AI strategy, website development, SEO and social media.","url":"https://claritai.ie","logo":"https://claritai.ie/favicon.svg","image":"https://claritai.ie/favicon.svg","areaServed":"IE","email":"info@claritai.ie","address":{"@type":"PostalAddress","addressCountry":"IE"},"sameAs":["https://www.linkedin.com/company/claritai-ireland/","https://www.facebook.com/share/1cN5rfc6AW/","https://www.instagram.com/claritai.ie"]}</script>
+</head>
+<body>
+
+<!-- ─── Navigation ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">clarit<span class="ai">ai</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#platform">Platform</a></li>
+    <li><a href="#testimonials">Results</a></li>
+    <li><a href="audit.html">Free Audit</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+<!-- Hidden 15 Sep 2026 — Products nav / Cargo Command section. To restore, delete this comment wrapper (the opening line and the closing arrow).
+    <li>
+      <div class="nav-dropdown" id="productsDropdown">
+        <button class="nav-dropdown-toggle" onclick="document.getElementById('productsDropdown').classList.toggle('open')">
+          Products <span class="chev"></span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="cargo-command.html">
+            <span class="ico">🚚</span>
+            <span class="label-block">Cargo Command<span class="sub">Logistics Operations Hub</span></span>
+          </a>
+        </div>
+      </div>
+    </li>
+-->
+    <li>
+      <div class="nav-dropdown" id="servicesDropdown">
+        <button class="nav-dropdown-toggle" onclick="document.getElementById('servicesDropdown').classList.toggle('open')">
+          Services <span class="chev"></span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="ai-consultancy.html">
+            <span class="ico">🧠</span>
+            <span class="label-block">AI Consultancy<span class="sub">Strategy, automation, agents</span></span>
+          </a>
+          <a href="website-development.html">
+            <span class="ico">🌐</span>
+            <span class="label-block">Website Development<span class="sub">Sites, e-commerce, web apps</span></span>
+          </a>
+          <a href="seo-optimisation.html">
+            <span class="ico">📈</span>
+            <span class="label-block">SEO Optimisation<span class="sub">Search & AI visibility</span></span>
+          </a>
+          <a href="social-media-management.html">
+            <span class="ico">💬</span>
+            <span class="label-block">Social Media Management<span class="sub">Content, ads, community</span></span>
+          </a>
+        </div>
+      </div>
+    </li>
+    <li><a href="#" class="nav-cta" onclick="event.preventDefault();openConsult()">Book a Call</a></li>
+  </ul>
+
+  <button class="mob-toggle" id="mobToggle" onclick="var o=document.getElementById('mobOverlay');var t=this;t.classList.toggle('on');o.classList.toggle('on');document.body.style.overflow=o.classList.contains('on')?'hidden':'';">
+    <div></div><div></div><div></div>
+  </button>
+  <div class="mob-overlay" id="mobOverlay">
+    <a href="pricing.html" onclick="closeMob()"><span class="ico">€</span> Packages &amp; Pricing</a>
+    <a href="audit.html" onclick="closeMob()"><span class="ico">✦</span> Free AI Audit</a>
+<!-- Hidden 15 Sep 2026 — Products nav / Cargo Command section. To restore, delete this comment wrapper (the opening line and the closing arrow).
+    <a href="cargo-command.html" onclick="closeMob()"><span class="ico">🚚</span> Cargo Command</a>
+-->
+    <a href="ai-consultancy.html" onclick="closeMob()"><span class="ico">🧠</span> AI Consultancy</a>
+    <a href="website-development.html" onclick="closeMob()"><span class="ico">🌐</span> Website Development</a>
+    <a href="seo-optimisation.html" onclick="closeMob()"><span class="ico">📈</span> SEO Optimisation</a>
+    <a href="social-media-management.html" onclick="closeMob()"><span class="ico">💬</span> Social Media</a>
+    <a href="#" class="mob-cta-btn" onclick="event.preventDefault();closeMob();setTimeout(openConsult,300)">Book a Call</a>
+  </div>
+</nav>
+<script>
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd){
+      if (!dd.contains(e.target)) dd.classList.remove('open');
+    });
+  });
+</script>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-badge fade-up">
+    <span class="dot"></span>
+    AI Consultancy for Irish SMEs
+  </div>
+  <h1 class="fade-up-d1">Clarity through<br><span class="gradient-text">Artificial Intelligence</span></h1>
+  <p class="hero-sub fade-up-d2">We help Irish businesses cut through the noise with AI strategy, smart SaaS tools, and digital marketing that actually delivers.</p>
+  <div class="hero-actions fade-up-d3">
+    <a href="#" class="btn-primary" onclick="event.preventDefault();openConsult()">Get a Free Consultation</a>
+    <a href="audit.html" class="btn-secondary">Get your free AI audit →</a>
+  </div>
+</section>
+
+<!-- ─── Packages strip (demo C) ─── -->
+<section class="pkgstrip">
+  <div class="pkgstrip-inner">
+    <div>
+      <span class="tag">Websites, email &amp; hosting</span>
+      <span class="amt">&euro;499 setup + &euro;79/month<span class="sep">&middot;</span><span class="what">Set up for you, looked after by us. <span class="vat">Excl. VAT.</span></span></span>
+    </div>
+    <a href="pricing.html" class="btn-primary">View packages &amp; pricing</a>
+  </div>
+</section>
+
+<!-- ─── Trusted By ─── -->
+<div class="trusted fade-up-d4">
+  <p>Working with</p>
+  <div class="trusted-logos">
+    <a class="trusted-logo" href="https://www.mybianca.com/" target="_blank" rel="noopener">MYBIANCA</a>
+    <a class="trusted-logo" href="https://rmclearytarmacadam.ie/" target="_blank" rel="noopener">RM CLEARY TARMACADAM</a>
+  </div>
+</div>
+
+<!-- ─── Services ─── -->
+<section id="services">
+  <div class="section-container">
+    <div class="section-label fade-up">What We Do</div>
+    <h2 class="section-title fade-up-d1">Four pillars.<br>One clear strategy.</h2>
+    <p class="section-desc fade-up-d2">We combine AI consultancy with hands-on digital delivery — so you get strategy and execution from one team.</p>
+    <div class="services-grid">
+      <div class="service-card fade-up-d2">
+        <div class="service-icon">🧠</div>
+        <h3>AI Consultancy</h3>
+        <p>From opportunity mapping to deployment. We identify where AI creates real value in your operations, build the business case, and implement solutions that deliver ROI — not just demos.</p>
+        <div class="service-tags">
+          <span class="service-tag">AI Strategy</span>
+          <span class="service-tag">Process Automation</span>
+          <span class="service-tag">AI Agents</span>
+          <span class="service-tag">Custom GPTs</span>
+        </div>
+        <a href="ai-consultancy.html" class="service-link">Learn more →</a>
+      </div>
+      <div class="service-card fade-up-d3">
+        <div class="service-icon">🌐</div>
+        <h3>Website Development</h3>
+        <p>High-performance websites built for conversion. Mobile-first, SEO-ready, and designed to make your brand impossible to ignore. From brochure sites to full SaaS platforms.</p>
+        <div class="service-tags">
+          <span class="service-tag">WordPress</span>
+          <span class="service-tag">Headless CMS</span>
+          <span class="service-tag">E-Commerce</span>
+          <span class="service-tag">Web Apps</span>
+        </div>
+        <a href="website-development.html" class="service-link">Learn more →</a>
+      </div>
+      <div class="service-card fade-up-d4">
+        <div class="service-icon">📈</div>
+        <h3>SEO Optimisation</h3>
+        <p>Rank in Google and in AI search results. We combine traditional SEO with Answer Engine Optimisation (AEO) to make your business the answer — not just a result.</p>
+        <div class="service-tags">
+          <span class="service-tag">Technical SEO</span>
+          <span class="service-tag">Local SEO</span>
+          <span class="service-tag">AEO / AI Search</span>
+          <span class="service-tag">Content Strategy</span>
+        </div>
+        <a href="seo-optimisation.html" class="service-link">Learn more →</a>
+      </div>
+      <div class="service-card fade-up-d5">
+        <div class="service-icon">💬</div>
+        <h3>Social Media Management</h3>
+        <p>AI-enhanced content creation, scheduling, and community management across all platforms. We turn followers into customers with data-driven strategies built for the Irish market.</p>
+        <div class="service-tags">
+          <span class="service-tag">Content Creation</span>
+          <span class="service-tag">Paid Social</span>
+          <span class="service-tag">Analytics</span>
+          <span class="service-tag">Community</span>
+        </div>
+        <a href="social-media-management.html" class="service-link">Learn more →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Free Audit CTA band ─── -->
+<section style="padding:70px 24px;">
+  <div class="section-container" style="max-width:1000px;">
+    <div style="background:var(--accent-gradient);border-radius:24px;padding:clamp(32px,4vw,48px);color:#fff;display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);border-radius:50%;"></div>
+      <div style="position:relative;flex:1 1 460px;min-width:280px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:.9;margin-bottom:12px;">✦ Free AI Business Audit</div>
+        <h2 style="font-family:var(--font-display);font-size:clamp(24px,3vw,34px);font-weight:700;line-height:1.15;letter-spacing:-.6px;color:#fff;margin-bottom:12px;">See how your business scores online — in about a minute.</h2>
+        <p style="font-size:16px;line-height:1.6;color:rgba(255,255,255,.92);max-width:560px;">Our AI audit rates your website, SEO, social media and online presence, then shows you exactly how to improve — free, and no obligation.</p>
+      </div>
+      <div style="position:relative;flex:0 0 auto;">
+        <a href="audit.html" style="display:inline-block;background:#fff;color:var(--accent-blue);padding:16px 34px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;">Run my free audit →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Process ─── -->
+<section id="process" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+  <div class="section-container">
+    <div class="section-label fade-up">How It Works</div>
+    <h2 class="section-title fade-up-d1">From first call to<br>measurable results.</h2>
+    <p class="section-desc fade-up-d2">No jargon. No six-month discovery phases. We move fast and prove value early.</p>
+    <div class="process-steps">
+      <div class="process-step fade-up-d2">
+        <div class="step-number">01</div>
+        <div class="step-duration">Week 1</div>
+        <h3>Discovery & Audit</h3>
+        <p>We map your current operations, tech stack, and marketing performance. You get a clear picture of where AI and digital improvements will have the biggest impact on your bottom line.</p>
+      </div>
+      <div class="process-step fade-up-d3">
+        <div class="step-number">02</div>
+        <div class="step-duration">Weeks 2–4</div>
+        <h3>Build & Deploy</h3>
+        <p>We implement your first AI workflow, launch your website, or kick off your SEO and social campaigns. You see real progress within the first month — not a slide deck.</p>
+      </div>
+      <div class="process-step fade-up-d4">
+        <div class="step-number">03</div>
+        <div class="step-duration">Ongoing</div>
+        <h3>Optimise & Scale</h3>
+        <p>Monthly reporting, continuous optimisation, and strategic guidance. As your business grows, we scale your AI systems and marketing to match. Your dedicated partner, not a ticket number.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SaaS Platform ─── -->
+<!-- ─── Featured Product: Cargo Command ─── -->
+<!-- Hidden 15 Sep 2026 — Products nav / Cargo Command section. To restore, delete this comment wrapper (the opening line and the closing arrow).
+<section id="products">
+  <div class="section-container">
+    <div class="section-label fade-up">Our Product</div>
+    <h2 class="section-title fade-up-d1">Not just advice —<br>we build products too.</h2>
+    <p class="section-desc fade-up-d2">Cargo Command is our first SaaS product: a white-label Logistics Operations Hub that pulls a transport operation's whole working day into one branded workspace — now with an AI Ops Agent that tells the team what needs doing next.</p>
+    <div class="fade-up-d3" style="background:var(--accent-gradient);border-radius:24px;padding:clamp(32px,5vw,56px);color:#fff;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-90px;right:-90px;width:340px;height:340px;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);border-radius:50%;"></div>
+      <div style="position:relative;display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:space-between;">
+        <div style="flex:1 1 440px;min-width:280px;">
+          <div style="font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:0.9;margin-bottom:16px;">🚚 Cargo Command by Claritai</div>
+          <h3 style="font-family:var(--font-display);font-size:clamp(26px,3.2vw,36px);font-weight:700;line-height:1.15;letter-spacing:-0.8px;margin-bottom:16px;color:#fff;">Your whole operation, in one command centre.</h3>
+          <p style="font-size:16px;line-height:1.65;color:rgba(255,255,255,0.92);margin-bottom:22px;max-width:520px;">Shared inboxes, schedule, fleet compliance, trailer tracking, fuel costing and live logistics intelligence — one secure hub built on your own Microsoft 365 and branded as your own.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;">
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;font-size:12px;font-weight:500;">Shared Inbox Hub</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;font-size:12px;font-weight:500;">Fleet &amp; Compliance</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;font-size:12px;font-weight:500;">Trailer Tracking</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;font-size:12px;font-weight:500;">Fuel Calculator</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.22);border:1px solid rgba(255,255,255,0.35);border-radius:100px;font-size:12px;font-weight:600;">Ops Agent · AI</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;">
+            <a href="cargo-command.html" style="display:inline-block;background:#fff;color:var(--accent-blue);padding:14px 30px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;">Explore Cargo Command →</a>
+            <a href="#" onclick="event.preventDefault();openConsult()" style="display:inline-block;background:rgba(255,255,255,0.12);color:#fff;padding:14px 30px;border-radius:10px;text-decoration:none;font-weight:500;font-size:15px;border:1px solid rgba(255,255,255,0.4);">Book a live demo</a>
+          </div>
+        </div>
+        <div style="flex:0 0 auto;display:flex;gap:30px;flex-wrap:wrap;">
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;">7</div><div style="font-size:12px;opacity:0.85;margin-top:6px;">Modules in<br>one hub</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;">1</div><div style="font-size:12px;opacity:0.85;margin-top:6px;">AI Ops<br>Agent</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;">0</div><div style="font-size:12px;opacity:0.85;margin-top:6px;">New<br>passwords</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+-->
+
+
+<!-- ─── Pricing teaser ─── -->
+<section class="price-band">
+  <div class="price-band-inner">
+    <div style="max-width:52ch;">
+      <div class="section-label fade-up" style="margin-bottom:12px;">Packages &amp; Pricing</div>
+      <h2 class="section-title fade-up-d1" style="font-size:clamp(24px,3vw,34px);margin-bottom:12px;">A proper website, from <span class="gradient-text">&euro;499 + &euro;79/month</span>.</h2>
+      <p class="section-desc fade-up-d2" style="margin:0;">Website, business email and hosting, set up for you and looked after by us. Optional extras priced openly &mdash; no surprises, no long contract.</p>
+    </div>
+    <div class="fade-up-d3" style="display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="pricing.html" class="btn-primary">See packages &amp; pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Grow Digital Voucher (home) ─── -->
+<section id="voucher" style="padding:90px 24px;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);">
+  <div class="section-container" style="max-width:820px;text-align:center;">
+    <div class="section-label fade-up" style="text-align:center;">🎁 Government Grant</div>
+    <h2 class="section-title fade-up-d1" style="margin:8px auto 14px;">Fund new business software with the<br>Grow Digital Voucher</h2>
+    <p class="section-desc fade-up-d2" style="margin:0 auto 28px;">Eligible Irish businesses can get <b>50% of costs</b> — from €500 up to €5,000 — toward new off-the-shelf software and setup. Check in 30 seconds if you qualify.</p>
+    <button class="btn-primary fade-up-d3" id="gdRevealBtn" onclick="gdReveal()">Check eligibility (30 seconds) →</button>
+
+    <div id="gdInline" style="display:none;text-align:left;margin-top:32px;">
+      <div class="gd-card">
+        <h3 class="gd-title">Grow Digital Voucher — quick check</h3>
+        <p class="gd-sub">Answer 5 quick questions to see if your business is likely to qualify.</p>
+        <div class="gd-err" id="gdErr"></div>
+        <div class="gd-q"><h4>1. Is your business trading for 6 months or more?</h4>
+          <div class="gd-toggle" data-key="trading"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>2. Does the business have between 1 and 50 paid employees?</h4>
+          <div class="gd-toggle" data-key="employees"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>3. Have you completed a Digital for Business project (with your LEO) in the last two years?</h4>
+          <div class="gd-toggle" data-key="dfb"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>4. Does the business have current Revenue tax clearance?</h4>
+          <div class="gd-toggle" data-key="tax"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <div class="gd-q"><h4>5. Is the business currently outside Enterprise Ireland and IDA Ireland support?</h4>
+          <div class="gd-toggle" data-key="support"><button type="button" class="gd-opt" data-v="yes" onclick="gdPick(this)">Yes</button><button type="button" class="gd-opt" data-v="no" onclick="gdPick(this)">No</button></div></div>
+        <hr class="gd-hr">
+        <div class="gd-fund">
+          <div class="gd-fund-col good"><h5>What it can fund</h5><p>New off-the-shelf business software (e-commerce, website, CRM, booking, accounting, cybersecurity, analytics), plus related IT configuration and training capped at 50% of the project.</p></div>
+          <div class="gd-fund-col bad"><h5>What it cannot fund</h5><p>Custom or bespoke software, compliance-only systems, routine upgrades, and any costs incurred before your application is approved.</p></div>
+        </div>
+        <button class="gd-check-btn" onclick="gdCheck()">Check my eligibility</button>
+      </div>
+      <div id="gdResult" style="display:none;margin-top:24px;"></div>
+    </div>
+  </div>
+</section>
+<script>
+var GD_OFFICIAL="https://www.localenterprise.ie/growdigital/what-is-the-grow-digital-voucher-/";
+var gdAns={};
+function gdReveal(){ var el=document.getElementById('gdInline'); el.style.display='block'; var b=document.getElementById('gdRevealBtn'); if(b) b.style.display='none'; el.scrollIntoView({behavior:'smooth',block:'start'}); }
+function gdPick(btn){ var grp=btn.parentNode; grp.querySelectorAll('.gd-opt').forEach(function(b){b.classList.remove('sel');}); btn.classList.add('sel'); gdAns[grp.getAttribute('data-key')]=btn.getAttribute('data-v'); }
+function gdEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var GD_FAIL={trading:"Your business needs to be trading for at least 6 months.",employees:"The voucher is for businesses with 1–50 paid employees.",dfb:"You usually need to complete a Digital for Business project first — we can help you get there.",tax:"You'll need current Revenue tax clearance.",support:"The voucher is for businesses outside Enterprise Ireland / IDA support."};
+function gdCheck(){
+  var keys=['trading','employees','dfb','tax','support'], err=document.getElementById('gdErr');
+  for(var i=0;i<keys.length;i++){ if(!gdAns[keys[i]]){ err.textContent='Please answer all 5 questions.'; err.style.display='block'; err.scrollIntoView({behavior:'smooth',block:'center'}); return; } }
+  err.style.display='none';
+  var fails=keys.filter(function(k){return gdAns[k]!=='yes';}), eligible=fails.length===0, html='';
+  if(eligible){
+    html+='<div class="gd-verdict good"><div class="gd-badge2 good">Looks eligible ✓</div><h3>Good news — your business appears to qualify</h3><p>Based on your answers you meet the core Grow Digital Voucher criteria. The next steps are applying through your Local Enterprise Office <b>before you spend anything</b>, and choosing eligible software. Claritai can help you scope a qualifying project and prepare a strong application.</p>';
+  } else {
+    html+='<div class="gd-verdict bad"><div class="gd-badge2 bad">Might not qualify yet</div><h3>You may not be eligible just yet</h3><p>Based on your answers, one or more criteria aren\'t met:</p><ul>'+fails.map(function(k){return '<li>'+gdEsc(GD_FAIL[k])+'</li>';}).join('')+'</ul><p>Rules change and your Local Enterprise Office makes the final call — talk to us and we\'ll advise on your options.</p>';
+  }
+  html+='<div class="gd-lead" id="gdLead"><input id="gd-name" type="text" placeholder="Your name"><input id="gd-email" type="email" placeholder="Work email"><input id="gd-company" class="full" type="text" placeholder="Company name"><button onclick="gdLead('+eligible+')">'+(eligible?'Get help applying →':'Talk to us about your options →')+'</button></div><p class="gd-note">Indicative guide only — eligibility and approval are determined solely by your Local Enterprise Office. See the <a href="'+GD_OFFICIAL+'" target="_blank" rel="noopener">official Grow Digital Voucher details ↗</a>. Your details are handled in line with our <a href="privacy-policy.html">Privacy Policy</a>.</p></div>';
+  var box=document.getElementById('gdResult'); box.innerHTML=html; box.style.display='block'; box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function gdLead(eligible){
+  var name=(document.getElementById('gd-name').value||'').trim(), email=(document.getElementById('gd-email').value||'').trim(), company=(document.getElementById('gd-company').value||'').trim();
+  if(!name||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Please enter your name and a valid email.'); return; }
+  fetch('https://formspree.io/f/mqeowkly',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name:name,email:email,company:company,source:'Grow Digital Voucher (home)',eligible:eligible?'Likely eligible':'Not yet',answers:gdAns})}).catch(function(){});
+  document.getElementById('gdLead').outerHTML='<p style="margin-top:20px;font-weight:600;color:var(--accent-blue);">Thanks '+gdEsc(name)+' — we\'ll be in touch shortly to help with your Grow Digital Voucher.</p>';
+}
+</script>
+
+<section id="platform" class="saas-section">
+  <div class="section-container">
+    <div class="saas-grid">
+      <div>
+        <div class="section-label fade-up">Our Platform</div>
+        <h2 class="section-title fade-up-d1">AI-powered tools.<br>Built for Irish SMEs.</h2>
+        <p class="section-desc fade-up-d2">Our SaaS platform gives you enterprise-grade AI capabilities without the enterprise price tag or complexity.</p>
+        <ul class="saas-features fade-up-d3">
+          <li>
+            <div class="saas-feat-icon">⚡</div>
+            <div class="saas-feat-text">
+              <h4>Smart Content Engine</h4>
+              <p>AI-generated blog posts, social media content, and ad copy tuned to your brand voice and Irish audience.</p>
+            </div>
+          </li>
+          <li>
+            <div class="saas-feat-icon">📊</div>
+            <div class="saas-feat-text">
+              <h4>Performance Dashboard</h4>
+              <p>Real-time SEO rankings, social media analytics, and website performance in one unified view.</p>
+            </div>
+          </li>
+          <li>
+            <div class="saas-feat-icon">🤖</div>
+            <div class="saas-feat-text">
+              <h4>AI Customer Assistant</h4>
+              <p>24/7 chatbot trained on your business data. Handles enquiries, books appointments, and qualifies leads while you sleep.</p>
+            </div>
+          </li>
+          <li>
+            <div class="saas-feat-icon">🔄</div>
+            <div class="saas-feat-text">
+              <h4>Workflow Automation</h4>
+              <p>Connect your tools and automate repetitive tasks — from invoice processing to customer follow-ups.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="saas-visual fade-up-d3">
+        <div class="saas-mockup-bar">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="saas-mockup-row">
+          <div class="saas-block w1"></div>
+          <div class="saas-block w2"></div>
+        </div>
+        <div class="saas-mockup-row">
+          <div class="saas-block w3"></div>
+          <div class="saas-block w4"></div>
+        </div>
+        <div class="saas-mockup-row">
+          <div class="saas-block w5"></div>
+          <div class="saas-block w2"></div>
+        </div>
+        <div class="saas-mockup-row">
+          <div class="saas-block w4"></div>
+          <div class="saas-block w3"></div>
+        </div>
+        <div class="saas-chart">
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+          <div class="saas-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Testimonials ─── -->
+<section id="testimonials" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+  <div class="section-container">
+    <div class="section-label fade-up" style="text-align:center;">Client Results</div>
+    <h2 class="section-title fade-up-d1" style="text-align:center;">Real businesses.<br>Real outcomes.</h2>
+    <p class="section-desc fade-up-d2" style="text-align:center;margin-left:auto;margin-right:auto;">Here's what Irish business owners say about working with Claritai.</p>
+    <div class="testimonials-grid" style="grid-template-columns:minmax(0,480px);justify-content:center;">
+      <div class="testimonial-card fade-up-d2">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"Claritai completely transformed our online presence. Our website traffic has doubled, our social media is finally consistent, and the AI tools they set up save us hours every week. As a small Irish brand, we needed a team that understood our scale — Claritai delivered from day one."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MB</div>
+          <div>
+            <div class="testimonial-name">MyBianca</div>
+            <div class="testimonial-role">Eco-Friendly Laundry Products · Co. Meath</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section id="contact" class="cta-section">
+  <div class="section-container">
+    <div class="section-label fade-up">Ready to Start?</div>
+    <h2 class="section-title fade-up-d1">30 minutes. No commitment.<br>Just <span class="gradient-text">clarity</span>.</h2>
+    <p class="section-desc fade-up-d2">Book a free consultation and we'll show you exactly where AI can make the biggest difference in your business.</p>
+    <a href="#" class="btn-primary fade-up-d3" onclick="event.preventDefault();openConsult()" style="display: inline-block;">Book Your Free Consultation →</a>
+    <div class="cta-details fade-up-d4">
+      <span>✓ No obligation</span>
+      <span>✓ Actionable insights from day one</span>
+      <span>✓ Irish-owned & GDPR compliant</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">clarit<span class="ai">ai</span></a>
+      <p>AI consultancy and digital solutions for Irish SMEs. Clarity through artificial intelligence.</p>
+      <p style="margin-top:12px;"><a href="mailto:info@claritai.ie" style="color:var(--accent-blue);text-decoration:none;font-size:13px;font-weight:500;">✉ info@claritai.ie</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <a href="cargo-command.html">Cargo Command</a>
+      <a href="https://desk.claritai.ie" title="Staff login">Claritai Desk</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="pricing.html">Packages &amp; Pricing</a>
+      <a href="ai-consultancy.html">AI Consultancy</a>
+      <a href="website-development.html">Web Development</a>
+      <a href="seo-optimisation.html">SEO Optimisation</a>
+      <a href="social-media-management.html">Social Media</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="https://www.linkedin.com/company/claritai-ireland/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/share/1cN5rfc6AW/" target="_blank" rel="noopener">Facebook ↗</a>
+      <a href="https://www.instagram.com/claritai.ie" target="_blank" rel="noopener">Instagram ↗</a>
+      <a href="#" onclick="event.preventDefault();openConsult()">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="audit.html">Free AI Audit</a>
+      <a href="grow-digital-voucher.html">Grow Digital Voucher</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Claritai Limited. All rights reserved. Made in Ireland 🇮🇪</span>
+    <div>
+      <a href="privacy-policy.html">Privacy Policy</a> · <a href="privacy-policy.html">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function closeMob(){
+  document.getElementById('mobOverlay').classList.remove('on');
+  document.getElementById('mobToggle').classList.remove('on');
+  document.getElementById('mobSvcPanel').classList.remove('on');
+  document.body.style.overflow='';
+}
+</script>
+
+<div class="consult-overlay" id="consultOverlay">
+  <div class="consult-box">
+    <button class="consult-close" onclick="closeConsult()">&times;</button>
+    <div class="consult-form" id="consultForm">
+      <h2>Book a Free Consultation</h2>
+      <p class="consult-sub">Tell us a bit about your business and we'll be in touch within 24 hours.</p>
+      <div class="consult-field">
+        <label for="c-name">Name *</label>
+        <input type="text" id="c-name" placeholder="Your full name" required>
+      </div>
+      <div class="consult-field">
+        <label for="c-email">Email *</label>
+        <input type="email" id="c-email" placeholder="you@company.ie" required>
+      </div>
+      <div class="consult-field">
+        <label for="c-phone">Phone Number</label>
+        <input type="tel" id="c-phone" placeholder="+353 ...">
+      </div>
+      <div class="consult-field">
+        <label for="c-company">Company Name</label>
+        <input type="text" id="c-company" placeholder="Your business name">
+      </div>
+      <div class="consult-field">
+        <label for="c-message">What do you need help with? *</label>
+        <textarea id="c-message" placeholder="Tell us about your project or what challenges you're facing..."></textarea>
+      </div>
+      <div class="consult-field" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+        <label for="c-website-url">Leave this empty</label>
+        <input type="text" id="c-website-url" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="consult-submit" onclick="submitConsult()">Send Enquiry</button>
+    </div>
+    <div class="consult-thanks" id="consultThanks">
+      <div class="tick">✓</div>
+      <h3>Thank you!</h3>
+      <p>We've received your enquiry and will be in touch within 24 hours. Looking forward to helping your business grow with AI.</p>
+    </div>
+  </div>
+</div>
+<script>
+function openConsult(){consultOpenedAt=Date.now();
+  document.getElementById('consultOverlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeConsult(){
+  document.getElementById('consultOverlay').classList.remove('on');
+  document.body.style.overflow='';
+  // Reset form after closing
+  setTimeout(function(){
+    document.getElementById('consultForm').classList.remove('hidden');
+    document.getElementById('consultThanks').classList.remove('on');
+    document.querySelectorAll('#consultForm input, #consultForm textarea').forEach(function(el){el.value='';});
+  }, 300);
+}
+// When the enquiry form was opened, so the Desk endpoint can tell a person
+// from a bot that submits instantly.
+var consultOpenedAt = Date.now();
+
+function submitConsult(){
+  var name=document.getElementById('c-name').value;
+  var email=document.getElementById('c-email').value;
+  var phone=document.getElementById('c-phone').value;
+  var company=document.getElementById('c-company').value;
+  var msg=document.getElementById('c-message').value;
+  if(!name||!email||!msg){alert('Please fill in all required fields.');return;}
+
+  var hp=document.getElementById('c-website-url');
+  var pkg=(window.claritaiPackage&&window.claritaiPackage())||null;
+
+  // Desk is the CRM; Formspree is the safety net. They are deliberately
+  // independent — the enquiry still reaches us by email if Desk is unreachable,
+  // and the visitor is never shown a Desk failure.
+  fetch('https://desk.claritai.ie/api/public/enquiry',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      name:name,email:email,phone:phone,company:company,message:msg,
+      website_url:hp?hp.value:'',
+      elapsed:Date.now()-consultOpenedAt,
+      packageText:pkg?pkg.text:'',
+      setupTotal:pkg?pkg.setup:0,
+      monthlyTotal:pkg?pkg.monthly:0
+    })
+  }).catch(function(){});
+
+  fetch('https://formspree.io/f/mqeowkly',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({name:name,email:email,phone:phone,company:company,message:msg})
+  }).then(function(r){
+    if(r.ok){
+      document.getElementById('consultForm').classList.add('hidden');
+      document.getElementById('consultThanks').classList.add('on');
+    }else{alert('Something went wrong. Please try again.');}
+  }).catch(function(){alert('Something went wrong. Please try again.');});
+}
+// Close on overlay background click
+document.getElementById('consultOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeConsult();
+});
+</script>
+
+<div class="cookie-banner" id="cookieBanner">
+  <p>We use cookies to improve your experience and analyse site traffic. See our <a href="privacy-policy.html">Privacy Policy</a> for details.</p>
+  <div class="cookie-btns">
+    <button class="cookie-decline" onclick="document.getElementById('cookieBanner').classList.remove('show');localStorage.setItem('cookies','declined')">Decline</button>
+    <button class="cookie-accept" onclick="document.getElementById('cookieBanner').classList.remove('show');localStorage.setItem('cookies','accepted')">Accept</button>
+  </div>
+</div>
+<script>if(!localStorage.getItem('cookies')){document.getElementById('cookieBanner').classList.add('show');}</script>
+
+<!-- ─── Lead-capture popup (free audit) ─── -->
+<style>
+.lp-overlay{position:fixed;inset:0;background:rgba(18,42,66,.55);backdrop-filter:blur(6px);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px;}
+.lp-overlay.on{display:flex;}
+.lp-box{position:relative;background:#fff;border-radius:20px;max-width:460px;width:100%;padding:34px 32px;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:lpIn .3s ease-out;}
+@keyframes lpIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.lp-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:24px;line-height:1;color:#9bb7d1;cursor:pointer;}
+.lp-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-gradient-subtle,#eef6ff);color:var(--accent-blue,#3d8ed1);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:14px;}
+.lp-box h2{font-family:var(--font-display,'Sora',sans-serif);font-size:22px;font-weight:700;color:var(--text-primary,#2e7cba);line-height:1.2;margin-bottom:10px;}
+.lp-sub{font-size:14px;color:var(--text-secondary,#4f9ed4);line-height:1.55;margin-bottom:18px;}
+.lp-list{list-style:none;margin:0 0 20px;padding:0;}
+.lp-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--text-primary,#2e7cba);font-weight:500;padding:5px 0;}
+.lp-list li::before{content:'\2713';flex:0 0 auto;width:18px;height:18px;border-radius:50%;background:var(--accent-gradient,#3d8ed1);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-top:1px;}
+.lp-field{margin-bottom:12px;}
+.lp-field input{width:100%;padding:13px 15px;border:1px solid var(--border-subtle,#dce9f6);border-radius:10px;font-family:var(--font-body,'DM Sans',sans-serif);font-size:15px;color:var(--text-primary,#2e7cba);background:#f8fbff;outline:none;box-sizing:border-box;transition:border-color .2s;}
+.lp-field input:focus{border-color:var(--accent-blue,#3d8ed1);background:#fff;}
+.lp-btn{width:100%;padding:15px;background:var(--accent-gradient,linear-gradient(135deg,#3d8ed1,#5ba3e6));color:#fff;border:none;border-radius:12px;font-family:var(--font-display,'Sora',sans-serif);font-size:16px;font-weight:600;cursor:pointer;margin-top:4px;transition:transform .2s,box-shadow .3s;}
+.lp-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(91,163,230,.35);}
+.lp-fine{text-align:center;font-size:11.5px;color:var(--text-muted,#7bb4de);margin-top:12px;}
+.lp-err{background:#fdf0ef;border:1px solid #f3d2ce;color:#b0554d;font-size:13px;padding:10px 12px;border-radius:8px;margin-bottom:12px;display:none;}
+.lp-thanks{display:none;text-align:center;padding:10px 0;}
+.lp-thanks.on{display:block;}
+.lp-tick{font-size:44px;margin-bottom:10px;}
+.lp-thanks p{font-size:14px;color:var(--text-secondary,#4f9ed4);margin-bottom:20px;line-height:1.5;}
+.lp-go{display:inline-block;background:var(--accent-gradient,#3d8ed1);color:#fff;text-decoration:none;padding:13px 26px;border-radius:10px;font-weight:600;font-size:15px;}
+</style>
+<div class="lp-overlay" id="lpOverlay">
+  <div class="lp-box">
+    <button class="lp-close" onclick="lpClose()">&times;</button>
+    <div id="lpForm">
+      <span class="lp-badge">Free &middot; No commitment</span>
+      <h2>Wait &mdash; grab your free AI Business Audit</h2>
+      <p class="lp-sub">See exactly where your business is leaking customers online &mdash; and how to fix it before your competitors do.</p>
+      <ul class="lp-list">
+        <li>Website health &amp; performance check</li>
+        <li>SEO &amp; search visibility diagnostic</li>
+        <li>Conversion &amp; content leak analysis</li>
+        <li>AI-readiness scorecard for 2026</li>
+      </ul>
+      <div class="lp-err" id="lpErr"></div>
+      <div class="lp-field"><input id="lp-name" type="text" placeholder="Your name"></div>
+      <div class="lp-field"><input id="lp-email" type="email" placeholder="you@business.ie"></div>
+      <div class="lp-field"><input id="lp-url" type="text" placeholder="yourbusiness.ie"></div>
+      <button class="lp-btn" onclick="lpSubmit()">Send me the free audit &rarr;</button>
+      <p class="lp-fine">We'll be in touch within minutes. No spam, unsubscribe anytime. See our <a href="privacy-policy.html" style="color:var(--accent-blue);">Privacy Policy</a>.</p>
+    </div>
+    <div class="lp-thanks" id="lpThanks">
+      <div class="lp-tick">&#10003;</div>
+      <h2>You're all set!</h2>
+      <p>Run your instant audit now and we'll walk you through the results.</p>
+      <a class="lp-go" id="lpGo" href="audit.html">Run my instant audit &rarr;</a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='claritai_audit_popup_v1', DAYS=7, shown=false;
+  function seen(){ try{ var t=localStorage.getItem(KEY); return t && (Date.now()-(+t)) < DAYS*864e5; }catch(e){ return false; } }
+  function mark(){ try{ localStorage.setItem(KEY, Date.now()); }catch(e){} }
+  function open(){ if(shown||seen())return; shown=true; document.getElementById('lpOverlay').classList.add('on'); document.body.style.overflow='hidden'; mark(); }
+  window.lpClose=function(){ document.getElementById('lpOverlay').classList.remove('on'); document.body.style.overflow=''; };
+  window.lpSubmit=function(){
+    var name=(document.getElementById('lp-name').value||'').trim();
+    var email=(document.getElementById('lp-email').value||'').trim();
+    var url=(document.getElementById('lp-url').value||'').trim();
+    var err=document.getElementById('lpErr');
+    function fail(m){ err.textContent=m; err.style.display='block'; }
+    if(!name) return fail('Please enter your name.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email.');
+    if(!url) return fail('Please enter your website.');
+    err.style.display='none';
+    fetch('https://formspree.io/f/mqeowkly',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+      body:JSON.stringify({name:name,email:email,website:url,source:'Site popup - Free Audit'})}).catch(function(){});
+    document.getElementById('lpGo').href='audit.html?url='+encodeURIComponent(url)+'&name='+encodeURIComponent(name)+'&email='+encodeURIComponent(email);
+    document.getElementById('lpForm').style.display='none';
+    document.getElementById('lpThanks').classList.add('on');
+  };
+  document.addEventListener('mouseout', function(e){ if(e.clientY<=0) open(); });
+  setTimeout(open, 25000);
+  var ov=document.getElementById('lpOverlay');
+  if(ov) ov.addEventListener('click', function(e){ if(e.target===this) lpClose(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') lpClose(); });
+})();
+</script>
+
+</body>
+</html>

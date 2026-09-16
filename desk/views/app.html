@@ -301,6 +301,30 @@ label.f>span{display:block;font-size:10.5px;text-transform:uppercase;letter-spac
 .grouphead .n{color:var(--ink-3);font-weight:600;letter-spacing:0}
 .grouphead .rule{flex:1;height:1px;background:var(--line)}
 .grouphead.crit{color:var(--crit)}
+/* ─── lead already on the books ─── */
+.matchchip{
+  border:1px solid var(--warn); background:var(--warn-soft,rgba(180,120,20,.10)); color:var(--warn);
+  border-radius:100px; padding:3px 11px; font:inherit; font-size:11.5px; font-weight:600;
+  cursor:pointer; white-space:nowrap;
+}
+.matchchip:hover{ filter:brightness(1.06); text-decoration:underline; }
+.row.flagged{ background:var(--warn-soft,rgba(180,120,20,.05)); }
+.leadbanner{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:14px 0 2px;
+  padding:11px 15px; border:1px solid var(--warn); border-left-width:3px;
+  border-radius:var(--r-md); background:var(--warn-soft,rgba(180,120,20,.07));
+}
+.leadbanner .what{ flex:1; min-width:240px; font-size:12.5px; color:var(--ink-2); line-height:1.5; }
+.leadbanner b{ color:var(--ink); }
+.dupnote{
+  display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; margin:2px 0 0;
+  padding:14px 16px; border:1px solid var(--warn); border-radius:var(--r-md);
+  background:var(--warn-soft,rgba(180,120,20,.07));
+}
+.dupnote b{ display:block; font-size:13.5px; margin-bottom:4px; }
+.dupnote small{ font-size:12px; color:var(--ink-2); line-height:1.55; display:block; }
+.dupnote-acts{ display:flex; gap:8px; flex-wrap:wrap; }
+
 .grouphead .btn{text-transform:none;letter-spacing:0;font-weight:500;margin-left:2px}
 .row.done{background:var(--surface-2)}
 .row.done .s{color:var(--ink-3)}
@@ -779,6 +803,43 @@ function promotedThisYear(){
   const y = new Date().getFullYear();
   return data.leads.filter(l=>l.status==="promoted" && l.promotedAt &&
     new Date(l.promotedAt).getFullYear()===y);
+}
+
+
+/* ---- already signed? ---- */
+// A lead and a customer are the same business far more often than the records
+// know about, because nothing forces you through Promote. Match on the name,
+// conservatively: strip the noise, then insist on a decent-length match so
+// "The Ltd" can't collide with everything.
+function normName(s){
+  const n = String(s||"").toLowerCase()
+    .replace(/&/g," and ")
+    .replace(/\b(ltd|limited|plc|uc|dac|teo|teoranta|inc|llc)\b/g," ")
+    .replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
+  return n.length >= 4 ? n : "";
+}
+// Returns what this lead already appears to be, or null. Leads that went
+// through Promote, and parked ones, are left alone — they are already resolved.
+function leadAlreadyOn(l){
+  if(!l || l.status==="promoted" || l.status==="dead") return null;
+  if(l.dealId && byId("deals", l.dealId)) return null;
+  const n = normName(l.name);
+  if(!n) return null;
+  const c = data.clients.find(x=>normName(x.name)===n);
+  if(c) return {kind:"customer", id:c.id, name:c.name};
+  const d = data.deals.find(x=>normName(x.company)===n);
+  if(d) return {kind:"deal", id:d.id, name:d.company};
+  return null;
+}
+const leadsAlreadyOn = ()=> data.leads.filter(l=>leadAlreadyOn(l));
+// Parking keeps the lead and its history, and takes it off the chase list.
+function parkLead(id, why){
+  const l = byId("leads", id); if(!l) return;
+  const copy = Object.assign({}, l, {
+    status: "dead",
+    activity: appendNote(l.activity, why || "Parked.")
+  });
+  save("leads", copy);
 }
 
 /* ---- search ---- */
@@ -1355,8 +1416,15 @@ VIEWS.leads = {
     ];
     if(showDead) groups.push({k:"Parked — not a fit", f:l=>l.status==="dead"});
 
+    const dupes = leadsAlreadyOn();
+    const banner = dupes.length
+      ? '<div class="leadbanner"><span class="what"><b>'+dupes.length+' lead'+(dupes.length===1?"":"s")+
+        ' already on the books.</b> '+esc(dupes.map(l=>l.name).join(", "))+
+        ' — already a customer or in the pipeline, so still counted as someone to chase.</span>'+
+        '<button class="btn sm" data-act="park-dupes">Park '+(dupes.length===1?"it":"them")+'</button></div>'
+      : '';
     const hits = data.leads.filter(l=>matches(leadText(l), query));
-    let out = q + countLine(hits.length, data.leads.length, "leads"), any = false;
+    let out = q + banner + countLine(hits.length, data.leads.length, "leads"), any = false;
     groups.forEach(g=>{
       const list = hits.filter(g.f).sort((a,b)=>(b.addedAt||"").localeCompare(a.addedAt||""));
       if(!list.length) return;
@@ -1383,9 +1451,11 @@ VIEWS.leads = {
 
 function leadRow(l){
   const st = LEAD_STATUS[l.status||"new"] || LEAD_STATUS.new;
+  const dup = leadAlreadyOn(l);
   const host = (l.website||"").replace(/^https?:\/\//,"").replace(/\/$/,"");
   const built = !!l.demoBuilt, sent = built && !!l.demoSent;
-  return '<div class="row" data-lead="'+esc(l.id)+'">'+
+  return '<div class="row'+(dup?" flagged":"")+'" data-lead="'+esc(l.id)+'"'+
+      (dup?' data-dupkind="'+esc(dup.kind)+'" data-dupid="'+esc(dup.id)+'"':'')+'>'+
     '<span class="grow"><span class="t">'+esc(l.name||"Untitled")+'</span><span class="s">'+
       (host?'<a href="'+esc(l.website)+'" target="_blank" rel="noopener" class="mono" style="color:var(--accent);text-decoration:none">'+esc(host)+'</a>':'')+
       (l.source?'<span>'+esc(l.source)+'</span>':'')+
@@ -1400,9 +1470,14 @@ function leadRow(l){
       'data-act="lead-demo" title="'+(sent?"Demo sent — click to clear":(built?"Demo built — click to mark sent":"Click when a demo site is built"))+'">'+
       '<span class="box"><span>✓</span></span>'+(sent?"Demo sent":(built?"Demo ready":"Demo"))+'</button>'+
     (built && l.demoUrl ? '<a class="demolink" href="'+esc(l.demoUrl)+'" target="_blank" rel="noopener">View</a>' : '')+
+    (dup ? '<button class="matchchip" data-act="lead-match-open" title="Open '+esc(dup.name)+'">'+
+             (dup.kind==="customer" ? "Already a customer" : "Already in the pipeline")+'</button>' : '')+
     '<span class="pill '+st.cls+'"><span class="dot"></span>'+st.label+'</span>'+
-    (l.status==="promoted" ? '' :
-      '<button class="btn sm" data-act="lead-promote">Promote</button>')+
+    // Promoting a lead that is already a customer would just make a second
+    // deal, so that button becomes the thing you actually want instead.
+    (dup ? '<button class="btn sm" data-act="lead-park">Park</button>'
+         : l.status==="promoted" ? ''
+         : '<button class="btn sm" data-act="lead-promote">Promote</button>')+
     '<button class="btn ghost sm" data-act="lead-edit">Open</button>'+
   '</div>';
 }
@@ -1504,7 +1579,20 @@ function openLead(id){
     historyBlock("leads", x.id, "activity", "lNote", "Rang, spoke to Paul — asked me to call back next week")+
     (x.addedBy||x.addedAt ? '<p style="font-size:11.5px;color:var(--ink-3);margin:0">Added '+
       (x.addedBy?'by '+esc(x.addedBy)+' ':'')+(x.addedAt?fmtDate(x.addedAt):"")+'</p>' : '')+
-    (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : ''),
+    (x.status==="promoted" ? '<p style="font-size:12.5px;color:var(--ok);margin:0">Already promoted into the Pipeline.</p>' : '')+
+    (function(){
+      const dup = l && leadAlreadyOn(x);
+      if(!dup) return '';
+      return '<div class="dupnote"><div><b>'+esc(dup.name)+' is already '+
+        (dup.kind==="customer"?'a customer':'in the pipeline')+'.</b>'+
+        '<small>This lead is separate from that record, so it still counts as someone to chase. '+
+        'Park it to take it off the list \u2014 the history stays.</small></div>'+
+        '<div class="dupnote-acts">'+
+          '<button class="btn sm" type="button" data-act="dup-open" data-kind="'+esc(dup.kind)+'" data-id="'+esc(dup.id)+'">Open '+
+            (dup.kind==="customer"?'customer':'deal')+'</button>'+
+          '<button class="btn sm" type="button" data-act="dup-park" data-id="'+esc(x.id)+'" data-kind="'+esc(dup.kind)+'">Park this lead</button>'+
+        '</div></div>';
+    })(),
 
     (l?'<button class="btn danger" data-act="lead-delete">Delete</button>':'')+
     (l && x.status!=="promoted" ? '<button class="btn" data-act="lead-promote-drawer">Promote to deal</button>':'')+
@@ -2764,7 +2852,40 @@ document.addEventListener("click",e=>{
   if(act==="new-lead") return openLead(null);
   if(act==="lead-save") return saveLead();
   if(act==="lead-edit") return openLead(row.dataset.lead);
+  if(act==="dup-open"){
+    const k = b.dataset.kind, id = b.dataset.id;
+    closeOverlay();
+    return k==="customer" ? openClient(id) : openDeal(id);
+  }
+  if(act==="dup-park"){
+    const k = b.dataset.kind;
+    parkLead(b.dataset.id, "Parked \u2014 already " + (k==="customer" ? "a customer" : "in the pipeline") + ".");
+    closeOverlay();
+    return toast("Lead parked \u2014 it\u2019s under Show parked if you need it");
+  }
   if(act==="lead-promote") return promoteLead(row.dataset.lead);
+  if(act==="lead-park"){
+    const l = byId("leads", row.dataset.lead);
+    const dup = l && leadAlreadyOn(l);
+    parkLead(row.dataset.lead, dup
+      ? "Parked \u2014 already " + (dup.kind==="customer" ? "a customer" : "in the pipeline") + "."
+      : "Parked.");
+    return toast("Lead parked \u2014 it\u2019s under Show parked if you need it");
+  }
+  if(act==="lead-match-open"){
+    const k = row.dataset.dupkind, id = row.dataset.dupid;
+    if(k==="customer") return openClient(id);
+    if(k==="deal") return openDeal(id);
+    return;
+  }
+  if(act==="park-dupes"){
+    const list = leadsAlreadyOn();
+    list.forEach(l=>{
+      const dup = leadAlreadyOn(l);
+      parkLead(l.id, "Parked \u2014 already " + (dup && dup.kind==="customer" ? "a customer" : "in the pipeline") + ".");
+    });
+    return toast(list.length+" lead"+(list.length===1?"":"s")+" parked \u2014 find them under Show parked");
+  }
   if(act==="lead-demo") return cycleDemo(row.dataset.lead);
   if(act==="lead-promote-drawer") return promoteLead(val("#lId"));
   if(act==="lead-delete"){
