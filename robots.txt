@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://claritai.ie/sitemap.xml
+Sitemap: https://www.claritai.ie/sitemap.xml

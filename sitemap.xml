@@ -1,58 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://claritai.ie/</loc>
-    <lastmod>2026-08-17</lastmod>
+    <loc>https://www.claritai.ie/</loc>
+    <lastmod>2026-09-18</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://claritai.ie/pricing.html</loc>
-    <lastmod>2026-09-15</lastmod>
+    <loc>https://www.claritai.ie/build-your-site.html</loc>
+    <lastmod>2026-09-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://claritai.ie/ai-consultancy.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://claritai.ie/website-development.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://claritai.ie/seo-optimisation.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://claritai.ie/social-media-management.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://claritai.ie/cargo-command.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <loc>https://www.claritai.ie/our-work.html</loc>
+    <lastmod>2026-09-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://claritai.ie/audit.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://claritai.ie/about.html</loc>
-    <lastmod>2026-08-25</lastmod>
+    <loc>https://www.claritai.ie/how-it-works.html</loc>
+    <lastmod>2026-09-18</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://claritai.ie/privacy-policy.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.3</priority>
+    <loc>https://www.claritai.ie/questions.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://claritai.ie/grow-digital-voucher.html</loc>
-    <lastmod>2026-08-17</lastmod>
-    <priority>0.8</priority>
+    <loc>https://www.claritai.ie/privacy-policy.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <priority>0.3</priority>
   </url>
 </urlset>
