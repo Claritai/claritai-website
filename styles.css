@@ -80,3 +80,27 @@ dialog{border:1px solid #d8dced;padding:0;border-radius:18px;max-width:560px;wid
 @media(max-width:960px){.preview-web{width:74%;top:26px}}
 @media(max-width:820px){.preview-web{width:66%;top:40px;left:4px}}
 @media(max-width:650px){.preview-web{width:72%;top:30px}}
+
+/* 3. Cookie consent bar. Sits at the bottom, does not block the page, and gives
+      Accept and Decline the same visual weight — a Decline that is harder to
+      find is not a real choice. */
+.cookie-bar{position:fixed;left:16px;right:16px;bottom:16px;z-index:200;display:flex;
+  flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;
+  max-width:1120px;margin-inline:auto;padding:16px 20px;background:#141a2e;color:#e8ebf5;
+  border-radius:14px;box-shadow:0 18px 50px #0b122c40}
+.cookie-bar p{font-size:.875rem;line-height:1.6;margin:0;max-width:62ch;color:#c8cfe0}
+.cookie-bar a{color:#9fb0ff;text-underline-offset:3px}
+.cookie-bar-actions{display:flex;gap:10px;flex-shrink:0}
+.cookie-bar button{font:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;
+  padding:10px 20px;border-radius:8px;border:1px solid #47506d;background:transparent;
+  color:#e8ebf5;transition:.15s}
+.cookie-bar button:hover{border-color:#8b97bd;background:#ffffff12}
+.cookie-bar button[data-consent="accepted"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.cookie-bar button[data-consent="accepted"]:hover{filter:brightness(1.12)}
+.cookie-bar button:focus-visible{outline:3px solid #6276ff;outline-offset:2px}
+@media(max-width:650px){
+  .cookie-bar{left:12px;right:12px;bottom:12px;padding:15px 16px}
+  .cookie-bar p{font-size:.8125rem}
+  .cookie-bar-actions{width:100%}
+  .cookie-bar button{flex:1}
+}

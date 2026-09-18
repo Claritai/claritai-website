@@ -100,7 +100,41 @@ website panel is now real and only the dashboard and social panels are not.
 `assets/cafe.webp` is removed; `assets/rmcleary-home.webp` replaces it. The old
 `.cafe-*` CSS is left in the stylesheet, unused and harmless.
 
-## 7. Housekeeping
+## 7. Cookie consent that actually works, and analytics back
+
+The old site loaded Google Analytics unconditionally in the `<head>` of every
+page, then showed a banner afterwards. Clicking Decline only hid the banner and
+wrote a note to localStorage — GA had already fired and set its cookies. Under
+the Irish ePrivacy Regulations consent has to come BEFORE anything non-essential
+is stored, and a decline has to actually prevent it, so that banner was
+decorative.
+
+The designer's handoff had no analytics and no banner at all. Both are now back,
+built the other way round:
+
+- Google Analytics is not in the page. `consent.js` injects it, and only after
+  Accept is clicked. Decline means nothing is ever requested from Google.
+- Declining after previously accepting deletes the `_ga` cookies already set.
+- The choice is kept in localStorage rather than a cookie, so someone who
+  declines leaves with a genuinely clean browser.
+- A "Cookie settings" link in the footer of every page reopens the choice.
+
+Verified in a browser with all Google domains intercepted: 18 checks covering
+first visit, decline, accept, reload, withdrawal and phone layout.
+
+## 8. The privacy policy matches the site again
+
+Rebuilt in the new design — same typeface, palette, header and footer — and its
+wording corrected, because it described a site that no longer exists. Removed:
+Formspree, HubSpot, the AI Business Audit, the Grow Digital Voucher check,
+Google PageSpeed Insights and Azure OpenAI. Added: Claritai Desk as where
+enquiries are stored, Resend as what emails the notification, Render as the
+host, and an accurate description of how consent works.
+
+It deliberately does not load `app.js` — a legal page has no package builder and
+no enquiry dialog, and app.js expects both. The mobile menu is inlined instead.
+
+## 9. Housekeeping
 
 - `noindex, nofollow` removed — that was correct for review, not for launch.
 - `sitemap.xml` rewritten for the five new pages plus the privacy policy.
