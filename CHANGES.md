@@ -150,7 +150,31 @@ Tapping it anywhere else did nothing at all. On the four other pages it now goes
 to `build-your-site.html#package-summary`; on the builder itself it still jumps
 in-page.
 
-## 10. Housekeeping
+## 10. RM Cleary's real logo on the Our work card
+
+The card carried an invented mark — a gold "RM" roundel on charcoal — which is
+not RM Cleary's branding. It now uses their actual logo.
+
+Two things that follow from that:
+
+- The panel is a pale cool tint rather than charcoal. Their mark is drawn as
+  navy on white, so it needs a light ground; a reversed version would be needed
+  to put it back on a dark panel. The tint is not pure white so that half of the
+  card still separates from the white card behind it.
+- The supplied logo had a solid white background, which showed as a white
+  rectangle on the tinted panel. It is keyed to transparent, with the edge
+  colour un-premultiplied against white so the anti-aliased letterforms keep the
+  real ink colour instead of a washed-out halo.
+
+`assets/rmcleary-logo.png` is the source file trimmed to the ink and scaled 3x.
+There is not much resolution in it — about 120px of actual logo before scaling —
+so if RM Cleary can supply an SVG or a large PNG it is worth swapping in.
+
+The old `.cleary-*` rules for the invented mark are left in the stylesheet,
+unused and harmless, in keeping with everything else here: the designer's
+original file is not edited, only appended to.
+
+## 11. Housekeeping
 
 - `noindex, nofollow` removed — that was correct for review, not for launch.
 - `sitemap.xml` rewritten for the five new pages plus the privacy policy.
