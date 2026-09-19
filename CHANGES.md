@@ -134,7 +134,23 @@ host, and an accurate description of how consent works.
 It deliberately does not load `app.js` — a legal page has no package builder and
 no enquiry dialog, and app.js expects both. The mobile menu is inlined instead.
 
-## 9. Housekeeping
+## 9. The sticky mobile bar
+
+Two fixes, both visible only on a phone.
+
+The builder shipped with the Product catalogue package pre-selected, so the bar
+pinned to the bottom of the screen opened reading €799 + €99/mo — directly under
+a headline saying €499 + €79. It now opens on the starter package, which is the
+price the site leads with. The builder page opens there too, and changing the
+package still moves the bar as before.
+
+The bar's "View package" button linked to `#package-summary`, which lives inside
+the builder's plan section and is hidden on every page except build-your-site.
+Tapping it anywhere else did nothing at all. On the four other pages it now goes
+to `build-your-site.html#package-summary`; on the builder itself it still jumps
+in-page.
+
+## 10. Housekeeping
 
 - `noindex, nofollow` removed — that was correct for review, not for launch.
 - `sitemap.xml` rewritten for the five new pages plus the privacy policy.
